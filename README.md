@@ -1240,8 +1240,8 @@ Below is an example `settings.json` configuration for different frameworks.
 
 ## Support, Feedback, and Community
 
-Please feel free to report any issues or suggestions. Check out the [GitHub repository](https://github.com/BachiMjavanadze/terminal-gui) for more details.
+Please feel free to report any issues or suggestions. Check out the [GitHub repository](https://github.com/BachiMjavanadze/terminal-gui2) for more details.
 
 ## License
 
-This project is licensed under the COMMERCIAL License.
+This project is licensed under the [COMMERCIAL License](https://github.com/BachiMjavanadze/terminal-gui2/blob/main/LICENSE).
