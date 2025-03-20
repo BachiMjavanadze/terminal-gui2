@@ -1238,10 +1238,10 @@ Below is an example `settings.json` configuration for different frameworks.
 ```
 </details>
 
-## Support, Feedback, and Community
+## Support and Feedback
 
 Please feel free to report any issues or suggestions. Check out the [GitHub repository](https://github.com/BachiMjavanadze/terminal-gui2) for more details.
 
 ## License
 
-This project is licensed under the [COMMERCIAL License](https://github.com/BachiMjavanadze/terminal-gui2/blob/main/LICENSE).
+This project is licensed under the [EULA License](https://github.com/BachiMjavanadze/terminal-gui2/blob/main/LICENSE).
