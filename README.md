@@ -765,6 +765,8 @@ Below is an example of `settings.json` configuration for different frameworks.
 "terminal.integrated.defaultProfile.windows": "Git Bash",
 ```
 
+- Note: If you copy and paste the example below into `settings.json` of `VSCode`, the changes will not take effect immediately; you will also need to `Refresh` the settings using the keyboard shortcut `ctrl+alt+p` (on Mac: `cmd+alt+p`).
+
 <details>
 <summary>🅰️ Angular</summary>
 
