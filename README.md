@@ -8,7 +8,7 @@ This is a demo video of `Terminal GUI`:
 
    - Note: **`Terminal GUI`** supports `Git Bash` and `PowerShell` scripting languages, so you can write very complex commands.
 
-   - Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration `settings.json` of the `VSCode`:
+   - Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VSCode`:
 
 ```json
 "terminal.integrated.defaultProfile.windows": "Git Bash",
@@ -710,27 +710,28 @@ These settings, defined in your configuration under `settings.json ➜ "Terminal
      - Note: `terminalgui.config.json` can only contain the `commands` and `scripts` object from `TerminalGui.config`. So it might look like this:
 
 ```json
-// terminalgui.config.json
-"commands": {
-  "temp 1": {
-    "command": "echo START && _[bashScript]_ && foo hello && echo FINISH"
+{
+  "commands": {
+    "temp 1": {
+      "command": "echo START && _[bashScript]_ && foo hello && echo FINISH"
+    },
+    "temp 2": {
+      "command": "echo START; _[shellScript]_; foo hello; echo FINISH"
+    }
   },
-  "temp 2": {
-    "command": "echo START; _[shellScript]_; foo hello; echo FINISH"
-  },
-},
-"scripts": {
-  "bash": [
-    "foo() {",
-    "  echo \"${1^^}.component\"",
-    "}"
-  ],
-  "shell": [
-    "function foo {",
-    "    param([string]$text)",
-    "    $text.ToUpper() + \".item\"",
-    "}"
-  ]
+  "scripts": {
+    "bash": [
+      "foo() {",
+      "  echo \"${1^^}.component\"",
+      "}"
+    ],
+    "shell": [
+      "function foo {",
+      "    param([string]$text)",
+      "    $text.ToUpper() + \".item\"",
+      "}"
+    ]
+  }
 }
 ```
 
@@ -756,176 +757,191 @@ These settings, defined in your configuration under `settings.json ➜ "Terminal
 
 ### Example Configuration
 
-Below is an example `settings.json` configuration for different frameworks.
+Below is an example of `settings.json` configuration for different frameworks.
 
-- Note: all examples below are for the `Git Bash` terminal.
+- Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VSCode`:
+
+```json
+"terminal.integrated.defaultProfile.windows": "Git Bash",
+```
 
 <details>
 <summary>🅰️ Angular</summary>
 
 ```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"Create Angular Project": {
-  "command": "cd _[Select a folder]_ _[version]_.value _[name]_.value && npm install -g @angular/cli@_[version]_ && ng new _[name]_ --style=_[styles]_ --inline-style=_[inline-style]_ --inline-template=_[inline-html]_ --skip-tests=_[tests]_ --ssr=_[ssr]_ && cd _[name]_ _[eslint]_ && code -r .",
-  "group": "🅰️ Angular",
-  "inputs": {
-    "Enter a project name;name;false;false": "",
-    "Choose the Angular version: eg.: 4.1.2; version": "latest",
-    "Which stylesheet format would you like to use?;styles": {
-      "CSS": "css",
-      "SCSS": "scss",
-    },
-    "Inline Style?;inline-style": {
-      "true": "true",
-      "false": "false",
-    },
-    "Inline HTML?;inline-html": {
-      "true": "true",
-      "false": "false",
-    },
-    "Skip tests?;tests": {
-      "true": "true",
-      "false": "false",
-    },
-    "Do you want to enable SSR and SSG?;ssr": {
-      "true": "true",
-      "false": "false",
-    },
-    "Do you want to install ESlint?;eslint": {
-      "true": "&& ng add @angular-eslint/schematics --skip-confirmation=true && ng lint",
-      "false": " ",
-    },
+// settings.json
+"TerminalGui.config": {
+  "basic": {
+    "autoSaveToggler": true,
+    "killAllTasks": "left",
+    "toggleTerminal": "left",
+    "basicCommandsOrder": -9999,
+    "commandsMenu": true,
   },
-  "settings": {
-    "terminalName": "Angular Project Creation",
-    "showWhenEmptyWorkspace": "emptyWorkspace"
+  "commands": {
+    "Create Angular Project": {
+      "command": "cd _[Select a folder]_ _[version]_.value _[name]_.value && npm install -g @angular/cli@_[version]_ && ng new _[name]_ --style=_[styles]_ --inline-style=_[inline-style]_ --inline-template=_[inline-html]_ --skip-tests=_[tests]_ --ssr=_[ssr]_ && cd _[name]_ _[eslint]_ && code -r .",
+      "group": "🅰️ Angular",
+      "inputs": {
+        "Enter a project name;name;false;false": "",
+        "Choose the Angular version: eg.: 4.1.2; version": "latest",
+        "Which stylesheet format would you like to use?;styles": {
+          "CSS": "css",
+          "SCSS": "scss",
+        },
+        "Inline Style?;inline-style": {
+          "true": "true",
+          "false": "false",
+        },
+        "Inline HTML?;inline-html": {
+          "true": "true",
+          "false": "false",
+        },
+        "Skip tests?;tests": {
+          "true": "true",
+          "false": "false",
+        },
+        "Do you want to enable SSR and SSG?;ssr": {
+          "true": "true",
+          "false": "false",
+        },
+        "Do you want to install ESlint?;eslint": {
+          "true": "&& ng add @angular-eslint/schematics --skip-confirmation=true && ng lint",
+          "false": " ",
+        },
+      },
+      "settings": {
+        "terminalName": "Angular Project Creation",
+        "showWhenEmptyWorkspace": "emptyWorkspace"
+      }
+    },
+    "Angular Server": {
+      "command": "ng serve",
+      "group": "🅰️ Angular",
+      "icon": "▶;Run Angular Server",
+      "icon2": "▢;Stop Angular Server",
+      "settings": {
+        "terminalName": "Angular Server",
+        "statusBar": "left",
+      }
+    },
+    "Component": {
+      "command": "cd _[folderPath]_ && ng g component --style css --standalone true --inline-style --inline-template --skip-tests --flat _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the component name;name;false;false": "",
+      },
+    },
+    "Service": {
+      "command": "cd _[folderPath]_ && ng g service _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the service name;name;false;false": "",
+      },
+    },
+    "Directive": {
+      "command": "cd _[folderPath]_ && ng g directive _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the directive name;name;false;false": "",
+      },
+    },
+    "Pipe": {
+      "command": "cd _[folderPath]_ && ng g pipe _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the pipe name;name;false;false": "",
+      },
+    },
+    "Guard": {
+      "command": "cd _[folderPath]_ && ng g guard _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the guard name;name;false;false": "",
+      },
+    },
+    "Interface": {
+      "command": "cd _[folderPath]_ && ng g interface _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the interface name;name;false;false": "",
+      },
+    },
+    "Model": {
+      "command": "cd _[folderPath]_ && ng g interface --type=model _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the model name;name;false;false": "",
+      },
+    },
+    "Class": {
+      "command": "cd _[folderPath]_ && ng g class _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the class name;name;false;false": "",
+      },
+    },
+    "Enum": {
+      "command": "cd _[folderPath]_ && ng g enum _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the enum name;name;false;false": "",
+      },
+    },
+    "Interceptor": {
+      "command": "cd _[folderPath]_ && ng g interceptor _[name]_",
+      "group": "🅰️ Angular",
+      "settings": {
+        "contextMenu": true
+      },
+      "inputs": {
+        "Enter the interceptor name;name;false;false": "",
+      },
+    },
+    "🛠️ Add Angular Libraries": {
+      "command": "_[library]__[version]_ --skip-confirmation",
+      "group": "🅰️ Angular",
+      "inputs": {
+        "Choose the library; library; true": {
+          "NgRX": "ng add @ngrx/schematics@",
+          "NgRX - store": "ng add @ngrx/store@",
+          "NgRX - effects": "ng add @ngrx/effects@",
+          "NgRX - entity": "ng add @ngrx/entity@",
+          "Angular Material": "ng add @angular/material@",
+          "NgBootstrap": "ng add @ng-bootstrap/ng-bootstrap@",
+          "AngularFire": "ng add @angular/fire@",
+        },
+        "Choose the version: eg.: 4.1.2; version; false": "latest"
+      },
+    },
   }
-},
-"Angular Server": {
-  "command": "ng serve",
-  "group": "🅰️ Angular",
-  "icon": "▶;Run Angular Server",
-  "icon2": "▢;Stop Angular Server",
-  "settings": {
-    "terminalName": "Angular Server",
-    "statusBar": "left",
-  }
-},
-"Component": {
-  "command": "cd _[folderPath]_ && ng g component --style css --standalone true --inline-style --inline-template --skip-tests --flat _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the component name;name;false;false": "",
-  },
-},
-"Service": {
-  "command": "cd _[folderPath]_ && ng g service _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the service name;name;false;false": "",
-  },
-},
-"Directive": {
-  "command": "cd _[folderPath]_ && ng g directive _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the directive name;name;false;false": "",
-  },
-},
-"Pipe": {
-  "command": "cd _[folderPath]_ && ng g pipe _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the pipe name;name;false;false": "",
-  },
-},
-"Guard": {
-  "command": "cd _[folderPath]_ && ng g guard _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the guard name;name;false;false": "",
-  },
-},
-"Interface": {
-  "command": "cd _[folderPath]_ && ng g interface _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the interface name;name;false;false": "",
-  },
-},
-"Model": {
-  "command": "cd _[folderPath]_ && ng g interface --type=model _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the model name;name;false;false": "",
-  },
-},
-"Class": {
-  "command": "cd _[folderPath]_ && ng g class _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the class name;name;false;false": "",
-  },
-},
-"Enum": {
-  "command": "cd _[folderPath]_ && ng g enum _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the enum name;name;false;false": "",
-  },
-},
-"Interceptor": {
-  "command": "cd _[folderPath]_ && ng g interceptor _[name]_",
-  "group": "🅰️ Angular",
-  "settings": {
-    "contextMenu": true
-  },
-  "inputs": {
-    "Enter the interceptor name;name;false;false": "",
-  },
-},
-"🛠️ Add Angular Libraries": {
-  "command": "_[library]__[version]_ --skip-confirmation",
-  "group": "🅰️ Angular",
-  "inputs": {
-    "Choose the library;library": {
-      "NgRX": "ng add @ngrx/schematics@",
-      "NgRX - store": "ng add @ngrx/store@",
-      "NgRX - effects": "ng add @ngrx/effects@",
-      "NgRX - entity": "ng add @ngrx/entity@",
-      "Angular Material": "ng add @angular/material@",
-      "NgBootstrap": "ng add @ng-bootstrap/ng-bootstrap@",
-      "AngularFire": "ng add @angular/fire@",
-    },
-    "Choose the version: eg.: 4.1.2; version; false": "latest"
-  },
 },
 ```
 </details>
@@ -934,237 +950,248 @@ Below is an example `settings.json` configuration for different frameworks.
 <summary>⚛️ React.js</summary>
 
 ```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"Create React.js Project": {
-  "command": "cd _[Select a folder]_ && _[projectName]_.value npx --yes create-vite@_[version]_ _[projectName]_ --template _[variant]_ && cd _[projectName]_ && npm i && code -r .",
-  "group": "⚛️ React.js",
-  "inputs": {
-    "Enter a project name; projectName; false; false": "",
-    "Choose the React.js version: eg.: 4.1.2; version; false": "latest",
-    "Select a variant; variant": {
-      "JavaScript": "react",
-      "TypeScript": "react-ts"
-    }
+// settings.json
+"TerminalGui.config": {
+  "basic": {
+    "autoSaveToggler": true,
+    "killAllTasks": "left",
+    "toggleTerminal": "left",
+    "basicCommandsOrder": -9999,
+    "commandsMenu": true,
   },
-  "settings": {
-    "terminalName": "React Project Creation",
-    "showWhenEmptyWorkspace": "emptyWorkspace"
-  }
-},
-"React.js Server": {
-  "command": "npm run dev",
-  "group": "⚛️ React.js",
-  "icon": "▶;Run React Dev Server",
-  "icon2": "▢;Stop React Dev Server",
-  "settings": {
-    "terminalName": "React Server",
-    "statusBar": "left"
-  }
-},
-"Component": {
-  "command": "cd _[folderPath]_ && _[bashScript]_ && cmpName=\"_[componentName]_\" && capitalizeValue cmpName && createProcessedFile _[reactComponentSnippet]_.file \"${cmpName}.jsx\" cmpName",
-  "group": "⚛️ React.js",
-  "inputs": {
-    "Enter component name; componentName; false; false": ""
-  },
-  "snippets": {
-    "reactComponentSnippet": [
-      "import React from 'react';",
-      "",
-      "const _{$cmpName}_ = () => {",
-      "  return (",
-      "    <div>",
-      "      <h1>_{$cmpName}_ Component</h1>",
-      "    </div>",
-      "  );",
-      "};",
-      "",
-      "export default _{$cmpName}_;"
-    ]
-  },
-  "settings": {
-    "contextMenu": true
-  }
-},
-"Custom Hook": {
-  "command": "cd _[folderPath]_ && _[bashScript]_ && hookName=\"_[hookName]_\" && capitalizeValue hookName && createProcessedFile _[reactHookSnippet]_.file \"${hookName}.js\" hookName",
-  "group": "⚛️ React.js",
-  "inputs": {
-    "Enter hook name; hookName; false; false": ""
-  },
-  "snippets": {
-    "reactHookSnippet": [
-      "import { useState, useEffect, useCallback, useRef } from 'react';",
-      "",
-      "const use_{$hookName}_ = (initialValue, options = {}) => {",
-      "  const [data, setData] = useState(initialValue);",
-      "  const [loading, setLoading] = useState(false);",
-      "  const [error, setError] = useState(null);",
-      "",
-      "  const isMounted = useRef(true);",
-      "  const optionsRef = useRef(options);",
-      "",
-      "  useEffect(() => {",
-      "    optionsRef.current = options;",
-      "  }, [options]);",
-      "",
-      "  useEffect(() => {",
-      "    return () => {",
-      "      isMounted.current = false;",
-      "    };",
-      "  }, []);",
-      "",
-      "  const fetchData = useCallback(async (params = {}) => {",
-      "    setLoading(true);",
-      "    setError(null);",
-      "",
-      "    try {",
-      "      // Your async logic here",
-      "      const result = null; // Replace with actual result",
-      "      if (isMounted.current) {",
-      "        setData(result);",
-      "      }",
-      "      return result;",
-      "    } catch (err) {",
-      "      if (isMounted.current) {",
-      "        setError(err);",
-      "      }",
-      "      return null;",
-      "    } finally {",
-      "      if (isMounted.current) {",
-      "        setLoading(false);",
-      "      }",
-      "    }",
-      "  }, []);",
-      "",
-      "  const reset = useCallback(() => {",
-      "    setData(initialValue);",
-      "    setError(null);",
-      "  }, [initialValue]);",
-      "",
-      "  return {",
-      "    data,",
-      "    loading,",
-      "    error,",
-      "    fetchData,",
-      "    reset,",
-      "    setData",
-      "  };",
-      "};",
-      "",
-      "export default use_{$hookName}_;"
-    ]
-  },
-  "settings": {
-    "contextMenu": true
-  }
-},
-"Context Provider": {
-  "command": "cd _[folderPath]_ && _[bashScript]_ && ctxName=\"_[contextName]_\" && capitalizeValue ctxName && createProcessedFile _[reactContextSnippet]_.file \"${ctxName}Context.js\" ctxName",
-  "group": "⚛️ React.js",
-  "inputs": {
-    "Enter context name; contextName; false; false": ""
-  },
-  "snippets": {
-    "reactContextSnippet": [
-      "import { createContext, useContext, useState } from 'react';",
-      "",
-      "const _{$ctxName}_Context = createContext(null);",
-      "",
-      "export const use_{$ctxName}_Context = () => {",
-      "  const context = useContext(_{$ctxName}_Context);",
-      "  if (!context) {",
-      "    throw new Error('use_{$ctxName}_Context must be used within a _{$ctxName}_ContextProvider');",
-      "  }",
-      "  return context;",
-      "};",
-      "",
-      "export const _{$ctxName}_ContextProvider = ({ children }) => {",
-      "  const [value, setValue] = useState('default value');",
-      "  const [loading, setLoading] = useState(false);",
-      "",
-      "  const updateValue = (newValue) => setValue(newValue);",
-      "",
-      "  const contextValue = {",
-      "    value,",
-      "    loading,",
-      "    updateValue,",
-      "    setLoading",
-      "  };",
-      "",
-      "  return (",
-      "    <_{$ctxName}_Context.Provider value={contextValue}>",
-      "      {children}",
-      "    </_{$ctxName}_Context.Provider>",
-      "  );",
-      "};"
-    ]
-  },
-  "settings": {
-    "contextMenu": true
-  }
-},
-"🛠️ Install React Libraries": {
-  "command": "npm i _[package]_@_[version]_ _[dependency]_",
-  "group": "⚛️ React.js",
-  "inputs": {
-    "Choose the package; package; true": {
-      "React Router": "react-router-dom",
-      "Redux": "redux react-redux redux-thunk",
-      "Material UI": "@mui/material @emotion/react @emotion/styled",
-      "Styled Components": "styled-components",
-      "Axios": "axios",
-      "Formik & Yup": "formik yup",
-      "React Query": "@tanstack/react-query"
+  "commands": {
+    "Create React.js Project": {
+      "command": "cd _[Select a folder]_ && _[projectName]_.value npx --yes create-vite@_[version]_ _[projectName]_ --template _[variant]_ && cd _[projectName]_ && npm i && code -r .",
+      "group": "⚛️ React.js",
+      "inputs": {
+        "Enter a project name; projectName; false; false": "",
+        "Choose the React.js version: eg.: 4.1.2; version; false": "latest",
+        "Select a variant; variant": {
+          "JavaScript": "react",
+          "TypeScript": "react-ts"
+        }
+      },
+      "settings": {
+        "terminalName": "React Project Creation",
+        "showWhenEmptyWorkspace": "emptyWorkspace"
+      }
     },
-    "Choose the version: eg.: 4.1.2; version; false": "latest",
-    "Saved package as a dependency or devDependency; dependency": {
-      "dependency": "-S",
-      "devDependency": "-D"
-    }
+    "React.js Server": {
+      "command": "npm run dev",
+      "group": "⚛️ React.js",
+      "icon": "▶;Run React Dev Server",
+      "icon2": "▢;Stop React Dev Server",
+      "settings": {
+        "terminalName": "React Server",
+        "statusBar": "left"
+      }
+    },
+    "Component": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && cmpName=\"_[componentName]_\" && capitalizeValue cmpName && createProcessedFile _[reactComponentSnippet]_.file \"${cmpName}.jsx\" cmpName",
+      "group": "⚛️ React.js",
+      "inputs": {
+        "Enter component name; componentName; false; false": ""
+      },
+      "snippets": {
+        "reactComponentSnippet": [
+          "import React from 'react';",
+          "",
+          "const _{$cmpName}_ = () => {",
+          "  return (",
+          "    <div>",
+          "      <h1>_{$cmpName}_ Component</h1>",
+          "    </div>",
+          "  );",
+          "};",
+          "",
+          "export default _{$cmpName}_;"
+        ]
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Custom Hook": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && hookName=\"_[hookName]_\" && capitalizeValue hookName && createProcessedFile _[reactHookSnippet]_.file \"${hookName}.js\" hookName",
+      "group": "⚛️ React.js",
+      "inputs": {
+        "Enter hook name; hookName; false; false": ""
+      },
+      "snippets": {
+        "reactHookSnippet": [
+          "import { useState, useEffect, useCallback, useRef } from 'react';",
+          "",
+          "const use_{$hookName}_ = (initialValue, options = {}) => {",
+          "  const [data, setData] = useState(initialValue);",
+          "  const [loading, setLoading] = useState(false);",
+          "  const [error, setError] = useState(null);",
+          "",
+          "  const isMounted = useRef(true);",
+          "  const optionsRef = useRef(options);",
+          "",
+          "  useEffect(() => {",
+          "    optionsRef.current = options;",
+          "  }, [options]);",
+          "",
+          "  useEffect(() => {",
+          "    return () => {",
+          "      isMounted.current = false;",
+          "    };",
+          "  }, []);",
+          "",
+          "  const fetchData = useCallback(async (params = {}) => {",
+          "    setLoading(true);",
+          "    setError(null);",
+          "",
+          "    try {",
+          "      // Your async logic here",
+          "      const result = null; // Replace with actual result",
+          "      if (isMounted.current) {",
+          "        setData(result);",
+          "      }",
+          "      return result;",
+          "    } catch (err) {",
+          "      if (isMounted.current) {",
+          "        setError(err);",
+          "      }",
+          "      return null;",
+          "    } finally {",
+          "      if (isMounted.current) {",
+          "        setLoading(false);",
+          "      }",
+          "    }",
+          "  }, []);",
+          "",
+          "  const reset = useCallback(() => {",
+          "    setData(initialValue);",
+          "    setError(null);",
+          "  }, [initialValue]);",
+          "",
+          "  return {",
+          "    data,",
+          "    loading,",
+          "    error,",
+          "    fetchData,",
+          "    reset,",
+          "    setData",
+          "  };",
+          "};",
+          "",
+          "export default use_{$hookName}_;"
+        ]
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Context Provider": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && ctxName=\"_[contextName]_\" && capitalizeValue ctxName && createProcessedFile _[reactContextSnippet]_.file \"${ctxName}Context.js\" ctxName",
+      "group": "⚛️ React.js",
+      "inputs": {
+        "Enter context name; contextName; false; false": ""
+      },
+      "snippets": {
+        "reactContextSnippet": [
+          "import { createContext, useContext, useState } from 'react';",
+          "",
+          "const _{$ctxName}_Context = createContext(null);",
+          "",
+          "export const use_{$ctxName}_Context = () => {",
+          "  const context = useContext(_{$ctxName}_Context);",
+          "  if (!context) {",
+          "    throw new Error('use_{$ctxName}_Context must be used within a _{$ctxName}_ContextProvider');",
+          "  }",
+          "  return context;",
+          "};",
+          "",
+          "export const _{$ctxName}_ContextProvider = ({ children }) => {",
+          "  const [value, setValue] = useState('default value');",
+          "  const [loading, setLoading] = useState(false);",
+          "",
+          "  const updateValue = (newValue) => setValue(newValue);",
+          "",
+          "  const contextValue = {",
+          "    value,",
+          "    loading,",
+          "    updateValue,",
+          "    setLoading",
+          "  };",
+          "",
+          "  return (",
+          "    <_{$ctxName}_Context.Provider value={contextValue}>",
+          "      {children}",
+          "    </_{$ctxName}_Context.Provider>",
+          "  );",
+          "};"
+        ]
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "🛠️ Install React Libraries": {
+      "command": "npm i _[package]_@_[version]_ _[dependency]_",
+      "group": "⚛️ React.js",
+      "inputs": {
+        "Choose the package; package; true": {
+          "React Router": "react-router-dom",
+          "Redux": "redux react-redux redux-thunk",
+          "Material UI": "@mui/material @emotion/react @emotion/styled",
+          "Styled Components": "styled-components",
+          "Axios": "axios",
+          "Formik & Yup": "formik yup",
+          "React Query": "@tanstack/react-query"
+        },
+        "Choose the version: eg.: 4.1.2; version; false": "latest",
+        "Saved package as a dependency or devDependency; dependency": {
+          "dependency": "-S",
+          "devDependency": "-D"
+        }
+      }
+    },
+  },
+  "scripts": {
+    "bash": [
+      "# Capitalize value: lowercases everything and then capitalizes the first character.",
+      "capitalizeValue() {",
+      "  local v=\"${!1}\"",
+      "  v=\"${v,,}\"",
+      "  v=\"${v^}\"",
+      "  printf -v \"$1\" '%s' \"$v\"",
+      "}",
+      "",
+      "# File parser: replaces tokens of the form _{\\$<variable>}_ with the value of that variable.",
+      "fileParser() {",
+      "  sed \"s|_{\\\\\\$${1}}_|${!1}|g\" \"$2\"",
+      "}",
+      "",
+      "# File create: copies a file if target does not exist; otherwise, reports an error.",
+      "fileCreate() {",
+      "  if [ -f \"$2\" ]; then",
+      "    echo -e \"\\e[41m\\e[1m\\e[97mFile '$2' already exists!\\e[0m\" >&2",
+      "    return 1",
+      "  else",
+      "    cp \"$1\" \"$2\" && code \"$2\"",
+      "  fi",
+      "}",
+      "",
+      "# Create processed file: checks if the destination file exists.",
+      "# If not, it reads the source snippet file, uses sed to replace all tokens of the form _{\\$<variable>}_ ",
+      "# with the current value of that variable, writes the result to the destination file, and opens it.",
+      "createProcessedFile() {",
+      "  local src=\"$1\"",
+      "  local dest=\"$2\"",
+      "  local varName=\"$3\"",
+      "  if [ -f \"$dest\" ]; then",
+      "    echo -e \"\\e[41m\\e[1m\\e[97mFile '$dest' already exists!\\e[0m\" >&2",
+      "    return 1",
+      "  fi",
+      "  local varValue=\"${!varName}\"",
+      "  sed \"s|_{\\\\\\$${varName}}_|${varValue}|g\" \"$src\" > \"$dest\" && code \"$dest\"",
+      "}",
+    ]
   }
 },
-// *******************************************************
-// settings.json ➜ "TerminalGui.config": { "scripts": {...} }
-"bash": [
-  "# Capitalize value: lowercases everything and then capitalizes the first character.",
-  "capitalizeValue() {",
-  "  local v=\"${!1}\"",
-  "  v=\"${v,,}\"",
-  "  v=\"${v^}\"",
-  "  printf -v \"$1\" '%s' \"$v\"",
-  "}",
-  "",
-  "# File parser: replaces tokens of the form _{\\$<variable>}_ with the value of that variable.",
-  "fileParser() {",
-  "  sed \"s|_{\\\\\\$${1}}_|${!1}|g\" \"$2\"",
-  "}",
-  "",
-  "# File create: copies a file if target does not exist; otherwise, reports an error.",
-  "fileCreate() {",
-  "  if [ -f \"$2\" ]; then",
-  "    echo -e \"\\e[41m\\e[1m\\e[97mFile '$2' already exists!\\e[0m\" >&2",
-  "    return 1",
-  "  else",
-  "    cp \"$1\" \"$2\" && code \"$2\"",
-  "  fi",
-  "}",
-  "",
-  "# Create processed file: checks if the destination file exists.",
-  "# If not, it reads the source snippet file, uses sed to replace all tokens of the form _{\\$<variable>}_ ",
-  "# with the current value of that variable, writes the result to the destination file, and opens it.",
-  "createProcessedFile() {",
-  "  local src=\"$1\"",
-  "  local dest=\"$2\"",
-  "  local varName=\"$3\"",
-  "  if [ -f \"$dest\" ]; then",
-  "    echo -e \"\\e[41m\\e[1m\\e[97mFile '$dest' already exists!\\e[0m\" >&2",
-  "    return 1",
-  "  fi",
-  "  local varValue=\"${!varName}\"",
-  "  sed \"s|_{\\\\\\$${varName}}_|${varValue}|g\" \"$src\" > \"$dest\" && code \"$dest\"",
-  "}",
-]
 ```
 </details>
 
@@ -1172,68 +1199,79 @@ Below is an example `settings.json` configuration for different frameworks.
 <summary>🟩 Node.js + Express.js</summary>
 
 ```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"Create Node.js Project": {
-  "command": "cd _[Select a folder]_ && mkdir _[projectName]_ && cd _[projectName]_ && npm init -y && npm pkg set type=\"module\" main=\"_[entryPoint]_.js\" scripts.start=\"node --watch _[entryPoint]_.js\" && npm pkg delete scripts.test && npm i express@_[version]_ && cp \"_[mainFile]_.file\" _[entryPoint]_.js && code -r .",
-  "group": "🟩 Node.js",
-  "inputs": {
-    "Enter a project name; projectName": "",
-    "Enter an entry-point file name; entryPoint; false; false": "index",
-    "Choose the Express.js version: eg.: 4.1.2; version; false": "latest",
+// settings.json
+"TerminalGui.config": {
+  "basic": {
+    "autoSaveToggler": true,
+    "killAllTasks": "left",
+    "toggleTerminal": "left",
+    "basicCommandsOrder": -9999,
+    "commandsMenu": true,
   },
-  "snippets": {
-    "mainFile": [
-      "import express from 'express';",
-      "",
-      "const app = express();",
-      "const PORT = process.env.PORT || 3000;",
-      "",
-      "app.get('/', (req, res) => {",
-      "  res.send('Hello World!');",
-      "});",
-      "",
-      "app.listen(PORT, () => {",
-      "  console.log(`Server running on http://localhost:${PORT}`);",
-      "});"
-    ]
-  },
-  "settings": {
-    "terminalName": "NodeJS Project Creation",
-    "showWhenEmptyWorkspace": "emptyWorkspace"
-  }
-},
-"Run Node.js Server": {
-  "command": "npm run start",
-  "icon": "▶;run server",
-  "icon2": "▢;stop server",
-  "group": "🟩 Node.js",
-  "settings": {
-    "terminalName": "Node.js Server",
-    "statusBar": "left",
-  }
-},
-"🛠️ Install NPM Packages": {
-  "command": "npm i _[package]_@_[version]_ _[dependency]_",
-  "group": "🟩 Node.js",
-  "inputs": {
-    "Choose the package; package; true": {
-      "nodemailer": "nodemailer",
-      "socket.io": "socket.io",
-      "helmet": "helmet",
-      "dotenv": "dotenv",
-      "cors": "cors",
-      "mongoose": "mongoose",
-      "jsonwebtoken": "jsonwebtoken",
-      "bcrypt": "bcrypt",
-      // "express": "express",
-      // "winston": "winston",
+  "commands": {
+    "Create Node.js Project": {
+      "command": "cd _[Select a folder]_ && mkdir _[projectName]_ && cd _[projectName]_ && npm init -y && npm pkg set type=\"module\" main=\"_[entryPoint]_.js\" scripts.start=\"node --watch _[entryPoint]_.js\" && npm pkg delete scripts.test && npm i express@_[version]_ && cp \"_[mainFile]_.file\" _[entryPoint]_.js && code -r .",
+      "group": "🟩 Node.js",
+      "inputs": {
+        "Enter a project name; projectName": "",
+        "Enter an entry-point file name; entryPoint; false; false": "index",
+        "Choose the Express.js version: eg.: 4.1.2; version; false": "latest",
+      },
+      "snippets": {
+        "mainFile": [
+          "import express from 'express';",
+          "",
+          "const app = express();",
+          "const PORT = process.env.PORT || 3000;",
+          "",
+          "app.get('/', (req, res) => {",
+          "  res.send('Hello World!');",
+          "});",
+          "",
+          "app.listen(PORT, () => {",
+          "  console.log(`Server running on http://localhost:${PORT}`);",
+          "});"
+        ]
+      },
+      "settings": {
+        "terminalName": "NodeJS Project Creation",
+        "showWhenEmptyWorkspace": "emptyWorkspace"
+      }
     },
-    "Choose the version: eg.: 4.1.2; version; false": "latest",
-    "Saved package as a dependency or devDependency;dependency": {
-      "dependency": "-S",
-      "devDependency": "-D"
+    "Run Node.js Server": {
+      "command": "npm run start",
+      "icon": "▶;run server",
+      "icon2": "▢;stop server",
+      "group": "🟩 Node.js",
+      "settings": {
+        "terminalName": "Node.js Server",
+        "statusBar": "left",
+      }
     },
-  },
+    "🛠️ Install NPM Packages": {
+      "command": "npm i _[package]_@_[version]_ _[dependency]_",
+      "group": "🟩 Node.js",
+      "inputs": {
+        "Choose the package; package; true": {
+          "nodemailer": "nodemailer",
+          "socket.io": "socket.io",
+          "helmet": "helmet",
+          "dotenv": "dotenv",
+          "cors": "cors",
+          "mongoose": "mongoose",
+          "jsonwebtoken": "jsonwebtoken",
+          "bcrypt": "bcrypt",
+          // "express": "express",
+          // "winston": "winston",
+        },
+        "Choose the version: eg.: 4.1.2; version; false": "latest",
+        "Saved package as a dependency or devDependency;dependency": {
+          "dependency": "-S",
+          "devDependency": "-D"
+        },
+      },
+    },
+  }
 },
 ```
 </details>
