@@ -18,30 +18,30 @@ Below are some simple command examples to quickly evaluate the extension (at the
 
    - Note: when you create a new command or update an existing one, changes do not take effect immediately; You additionally need to click on the `Refresh` button or use the keybinding `ctrl+alt+p` (for Mac: `cmd+alt+p`):
 
-   ![Image](https://github.com/user-attachments/assets/d8f47053-dc1b-4e11-94c2-ca4e83be56e4)
+in the status bar:
+
+   ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/refresh.avif)
 
 <details>
 <summary>📂 Simple Examples</summary>
 
 ```json
 // settings.json
+// "TerminalGui.configFile": ".vscode/terminalgui.config.json",
 "TerminalGui.config": {
   "basic": {
     "autoSaveToggler": true,
-    "killAllTasks": "left",
-    "toggleTerminal": "left",
-    "basicCommandsOrder": -9999,
-    "commandsMenu": true,
-    "recentlyUsedCommands": 7,      
-    // "configFile": ".vscode/terminalgui.config.json", // relative path      
-    // "configFile": "F:/Development/terminalgui.config.json" // absolute path
+    "recentlyUsedCommands": 7,
+    "commandsMenuOnStatusBar": true,
+    "commandsMenuRefreshOnStatusBar": true
   },
   "commands": {
     // Prints a basic message. Always visible, regardless of workspace state
     "Echo Basic Message": {
       "command": "echo \"Basic Message\"",
       "settings": {
-        "showWhenEmptyWorkspace": "both"
+        "showWhenEmptyWorkspace": "both",
+        "revealConsole": true
       }
     },
     // Displays a message only when a workspace is open
@@ -49,7 +49,8 @@ Below are some simple command examples to quickly evaluate the extension (at the
       "command": "echo \"Workspace Message\"",
       "group": "",
       "settings": {
-        "showWhenEmptyWorkspace": "fullWorkspace"
+        "showWhenEmptyWorkspace": "fullWorkspace",
+        "revealConsole": true
       }
     },
     // Shows a message when no folder is open
@@ -57,7 +58,8 @@ Below are some simple command examples to quickly evaluate the extension (at the
       "command": "echo \"Empty Workspace Message\"",
       "group": "good",
       "settings": {
-        "showWhenEmptyWorkspace": "emptyWorkspace"
+        "showWhenEmptyWorkspace": "emptyWorkspace",
+        "revealConsole": true
       }
     },
     // Command chaining example: This command chains `Temp 01`.
@@ -65,7 +67,8 @@ Below are some simple command examples to quickly evaluate the extension (at the
     "Temp 01": {
       "command": "echo \"Hello world\"",
       "settings": {
-        "showWhenEmptyWorkspace": "hidden"
+        "showWhenEmptyWorkspace": "hidden",
+        "revealConsole": true
       },
     },
     "Temp 02": {
@@ -80,12 +83,16 @@ Below are some simple command examples to quickly evaluate the extension (at the
       "settings": {
         "terminalName": "Angular Server",
         "statusBar": "left",
+        "revealConsole": true
       }
     },
-      // Uses an interactive prompt to select a folder
-      "Print a Selected Folder Path": {
-        "command": "echo _[Select a folder]_",
+    // Uses an interactive prompt to select a folder
+    "Print a Selected Folder Path": {
+      "command": "echo _[Select a folder]_",
+      "settings": {
+        "revealConsole": true
       },
+    },
     // Prompts for a color (choice between Red or Blue) and custom text, then prints them.
     "Print Color and Custom Text": {
       "command": "echo _[var1]_ && echo _[var2]_",
@@ -104,7 +111,7 @@ Below are some simple command examples to quickly evaluate the extension (at the
     },
     // Demonstrates a multi-step command with several inputs
     "Execute Interactive Command Sequence": {
-      "command": "echo _[var1]_ && _[var2]_ && _[var2]_ && echo _[var3]_ && echo _[var3]_ && echo _[Select a folder]_ && cd _[Select a folder]_ && echo _[var4]_ && echo _[var4]_",
+      "command": "echo _[var1]_ && _[var2]_ && _[var2]_ && echo _[var3]_ && echo _[var3]_ && echo _[Select a folder]_ && echo _[var4]_ && echo _[var4]_",
       "inputs": {
         "Enter text; var1": "",
         "your command; var2": {
@@ -128,18 +135,22 @@ Below are some simple command examples to quickly evaluate the extension (at the
     "File Context Info": {
       "command": "echo itemPath: _[itemPath]_ && echo parentPath: _[parentPath]_ && echo folderPath: _[folderPath]_ && echo itemFullName: _[itemFullName]_ && echo itemName: _[itemName]_ && echo itemExtension: _[itemExtension]_ && echo projectPath: _[projectPath]_",
       "settings": {
-        "contextMenu": true
+        "contextMenu": true,
+        "revealConsole": true,
       }
     },
     // Demonstrates snippets syntax for writing data in a file
     "snippet command": {
-      "command": "echo -e _[my snippet]_ > temp.txt",
+      "command": "cd _[projectPath]_ && echo -e _[my snippet]_ > temp.txt",
       "snippets": {
         "my snippet": [
           "hello",
           "world"
         ]
       },
+      "settings": {
+        "revealConsole": true,
+      }
     },
     "snippet with temp file": {
       "command": "cd _[folderPath]_ && cp _[my snippet]_.file temp.txt",
@@ -153,6 +164,12 @@ Below are some simple command examples to quickly evaluate the extension (at the
         "contextMenu": true
       }
     },
+    "foo": {
+      "command": "echo _[var1]_",
+      "inputs": {
+        "enter some text; var1; true; true; radio": ""
+      }
+    },
   }
 },
 ```
@@ -164,9 +181,9 @@ Below are some simple command examples to quickly evaluate the extension (at the
    
    - If `"contextMenu": true` is set, the command is a context menu command, meaning it can be launched by right-clicking on a file or a folder in the `VSCode` explorer (or by combination of keybinding: `ctrl+shift+e`, navigate with up/down keyboard arrow buttons through files/folders, `shift+F10`, choose `Terminal GUI` menu item).
 
-   - Regular commands have two menus; They can be launched either via the button located on the sidebar or via the button located in the title bar (default keybinding: `ctrl+alt+l`. For Mac: `cmd+alt+l`).
+   - Regular commands can be launched via the button in the status bar (default keybinding: `ctrl+alt+l`. For Mac: `cmd+alt+l`).
 
-![Image](https://github.com/user-attachments/assets/d8cb58d7-5c84-41fe-be26-965a66146ca2)
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/regular%20commands.avif)
 
    - When a command contains placeholders, you'll be prompted to enter the required values.
 
@@ -178,6 +195,14 @@ Below are some simple command examples to quickly evaluate the extension (at the
    - The `Enter` button allows you to move forward and execute commands.
 
 ![Image](https://github.com/user-attachments/assets/80d5013c-8573-49ab-83c7-6ee3aca8e826)
+
+### Terminal Freeze Prevention
+
+   - To prevent `VSCode` terminals from freezing, `Terminal GUI` automatically sends special commands:
+     - When a new terminal is created: `echo 'Terminal GUI started'`
+     - Before each command execution: `echo 'HEALTH_CHECK_[number]'`
+   
+   - These commands help ensure the terminal remains responsive, especially when running invalid commands.
 
 ### Define Commands with interactive Inputs
 
@@ -257,6 +282,24 @@ For example:
 }
 ```
 
+* If you use `;radio`, on each run you'll see a QuickPick with two checkboxes:
+
+  * **Save** – remember the value but still prompt next time.
+  * **Save & Skip** – remember the value and auto-apply on future runs.
+* Persistent entries are stored in `.vscode/terminal-gui.temp/terminalgui.temp.json` under `radioCommands`. If `skip:true`, the prompt is bypassed.
+
+For example:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"foo": {
+  "command": "echo _[var1]_",
+  "inputs": {
+    "enter some text; var1; true; true; radio": ""
+  }
+},
+```
+
    - If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
 
 ```json
@@ -306,7 +349,7 @@ Hello John Smith
      Label to be shown as terminal name. If none, regular terminal name will be shown instead.
 
    - **`statusBar`**  
-     Position the command in status bar (left or right).
+     Show this command's icon on the status bar when `true`.
 
    - **`reUseTerminal`**  
      Reuse existing terminal or create new terminal for each command (default: true).
@@ -315,7 +358,7 @@ Hello John Smith
      Determines whether the command is displayed in the context menu (default: false).
 
    - **`revealConsole`**  
-     Whether to reveal the terminal console when running the command (default: true).
+     Whether to reveal the terminal console when running the command (default: `false`). `false` value keeps the terminal hidden on successful execution and automatically reveal it when a non-zero exit code is detected.
 
    - **`showWhenEmptyWorkspace`**  
      Show command only when:     
@@ -353,6 +396,9 @@ Hello John Smith
          - **Default Behavior:**  
         If no interrupt count is provided (for example `"▢;stop server"`), the extension will send two `^C` signals – the first immediately and the second after a 300ms delay. This is because `VSCode` sometimes "swallows" one `^C` signal, meaning that instead of sending *n* signals, only *n-1* actually reach the terminal. Sending an extra signal helps ensure that the process is properly stopped.
 
+        **Auto-reveal once:**  
+        Even when `settings.revealConsole` is `false`, the terminal panel is revealed **the first time** a long-running command starts. Subsequent launches keep the panel hidden unless `revealConsole` is `true` or the process exits with an error.
+
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
 "Launch Angular Server": {
@@ -362,7 +408,7 @@ Hello John Smith
   "group": "🅰️ Angular",
   "settings": {
     "terminalName": "Angular Server",
-    "statusBar": "left",
+    "statusBar": true,
   }
 },
 ```
@@ -414,6 +460,15 @@ Hello John Smith
    - **`_[itemExtension]_`**  
       The file extension (without the dot) of the selected item. For folders, this will be an empty string.
 
+   - **`_[projectPath]_`**  
+      The path of the workspace folder (project) in which the command was executed.
+
+   - **`_[selectedText]_`**  
+      The text currently selected in the active editor. If no text is selected, it returns empty quotes.
+
+   - **`_[clickedWord]_`**  
+      The word under the cursor at the time of the right‑click in the editor. This value is determined using VSCode’s `getWordRangeAtPosition` API.
+
 When a command is run, `Terminal GUI` scans for these built-in variables within your command string. The extension replaces each placeholder with its corresponding value before executing the command. This enables you to build dynamic, context-aware commands such as:
 
    - Changing directories to the folder containing the clicked file:
@@ -439,7 +494,44 @@ When a command is run, `Terminal GUI` scans for these built-in variables within 
 },
 ```
 
-   - Example with all built in variables:
+   - Example with `_[selectedText]_` variables:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo _[selectedText]_",
+  "settings": {
+    "contextMenu": true
+  }
+},
+```
+
+   - In the above example, if user selects "hello world", then the output in terminal will be:
+
+```bash
+$ echo "hello world"
+hello world
+```
+   - Example with `_[clickedWord]_` variables:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo _[clickedWord]_",
+  "settings": {
+    "contextMenu": true
+  }
+},
+```
+
+   - In the above example, if the text "hello world" is present and the user right‑clicks on the word "hello" (without making a selection), the command will output:
+
+```bash
+$ echo "hello"
+hello
+```
+
+   - Example with all other built in variables:
 
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
@@ -564,12 +656,16 @@ For example:
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
 "temp": {
-  "command": "cp _[my snippet]_.file temp.txt",
+  "command": "cp _[my snippet 1]_.file temp1.txt && cp _[my snippet 2]_.file temp2.txt",
   "snippets": {
-    "my snippet": [
+    "my snippet 1": [
       "hello",
       "world"
-    ]
+    ],
+    "my snippet 2": [
+      "lorem",
+      "ipsum"
+    ],
   },
 },
 ```
@@ -577,7 +673,7 @@ For example:
 In the above example, the terminal output will be:
 
 ```bash
-$ cp "d:\my-project\.vscode\terminal-gui.temp\my snippet.txt" temp.txt
+cp "d:\my-project\.vscode\terminal-gui.temp\0-0.txt" temp1.txt && cp "d:\my-project\.vscode\terminal-gui.temp\0-1.txt" temp2.txt
 ```
 
 ### Optional Scripts for Bash and PowerShell
@@ -613,7 +709,7 @@ For example, update your `settings.json` like this:
 
 The output in the `Git Bash` terminal will be as follows:
 ```bash
-$ echo START && source "c:\demp-app\.vscode\terminal-gui.temp\bash.sh" && foo hello && echo FINISH
+$ echo START && source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo hello && echo FINISH
 START
 HELLO.component
 FINISH
@@ -624,6 +720,64 @@ FINISH
 - When your command contains `_[bashScript]_` (or `_[shellScript]_`), the extension checks if a script file (`bash.sh` or `shell.ps1`) exists in the `.vscode/terminal-gui.temp` folder.
 - If the script file exists, it replaces the placeholder with a sourcing command (e.g. `source "path/to/bash.sh"` for `Git Bash` or `. "path/to/shell.ps1"` for `PowerShell`).
 - If the script file doesn't exist but the corresponding `scripts` array is defined, the extension creates the script file with the given script content and then performs the substitution.
+
+### Terminal-to-VSCode Modal Messages
+
+This feature lets you pass information from the terminal to `VSCode` using a special command pattern. If the output of the command contains the syntax:
+
+```bash
+TERMINAL_GUI_MSG(Your message here)
+```
+
+then `VSCode` will extract the message from the brackets and display it in a modal window.
+
+#### Example
+
+```json
+// settings.json
+"TerminalGui.config": {
+  "commands": {
+    "temp": {
+      "command": "_[bashScript]_ && foo _[var1]_",
+      "inputs": {
+        "Choose; var1": {
+          "Agree": "true",
+          "DisAgree": "false"
+        }
+      }
+    },
+  },
+  "scripts": {
+    "bash": [
+      "foo() {",
+      "    if [ \"$1\" = \"true\" ]; then",
+      "        echo \"Ok\"",
+      "    else",
+      "        echo 'TERMINAL_GUI_MSG(Wrong Answer)'",
+      "    fi",
+      "}"
+    ]
+  }
+},
+```
+
+In the example above, if the user selects "Agree", terminal output will be as follows:
+
+```bash
+$ source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo true
+Ok
+```
+
+but if the user selects "Disagree", a modal window will open with the message "Wrong Answer":
+
+   ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/modal-window.avif)
+
+and the terminal output will be as follows:
+
+```bash
+$ source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo false
+TERMINAL_GUI_MSG(Wrong Answer)
+```
 
 ### Search and Filter Commands
 
@@ -640,27 +794,15 @@ FINISH
 These settings, defined in your configuration under `settings.json ➜ "TerminalGui.config": { "basic": {} }`, control the appearance and behavior of built-in command buttons in the `VSCode` status and title bars.
 
 ```json
+// settings.json
+// "TerminalGui.configFile": ".vscode/terminalgui.config.json",
+
 // settings.json ➜ "TerminalGui.config": { "basic": {...} }
 "basic": {
   "recentlyUsedCommands": 7,
   "autoSaveToggler": true,
-  "killAllTasks": "left",
-  "toggleTerminal": "left",
-  "basicCommandsOrder": -9999,
-  "commandsMenu": true,
-  // relative path
-  "configFile": ".vscode/terminalgui.config.json",
-  // absolute path
-  // "configFile": "F:/Development/terminalgui.config.json",
-  "statusBarCommands": {
-    "left": [
-      "Temp 01"
-    ],
-    "right": [
-      "Temp 02",
-      "Temp 03"
-    ]
-  }
+  "killAllTasks": true,
+  "toggleTerminal": true,
 },
 ```
 
@@ -671,51 +813,61 @@ These settings, defined in your configuration under `settings.json ➜ "Terminal
      - When set to `true`, the extension displays auto save toggle buttons on the title bar.   
      - These buttons let you quickly switch between auto save enabled and disabled, giving you fast control over file saving behavior.
 
-   - **commandsMenu**
-
-     ![Image](https://github.com/user-attachments/assets/bfe6d1f6-9ae8-4f0d-a5e8-ce7c4db56f89)
-
-     - When enabled (`true`), a commands menu button appears on the title bar.
-     - This menu aggregates available `Terminal GUI` commands, providing you quick access to them.
-
    - **killAllTasks**
 
      ![Image](https://github.com/user-attachments/assets/acc9fa62-4f82-45e7-b396-36fd8afc0859)
 
-     - This setting determines the placement of the "Kill All Tasks" button on the status bar.
-     - The button stops all running tasks when activated. It accepts the values:
-       - `"left"`: Positions the button on the left side of the status bar.
-       - `"right"`: Positions the button on the right side.
-       - `"none"`: Hides the button.
-
+     Show `killAllTasks` button on status bar when `true` or `undefined`.
 
    - **toggleTerminal**
 
      ![Image](https://github.com/user-attachments/assets/618333cb-a471-4dc0-830e-cf875278e433)
    
-     - This setting configures where the "Toggle Terminal" button appears on the status bar.
-     - Clicking this button shows or hides the integrated terminal:
-       - `"left"`: Shows the toggle button on the left side of the status bar.
-       - `"right"`: Shows it on the right side.
-       - `"none"`: Hides the button.
-  
-   - **basicCommandsOrder**
+     Show `toggleTerminal` button on status bar `true` or `undefined`.
 
-     - This numeric setting controls the left-to-right positioning of built-in commands in the status bar. Lower numbers position commands further to the left, while higher numbers move them to the right. The placement of buttons like "Toggle Terminal" and "Kill All Tasks" is determined relative to this value.
+     - **commandsMenuOnStatusBar**
 
-   - **configFile**
+     - Show commands menu button in the status-bar (right side. By default it is `true`).
 
-     - This setting specifies the absolute path to an external configuration file (usually named `terminalgui.config.json`. e.g.: `.vscode/terminalgui.config.json`). If `configFile` is not defined, the extension will search for the configuration file in the workspace root. This allows you to keep your `Terminal GUI` settings outside of the main `VSCode` settings if desired.
+     - **commandsMenuRefreshOnStatusBar**
 
-     - Note: `terminalgui.config.json` can only contain the `commands` and `scripts` object from `TerminalGui.config`. So it might look like this:
+     -  Show refresh button for Terminal GUI commands in the status-bar (right side. By default it is `true`).
 
-```json
+   - **recentlyUsedCommands**
+
+     - This setting controls how many recently used commands are shown at the top of the commands dropdown. The extension saves the full command names in a temporary folder (`.vscode/terminal-gui.temp`. Do not forget to add the folder in `.gitignore`) and displays them at the top of the dropdown for quick access. The maximum number of recently used commands displayed is configurable (default is 5; minimum 0, maximum 15).
+
+     - Note: This recent list appears only in the commands dropdown view and not in the Explorer context menu.
+
+### External Configuration File
+
+You can use either JSON or JSONC (JSON with comments & trailing commas) for your external config.
+
+The `TerminalGui.configFile` setting specifies the path to an external configuration file. You can name it `.json` or `.jsonc`, for example:
+
+```jsonc
+// settings.json
+"TerminalGui.configFile": ".vscode/terminalgui.config.jsonc",
+```
+
+If `configFile` isn't defined, the extension will first look for `terminalgui.config.jsonc` in the workspace root, then for `terminalgui.config.json`. If neither file exists, it falls back to the `TerminalGui.config` section in your `settings.json`.
+
+Example of `terminalgui.config.jsonc` might look like this:
+
+```jsonc
 {
+  // Using a .jsonc file lets you add comments and trailing commas
+  "basic": {
+    "autoSaveToggler": true,
+    "recentlyUsedCommands": 7,
+    "commandsMenuOnStatusBar": true,
+    "commandsMenuRefreshOnStatusBar": true,
+  },
   "commands": {
-    "temp 1": {
+    "bash example": {
       "command": "echo START && _[bashScript]_ && foo hello && echo FINISH"
     },
-    "temp 2": {
+    "sell example": {
       "command": "echo START; _[shellScript]_; foo hello; echo FINISH"
     }
   },
@@ -735,26 +887,6 @@ These settings, defined in your configuration under `settings.json ➜ "Terminal
 }
 ```
 
-   - **recentlyUsedCommands**
-
-     - This setting controls how many recently used commands are shown at the top of the commands dropdown. The extension saves the full command names in a temporary folder (`.vscode/terminal-gui.temp`. Do not forget to add the folder in `.gitignore`) and displays them at the top of the dropdown for quick access. The maximum number of recently used commands displayed is configurable (default is 5; minimum 0, maximum 15).
-
-     - Note: This recent list appears only in the commands dropdown view and not in the Explorer context menu.
-
-  - **statusBarCommands**
-
-      - This setting is an optional object that allows you to control which commands appear in the status bar and on which side.
-
-      - It accepts two optional properties:
-        - **left:** An array of command names to display on the left side.
-        - **right:** An array of command names to display on the right side.
-
-      - **Important Behavior:**
-
-        - When `statusBarCommands` is defined, the extension ignores each command’s individual `settings.statusBar` property.
-
-        - If `statusBarCommands` is defined but **neither** `left` nor `right` properties are set (or if they are empty), then no command will be positioned on the status bar.
-
 ### Example Configuration
 
 Below is an example of `settings.json` configuration for different frameworks.
@@ -773,16 +905,9 @@ Below is an example of `settings.json` configuration for different frameworks.
 ```json
 // settings.json
 "TerminalGui.config": {
-  "basic": {
-    "autoSaveToggler": true,
-    "killAllTasks": "left",
-    "toggleTerminal": "left",
-    "basicCommandsOrder": -9999,
-    "commandsMenu": true,
-  },
   "commands": {
     "Create Angular Project": {
-      "command": "cd _[Select a folder]_ _[version]_.value _[name]_.value && npm install -g @angular/cli@_[version]_ && ng new _[name]_ --style=_[styles]_ --inline-style=_[inline-style]_ --inline-template=_[inline-html]_ --skip-tests=_[tests]_ --ssr=_[ssr]_ && cd _[name]_ _[eslint]_ && code -r .",
+      "command": "cd _[Select a folder]_ _[name]_.value _[version]_.value && npm install -g @angular/cli@_[version]_ && ng new _[name]_ --style=_[styles]_ --inline-style=_[inline-style]_ --inline-template=_[inline-html]_ --skip-tests=_[tests]_ --ssr=_[ssr]_ && cd _[name]_ _[eslint]_ && code -r .",
       "group": "🅰️ Angular",
       "inputs": {
         "Enter a project name;name;false;false": "",
@@ -814,7 +939,8 @@ Below is an example of `settings.json` configuration for different frameworks.
       },
       "settings": {
         "terminalName": "Angular Project Creation",
-        "showWhenEmptyWorkspace": "emptyWorkspace"
+        "showWhenEmptyWorkspace": "emptyWorkspace",
+        "revealConsole": true
       }
     },
     "Angular Server": {
@@ -824,7 +950,8 @@ Below is an example of `settings.json` configuration for different frameworks.
       "icon2": "▢;Stop Angular Server",
       "settings": {
         "terminalName": "Angular Server",
-        "statusBar": "left",
+        "statusBar": true,
+        "showWhenEmptyWorkspace": "fullWorkspace"
       }
     },
     "Component": {
@@ -942,6 +1069,9 @@ Below is an example of `settings.json` configuration for different frameworks.
         },
         "Choose the version: eg.: 4.1.2; version; false": "latest"
       },
+      "settings": {
+        "revealConsole": true
+      },
     },
   }
 },
@@ -952,15 +1082,7 @@ Below is an example of `settings.json` configuration for different frameworks.
 <summary>⚛️ React.js</summary>
 
 ```json
-// settings.json
 "TerminalGui.config": {
-  "basic": {
-    "autoSaveToggler": true,
-    "killAllTasks": "left",
-    "toggleTerminal": "left",
-    "basicCommandsOrder": -9999,
-    "commandsMenu": true,
-  },
   "commands": {
     "Create React.js Project": {
       "command": "cd _[Select a folder]_ && _[projectName]_.value npx --yes create-vite@_[version]_ _[projectName]_ --template _[variant]_ && cd _[projectName]_ && npm i && code -r .",
@@ -975,7 +1097,8 @@ Below is an example of `settings.json` configuration for different frameworks.
       },
       "settings": {
         "terminalName": "React Project Creation",
-        "showWhenEmptyWorkspace": "emptyWorkspace"
+        "showWhenEmptyWorkspace": "emptyWorkspace",
+        "revealConsole": true
       }
     },
     "React.js Server": {
@@ -985,7 +1108,9 @@ Below is an example of `settings.json` configuration for different frameworks.
       "icon2": "▢;Stop React Dev Server",
       "settings": {
         "terminalName": "React Server",
-        "statusBar": "left"
+        "statusBar": true,
+        "revealConsole": false,
+        "showWhenEmptyWorkspace": "fullWorkspace"
       }
     },
     "Component": {
@@ -1149,6 +1274,9 @@ Below is an example of `settings.json` configuration for different frameworks.
           "dependency": "-S",
           "devDependency": "-D"
         }
+      },
+      "settings": {
+        "revealConsole": true
       }
     },
   },
@@ -1171,7 +1299,8 @@ Below is an example of `settings.json` configuration for different frameworks.
       "fileCreate() {",
       "  if [ -f \"$2\" ]; then",
       "    echo -e \"\\e[41m\\e[1m\\e[97mFile '$2' already exists!\\e[0m\" >&2",
-      "    return 1",
+      "    echo \"TERMINAL_GUI_MSG(Terminal GUI warning: File '$2' already exists!)\"",
+      "    return 0",
       "  else",
       "    cp \"$1\" \"$2\" && code \"$2\"",
       "  fi",
@@ -1186,7 +1315,8 @@ Below is an example of `settings.json` configuration for different frameworks.
       "  local varName=\"$3\"",
       "  if [ -f \"$dest\" ]; then",
       "    echo -e \"\\e[41m\\e[1m\\e[97mFile '$dest' already exists!\\e[0m\" >&2",
-      "    return 1",
+      "    echo \"TERMINAL_GUI_MSG(Terminal GUI warning: File '$2' already exists!)\"",
+      "    return 0",
       "  fi",
       "  local varValue=\"${!varName}\"",
       "  sed \"s|_{\\\\\\$${varName}}_|${varValue}|g\" \"$src\" > \"$dest\" && code \"$dest\"",
@@ -1198,21 +1328,14 @@ Below is an example of `settings.json` configuration for different frameworks.
 </details>
 
 <details>
-<summary>🟩 Node.js + Express.js</summary>
+<summary>🟩 Node.js</summary>
 
 ```json
 // settings.json
 "TerminalGui.config": {
-  "basic": {
-    "autoSaveToggler": true,
-    "killAllTasks": "left",
-    "toggleTerminal": "left",
-    "basicCommandsOrder": -9999,
-    "commandsMenu": true,
-  },
   "commands": {
     "Create Node.js Project": {
-      "command": "cd _[Select a folder]_ && mkdir _[projectName]_ && cd _[projectName]_ && npm init -y && npm pkg set type=\"module\" main=\"_[entryPoint]_.js\" scripts.start=\"node --watch _[entryPoint]_.js\" && npm pkg delete scripts.test && npm i express@_[version]_ && cp \"_[mainFile]_.file\" _[entryPoint]_.js && code -r .",
+      "command": "cd _[Select a folder]_ && mkdir _[projectName]_ && cd _[projectName]_ && npm init -y && npm pkg set type=\"module\" main=\"_[entryPoint]_.js\" scripts.start=\"node --watch _[entryPoint]_.js\" && npm pkg delete scripts.test && npm i express@_[version]_ && cp _[mainFile]_.file _[entryPoint]_.js && code -r .",
       "group": "🟩 Node.js",
       "inputs": {
         "Enter a project name; projectName": "",
@@ -1237,7 +1360,8 @@ Below is an example of `settings.json` configuration for different frameworks.
       },
       "settings": {
         "terminalName": "NodeJS Project Creation",
-        "showWhenEmptyWorkspace": "emptyWorkspace"
+        "showWhenEmptyWorkspace": "emptyWorkspace",
+        "revealConsole": true
       }
     },
     "Run Node.js Server": {
@@ -1247,7 +1371,8 @@ Below is an example of `settings.json` configuration for different frameworks.
       "group": "🟩 Node.js",
       "settings": {
         "terminalName": "Node.js Server",
-        "statusBar": "left",
+        "statusBar": true,
+        "showWhenEmptyWorkspace": "fullWorkspace"
       }
     },
     "🛠️ Install NPM Packages": {
@@ -1272,6 +1397,9 @@ Below is an example of `settings.json` configuration for different frameworks.
           "devDependency": "-D"
         },
       },
+      "settings": {
+        "revealConsole": true,
+      }
     },
   }
 },
@@ -1282,6 +1410,12 @@ Below is an example of `settings.json` configuration for different frameworks.
 
 Please feel free to report any issues or suggestions. Check out the [GitHub repository](https://github.com/BachiMjavanadze/terminal-gui2) for more details.
 
+## Support and Feedback
+
+Please feel free to report any issues or suggestions.
+
 ## License
 
 This project is licensed under the [EULA License](https://github.com/BachiMjavanadze/terminal-gui2/blob/main/LICENSE).
+
+#### [Change Log](CHANGELOG.md)
