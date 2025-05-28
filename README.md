@@ -62,18 +62,6 @@ in the status bar:
         "revealConsole": true
       }
     },
-    // Command chaining example: This command chains `Temp 01`.
-    // Mark it as hidden to prevent it from showing in menus.
-    "Temp 01": {
-      "command": "echo \"Hello world\"",
-      "settings": {
-        "showWhenEmptyWorkspace": "hidden",
-        "revealConsole": true
-      },
-    },
-    "Temp 02": {
-      "command": "echo \"Lorem Ipsum\" && _<Temp 01>_",
-    },
     // Opens a terminal labeled "Server" to run a server-related command
     "Launch Server Terminal": {
       "command": "ng serve",
@@ -569,59 +557,6 @@ itemFullName: StatusBarManager.ts
 itemName: StatusBarManager
 itemExtension: ts
 projectPath: f:\Development\terminal-gui
-```
-
-### Command Chaining
-
-   `Terminal GUI` supports command chaining. You can reference one command within another using the syntax `_<Command Name>_`.
-   
-For example:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"Temp 01": {
-  "command": "echo \"Hello world\"",
-  "settings": {
-    "showWhenEmptyWorkspace": "hidden"
-  },
-},
-"Temp 02": {
-  "command": "echo \"Lorem Ipsum\" && _<Temp 01>_",
-},
-```
-
-In the above example, the placeholder `_<Temp 01>_` is replaced by the `command` property of the **Temp 01** command and output in the terminal will be as follows:
-
-```bash
-$ echo "Lorem Ipsum" && echo "Hello world"
-Lorem Ipsum
-Hello world
-```
-
-   - **Note:** Command chaining supports **only the `command` property** of the referenced command. Other properties such as `inputs` or `snippets` are not transferred. Also, if a command is intended solely for chaining (i.e. to be referenced by other commands), it's probably better if you hide it by setting its `"showWhenEmptyWorkspace"` property to `"hidden"`. This hides the command from menus while still allowing it to be called via chaining.
-
-  Another example; Let's create a command that defines a Bash function to generate a filename and then writes some text into that file:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"Temp 01": {
-    "command": "upper_concat() { local args=\"$*\"; echo \"${args^^}.txt\"; }",
-    "settings": {
-      "showWhenEmptyWorkspace": "hidden",
-    },
-  },
-"Temp 02": {
-    "command": "_[var1]_.value  _<Temp 01>_ && result=$(upper_concat _[var1]_) && echo \"hello world\">\"$result\"",
-    "inputs": {
-      "Enter file name; var1": ""
-    },
-},
-```
-
-In the above example, if the user types "hello" in the input field, a file "HELLO.txt" is created with the content "hello world" and the output to the terminal will be as follows:
-
-```bash
-$ upper_concat() { local args="$*"; echo "${args^^}.txt"; } && result=$(upper_concat hello) && echo "hello world">"$result"
 ```
 
 ### Snippets

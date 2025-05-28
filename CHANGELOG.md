@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.7.3] - 2025-05-29
+### Removed
+- **Breaking Change**: The `Command Chaining` feature has been completely removed.
+
 ## [0.7.2] - 2025-05-28
 ### Fixed
 - Terminal freeze issue.
