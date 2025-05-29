@@ -401,7 +401,7 @@ Hello John Smith
 
   - This built-in variable is an input field where the user can manually enter the path to a folder or press the `Enter` key to bring up the folder explorer and select the desired folder.
 
-  ![Image](https://github.com/user-attachments/assets/5660712e-dfa5-41ff-94c0-9c14a8a848f6)
+  ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/selectafolder.avif)
 
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
