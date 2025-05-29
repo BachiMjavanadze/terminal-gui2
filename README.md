@@ -2,10 +2,6 @@
 
 **`Terminal GUI`** is a `VSCode` extension that lets you define custom terminal commands with interactive inputs. You can configure your commands in your `settings.json` (or in an external config file. See below how property `configFile` works), and when you run a command, any placeholders you've defined will prompt you for input.
 
-This is a demo video of `Terminal GUI`:
-
-[![demo video of VSCode extension - 'Terminal GUI'](https://github.com/user-attachments/assets/3e747136-514c-4c18-93fa-5d727dd0009b)](https://youtu.be/8DeTl5xvJ-c)
-
    - Note: **`Terminal GUI`** supports `Git Bash` and `PowerShell` scripting languages, so you can write very complex commands.
 
    - Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VSCode`:
@@ -771,8 +767,6 @@ These settings, defined in your configuration under `settings.json ➜ "Terminal
    - **recentlyUsedCommands**
 
      - This setting controls how many recently used commands are shown at the top of the commands dropdown. The extension saves the full command names in a temporary folder (`.vscode/terminal-gui.temp`. Do not forget to add the folder in `.gitignore`) and displays them at the top of the dropdown for quick access. The maximum number of recently used commands displayed is configurable (default is 5; minimum 0, maximum 15).
-
-     - Note: This recent list appears only in the commands dropdown view and not in the Explorer context menu.
 
 ### External Configuration File
 
