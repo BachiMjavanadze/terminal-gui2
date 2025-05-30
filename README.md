@@ -266,24 +266,6 @@ For example:
 }
 ```
 
-* If you use `;radio`, on each run you'll see a QuickPick with two checkboxes:
-
-  * **Save** – remember the value but still prompt next time.
-  * **Save & Skip** – remember the value and auto-apply on future runs.
-* Persistent entries are stored in `.vscode/terminal-gui.temp/terminalgui.temp.json` under `radioCommands`. If `skip:true`, the prompt is bypassed.
-
-For example:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"foo": {
-  "command": "echo _[var1]_",
-  "inputs": {
-    "enter some text; var1; true; true; radio": ""
-  }
-},
-```
-
    - If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
 
 ```json
@@ -323,6 +305,24 @@ For example:
 ```bash
 $ echo "Hello John Smith"
 Hello John Smith
+```
+
+* If you use `;radio`, on each run you'll see a QuickPick with two checkboxes:
+
+  * **Save** – remember the value but still prompt next time.
+  * **Save & Skip** – remember the value and auto-apply on future runs.
+* Persistent entries are stored in `.vscode/terminal-gui.temp/terminalgui.temp.json` under `radioCommands`. If `skip:true`, the prompt is bypassed.
+
+For example:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"foo": {
+  "command": "echo _[var1]_",
+  "inputs": {
+    "enter some text; var1; true; true; radio": ""
+  }
+},
 ```
 
 ### Command settings
