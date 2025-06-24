@@ -1,3 +1,5 @@
+## `Terminal GUI`
+
 **`Terminal GUI`** is a `VSCode` extension that lets you define custom terminal commands with interactive inputs. You can configure your commands in your `settings.json` (or in an external config file. See below how property `configFile` works), and when you run a command, any placeholders you've defined will prompt you for input.
 
    - Note: **`Terminal GUI`** supports `Git Bash` and `PowerShell` scripting languages, so you can write very complex commands.
@@ -268,13 +270,24 @@ For example:
 You can present a multi-select (checkbox-style) list.  
 Declare the choice object with a special key **`"connectItems"`** whose value is the string used to join the chosen command snippets.
 
+- The checkbox list input key supports an extended syntax:
+  ```text
+  "prompt text; substitution placeholder; allowEmpty; save"
+  ```
+  - **prompt text:** The text displayed as the prompt for the user.
+  - **substitution placeholder:** The token in the command that will be replaced with the chosen (or entered) values.
+  - **allowEmpty:** Set to `"true"` if empty input is allowed (default is `"false"`).
+  - **save:** Set to `"true"` to remember and pre-select previously chosen items on next run (default is `"false"`).
+
+  When `save` is `true`, selected items are saved in `.vscode/terminal-gui.temp/terminalgui.temp.json` under the `checkboxCommands` section, and will be pre-checked on subsequent invocations.
+
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
 "temp": {
   "command": "echo _[var1]_ && _[var2]_ && echo _[var3]_",
   "inputs": {
     "enter txt1; var1": "",
-    "choose some values; var2; false": { // allowEmpty = false
+    "choose some values; var2; false; true": { // allowEmpty = false, save = true
       "connectItems": "&&", // REQUIRED → identifies a checkbox list
       "Red": "echo 'red color'",
       "Blue": "echo 'blue color'",
