@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.7.7] - 2025-06-24
+### Added
+- **Checkbox inputs**: define an input object with a `"connectItems"` key to show a multi-select (checkbox) list.  
+  Selected option-values are concatenated using the provided joiner (e.g. `"&&"`).
+- `allowEmpty` (3-rd key part) lets the user skip selection when set to `true`.
+- `save` (4th key part) persists checked items in `checkboxCommands`, so they're pre-selected on next run.
+
 ## [0.7.3] - 2025-05-29
 ### Removed
 - **Breaking Change**: The `Command Chaining` feature has been completely removed.
