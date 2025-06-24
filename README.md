@@ -1,5 +1,3 @@
-# Terminal GUI
-
 **`Terminal GUI`** is a `VSCode` extension that lets you define custom terminal commands with interactive inputs. You can configure your commands in your `settings.json` (or in an external config file. See below how property `configFile` works), and when you run a command, any placeholders you've defined will prompt you for input.
 
    - Note: **`Terminal GUI`** supports `Git Bash` and `PowerShell` scripting languages, so you can write very complex commands.
@@ -266,6 +264,27 @@ For example:
 }
 ```
 
+#### Checkbox list input
+You can present a multi-select (checkbox-style) list.  
+Declare the choice object with a special key **`"connectItems"`** whose value is the string used to join the chosen command snippets.
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo _[var1]_ && _[var2]_ && echo _[var3]_",
+  "inputs": {
+    "enter txt1; var1": "",
+    "choose some values; var2; false": { // allowEmpty = false
+      "connectItems": "&&", // REQUIRED → identifies a checkbox list
+      "Red": "echo 'red color'",
+      "Blue": "echo 'blue color'",
+      "Green": "echo 'green color'"
+    },
+    "enter txt2; var3": ""
+  }
+},
+```
+
    - If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
 
 ```json
@@ -306,6 +325,7 @@ For example:
 $ echo "Hello John Smith"
 Hello John Smith
 ```
+
 
 * If you use `;radio`, on each run you'll see a QuickPick with two checkboxes:
 
@@ -451,7 +471,7 @@ For example:
       The text currently selected in the active editor. If no text is selected, it returns empty quotes.
 
    - **`_[clickedWord]_`**  
-      The word under the cursor at the time of the right‑click in the editor. This value is determined using VSCode’s `getWordRangeAtPosition` API.
+      The word under the cursor at the time of the right‑click in the editor.
 
 When a command is run, `Terminal GUI` scans for these built-in variables within your command string. The extension replaces each placeholder with its corresponding value before executing the command. This enables you to build dynamic, context-aware commands such as:
 
@@ -756,11 +776,11 @@ These settings, defined in your configuration under `settings.json ➜ "Terminal
    
      Show `toggleTerminal` button on status bar `true` or `undefined`.
 
-     - **commandsMenuOnStatusBar**
+   - **commandsMenuOnStatusBar**
 
      - Show commands menu button in the status-bar (right side. By default it is `true`).
 
-     - **commandsMenuRefreshOnStatusBar**
+   - **commandsMenuRefreshOnStatusBar**
 
      -  Show refresh button for Terminal GUI commands in the status-bar (right side. By default it is `true`).
 
@@ -1334,10 +1354,6 @@ Below is an example of `settings.json` configuration for different frameworks.
 },
 ```
 </details>
-
-## Support and Feedback
-
-Please feel free to report any issues or suggestions. Check out the [GitHub repository](https://github.com/BachiMjavanadze/terminal-gui2) for more details.
 
 ## Support and Feedback
 
