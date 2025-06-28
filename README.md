@@ -640,6 +640,47 @@ In the above example, the terminal output will be:
 cp "d:\my-project\.vscode\terminal-gui.temp\0-0.txt" temp1.txt && cp "d:\my-project\.vscode\terminal-gui.temp\0-1.txt" temp2.txt
 ```
 
+
+### VS Code Snippets
+
+You can also register **normal VS Code snippets** directly from your settings — no external `*.code-snippets` file needed. Simply add a `VSCodeSnippets` block next to `commands`:
+
+```jsonc
+// settings.json ➜ "TerminalGui.config"
+{
+  "commands": {
+    "build": { "command": "npm run build" }
+  },
+  "VSCodeSnippets": {
+    "if statement": {
+      "scope": "javascript,typescript,javascriptreact,typescriptreact",
+      "prefix": "if",
+      "body": [
+        "if ($1) {",
+        "\t$0",
+        "}"
+      ],
+      "description": "Standard JavaScript/TypeScript if statement"
+    },
+    "csharp-function": {
+      "scope": "csharp",
+      "prefix": "f",
+      "body": [
+        "${1:void} ${2:Foo}($3)",
+        "{",
+        "\t$0",
+        "}"
+      ],
+      "description": "C# function template"
+    }
+  }
+}
+```
+
+* Snippets appear in IntelliSense for the languages listed in `scope`.
+* Full tab-stop and placeholder behaviour is supported.
+* Press `Refresh` on the status bar or use `ctrl+alt+p` (for Mac: `cmd+alt+p`) to reload edited snippets immediately.
+
 ### Optional Scripts for Bash and PowerShell
 
 You can define optional scripts in your configuration under the `scripts` property. These scripts let you source custom `Git Bash` or `PowerShell` code when executing commands.
