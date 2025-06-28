@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.8.0] - 2025-06-28
+### Added
+- **VSCodeSnippets** support: place a `VSCodeSnippets` object next to `commands` in `TerminalGui.config` to register normal VS Code-style snippets (scope / prefix / body / description) entirely in-memory.
+- Snippets appear in IntelliSense with full tab-stop & placeholder behaviour for the languages listed in `scope`.
+
+## [0.7.8] - 2025-06-26
+### Added
+- IntelliSense/autosuggestions for built-in variables (`_[projectPath]_`, `_[itemPath]_`, etc.) when editing commands in:
+  - `settings.json` (both workspace and user settings)
+  - `terminalgui.config.json`
+  - `terminalgui.config.jsonc`
+- Descriptions for each variable appear in the completion list.
+
 ## [0.7.7] - 2025-06-24
 ### Added
 - **Checkbox inputs**: define an input object with a `"connectItems"` key to show a multi-select (checkbox) list.  
