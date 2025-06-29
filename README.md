@@ -641,9 +641,9 @@ cp "d:\my-project\.vscode\terminal-gui.temp\0-0.txt" temp1.txt && cp "d:\my-proj
 ```
 
 
-### VS Code Snippets
+### VSCode Snippets
 
-You can also register **normal VS Code snippets** directly from your settings — no external `*.code-snippets` file needed. Simply add a `VSCodeSnippets` block next to `commands`:
+You can also register **normal VSCode snippets** directly from your settings — no external `*.code-snippets` file needed. Simply add a `VSCodeSnippets` block next to `commands`:
 
 ```jsonc
 // settings.json ➜ "TerminalGui.config"
