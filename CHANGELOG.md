@@ -1,8 +1,11 @@
 # Change Log
 
+## [0.8.1] - 2025-06-29
+- Apply full JSON schema to all configuration sources (`settings.json`, `terminalgui.config.json`/`.jsonc`): now `basic`, `commands`, `scripts` and `VSCodeSnippets` definitions (including the required `command` property) are enforced everywhere.
+
 ## [0.8.0] - 2025-06-28
 ### Added
-- **VSCodeSnippets** support: place a `VSCodeSnippets` object next to `commands` in `TerminalGui.config` to register normal VS Code-style snippets (scope / prefix / body / description) entirely in-memory.
+- **VSCodeSnippets** support: place a `VSCodeSnippets` object next to `commands` in `TerminalGui.config` to register normal `VSCode` style snippets (scope / prefix / body / description) entirely in-memory.
 - Snippets appear in IntelliSense with full tab-stop & placeholder behaviour for the languages listed in `scope`.
 
 ## [0.7.8] - 2025-06-26
