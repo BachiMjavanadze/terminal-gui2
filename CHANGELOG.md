@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.8.3] - 2025-07-04
+### Changed
+- Replaced the old `settings.statusBar` / `settings.editorMenu` booleans with one `settings.quickButton` enum (`"statusBar"`, `"tabBar"`, `"both"`).  
+- Updated JSON schema (`schema/terminalgui-schema.json`) and `VSCode` configuration (`package.json`) to reflect `quickButton`.
+
+### Added
+- `basic.pinTabBar` setting (default `true`) to keep a placeholder “Terminal GUI” tab open so the editor title bar never collapses.
+
 ## [0.8.1] - 2025-06-29
 - Apply full JSON schema to all configuration sources (`settings.json`, `terminalgui.config.json`/`.jsonc`): now `basic`, `commands`, `scripts` and `VSCodeSnippets` definitions (including the required `command` property) are enforced everywhere.
 
