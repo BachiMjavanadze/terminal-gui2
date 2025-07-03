@@ -369,6 +369,7 @@ For example:
       - `"statusBar"` – show icon on the status bar.
       - `"tabBar"` – show icon in the editor title/tab bar.
       - `"both"` – show icon in both places.
+        - Note: `VSCode` doesn’t support dynamic title/tab-bar updates at runtime, so `Terminal GUI` rewrites `package.json` and will prompt you to reload the window **twice** to apply changes. 
 
    - **`reUseTerminal`**  
      Reuse existing terminal or create new terminal for each command (default: true).
