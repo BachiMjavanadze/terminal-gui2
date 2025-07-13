@@ -1,6 +1,18 @@
 # Change Log
 
-## [0.8.3] - 2025-07-04
+## [0.9.1] - 2025-07-13
+### Added
+- IntelliSense/autocomplete for custom placeholders (`_[varName]_`) derived from each command’s `inputs` keys, with built-in variables listed afterward.
+- Yellow-squiggly diagnostics (tooltip: “Unknown placeholder”) for any `_[…]_` token not defined in that command’s `inputs` or in built-ins.
+
+### Changed
+- Removed the `hidden` option from the `showWhenEmptyWorkspace` property; commands now only support `fullWorkspace`, `emptyWorkspace`, or `both`.
+
+## [0.9.0] - 2025-07-08
+### Changed
+- Renamed persist flag for free-text inputs from `;radio` to `;save` (in `parseInputKey`).
+
+## [0.8.6] - 2025-07-04
 ### Changed
 - Replaced the old `settings.statusBar` / `settings.editorMenu` booleans with one `settings.quickButton` enum (`"statusBar"`, `"tabBar"`, `"both"`).  
 - Updated JSON schema (`schema/terminalgui-schema.json`) and `VSCode` configuration (`package.json`) to reflect `quickButton`.
