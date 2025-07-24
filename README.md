@@ -362,26 +362,26 @@ Example for `ASP.NET WEB API` migrations:
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
 "Add Migration": {
-  "command": "dotnet tool update --global dotnet-ef && dotnet ef migrations add \"_[migrationName]_\" --project \"_[dbContextPath]_\" --startup-project \"_[startProjectPath]_\" --context _[dbContextClassName]_ --output-dir \"_[migrationFolder]_\"",
+  "command": "dotnet tool update --global dotnet-ef && dotnet ef migrations add \"_[migrationName]_\" --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\" --output-dir \"_[migrationFolder]_\"",
   "group": "ASP.NET",
   "inputs": {
     "Enter a migration name; migrationName": "",
     "Enter a DbContext project path; dbContextPath; true; true; save": "",
-    "Enter a StartUp project path; startProjectPath; true; true; save": "",
     "Enter a DbContext class name; dbContextClassName; true; true; save": "",
+    "Enter a StartUp project path; startProjectPath; true; true; save": "",
     "Enter a migration folder path; migrationFolder; true; true; save": "",
   },
   "settings": {
     "revealConsole": true
   }
 },
-"Updata DataBase": {
-  "command": "dotnet ef database update --project \"_[dbContextPath]_\" --startup-project \"_[startProjectPath]_\" --context _[dbContextClassName]_",
+"Update DataBase": {
+  "command": "_[dbContextPath]_.value _[dbContextClassName]_.value _[startProjectPath]_.value dotnet ef database update --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\"",
   "group": "ASP.NET",
   "inputs": {
     "Enter a DbContext project path; dbContextPath; true; true; save": "",
-    "Enter a StartUp project path; startProjectPath; true; true; save": "",
     "Enter a DbContext class name; dbContextClassName; true; true; save": "",
+    "Enter a StartUp project path; startProjectPath; true; true; save": "",
   },
   "settings": {
     "revealConsole": true
