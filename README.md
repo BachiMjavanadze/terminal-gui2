@@ -357,6 +357,38 @@ For example:
 },
 ```
 
+Example for `ASP.NET WEB API` migrations:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"Add Migration": {
+  "command": "dotnet tool update --global dotnet-ef && dotnet ef migrations add \"_[migrationName]_\" --project \"_[dbContextPath]_\" --startup-project \"_[startProjectPath]_\" --context _[dbContextClassName]_ --output-dir \"_[migrationFolder]_\"",
+  "group": "ASP.NET",
+  "inputs": {
+    "Enter a migration name; migrationName": "",
+    "Enter a DbContext project path; dbContextPath; true; true; save": "",
+    "Enter a StartUp project path; startProjectPath; true; true; save": "",
+    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
+    "Enter a migration folder path; migrationFolder; true; true; save": "",
+  },
+  "settings": {
+    "revealConsole": true
+  }
+},
+"Updata DataBase": {
+  "command": "dotnet ef database update --project \"_[dbContextPath]_\" --startup-project \"_[startProjectPath]_\" --context _[dbContextClassName]_",
+  "group": "ASP.NET",
+  "inputs": {
+    "Enter a DbContext project path; dbContextPath; true; true; save": "",
+    "Enter a StartUp project path; startProjectPath; true; true; save": "",
+    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
+  },
+  "settings": {
+    "revealConsole": true
+  }
+},
+```
+
 ### Command settings
 
    You can customize a command with the `settings` property, which is an object with optional properties:
@@ -720,10 +752,16 @@ For example, update your `settings.json` like this:
 // settings.json ➜ "TerminalGui.config": {...}
 "commands": {
   "temp 1": {
-    "command": "echo START && _[bashScript]_ && foo hello && echo FINISH"
+    "command": "echo START && _[bashScript]_ && foo _[var1]_ && echo FINISH",
+    "inputs": {
+      "Enter any text; var1": ""
+    }
   },
   "temp 2": {
-    "command": "echo START ; _[shellScript]_ ; foo hello ; echo FINISH"
+    "command": "echo START ; _[shellScript]_ ; foo _[var1]_ ; echo FINISH",
+    "inputs": {
+      "Enter any text; var1": ""
+    }
   }
 },
 "scripts": {
@@ -741,7 +779,7 @@ For example, update your `settings.json` like this:
 }
 ```
 
-The output in the `Git Bash` terminal will be as follows:
+In the above example, if the user will enter "hello", then the output in terminal will be as follows:
 ```bash
 $ echo START && source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo hello && echo FINISH
 START
@@ -947,7 +985,7 @@ Below is an example of `settings.json` configuration for different frameworks.
 "TerminalGui.config": {
   "commands": {
     "Create Angular Project": {
-      "command": "cd _[Select a folder]_ _[name]_.value _[version]_.value && npm install -g @angular/cli@_[version]_ && ng new _[name]_ --style=_[styles]_ --inline-style=_[inline-style]_ --inline-template=_[inline-html]_ --skip-tests=_[tests]_ --ssr=_[ssr]_ && cd _[name]_ _[eslint]_ && code -r .",
+      "command": "cd _[Select a folder(Select a parent folder for the project)]_ _[name]_.value _[version]_.value && npm install -g @angular/cli@_[version]_ && ng new _[name]_ --style=_[styles]_ --inline-style=_[inline-style]_ --inline-template=_[inline-html]_ --skip-tests=_[tests]_ --ssr=_[ssr]_ && cd _[name]_ _[eslint]_ && code -r .",
       "group": "🅰️ Angular",
       "inputs": {
         "Enter a project name;name;false;false": "",
@@ -1113,6 +1151,209 @@ Below is an example of `settings.json` configuration for different frameworks.
         "revealConsole": true
       },
     },
+  },
+  "VSCodeSnippets": {
+    "class": {
+      "scope": "html",
+      "prefix": "a-class",
+      "body": [
+        "[class]=\"${1:expression}\""
+      ],
+      "description": "Angular [class] binding (Terminal GUI)"
+    },
+    "style": {
+      "scope": "html",
+      "prefix": "a-style",
+      "body": [
+        "[style.${1:property}]=\"${2:expression}\""
+      ],
+      "description": "Angular [style] binding"
+    },
+    "ngClass": {
+      "scope": "html",
+      "prefix": "a-ngClass",
+      "body": [
+        "[ngClass]=\"{${1:cssClass}: ${2:expression}}\""
+      ],
+      "description": "Angular ngClass (Terminal GUI)"
+    },
+    "ngFor": {
+      "scope": "html",
+      "prefix": "a-ngFor",
+      "body": [
+        "*ngFor=\"let ${1:item} of ${2:list}\"${0}"
+      ],
+      "description": "Angular *ngFor (Terminal GUI)"
+    },
+    "ngFor with trackBy": {
+      "scope": "html",
+      "prefix": "a-ngFor-trackBy",
+      "body": [
+        "*ngFor=\"let ${1:item} of ${2:list}; trackBy:${1:trackByFnName}\"${0}"
+      ],
+      "description": "Angular *ngFor with trackBy"
+    },
+    "ngForAsync": {
+      "scope": "html",
+      "prefix": "a-ngForAsync",
+      "body": [
+        "*ngFor=\"let ${1:item} of ${2:stream} | async as ${3:list}\"${0}"
+      ],
+      "description": "Angular *ngForAsync (Terminal GUI)"
+    },
+    "ngForm": {
+      "scope": "html",
+      "prefix": "a-form",
+      "body": [
+        "<form (ngSubmit)=\"onSubmit()\" #${1:form}=\"ngForm\">",
+        "</form>"
+      ],
+      "description": "Form with ngSubmit and form attributes (Terminal GUI)"
+    },
+    "ngFormArrayName": {
+      "scope": "html",
+      "prefix": "a-formArrayName",
+      "body": [
+        "formArrayName=\"${1:control}\""
+      ],
+      "description": "Angular formArrayName (Terminal GUI)"
+    },
+    "ngFormControlName": {
+      "scope": "html",
+      "prefix": "a-formControlName",
+      "body": [
+        "formControlName=\"${1:control}\""
+      ],
+      "description": "Angular formControlName (Terminal GUI)"
+    },
+    "ngFormGroup": {
+      "scope": "html",
+      "prefix": "a-formGroup",
+      "body": [
+        "[formGroup]=\"${1:form}\""
+      ],
+      "description": "Angular formGroup (Terminal GUI)"
+    },
+    "ngFormGroupName": {
+      "scope": "html",
+      "prefix": "a-formGroupName",
+      "body": [
+        "[formGroupName]=\"${1:name}\""
+      ],
+      "description": "Angular formGroupName (Terminal GUI)"
+    },
+    "ngFormSubmit": {
+      "scope": "html",
+      "prefix": "a-form-submit",
+      "body": [
+        "<button type=\"submit\" [disabled]=\"!${1:form}.form.valid\">",
+        "\tSave",
+        "</button>"
+      ],
+      "description": "Angular form submit (Terminal GUI)"
+    },
+    "ngIf": {
+      "scope": "html",
+      "prefix": "a-ngIf",
+      "body": [
+        "*ngIf=\"${1:expression}\""
+      ],
+      "description": "Angular *ngIf (Terminal GUI)"
+    },
+    "ngIfElse": {
+      "scope": "html",
+      "prefix": "a-ngIfElse",
+      "body": [
+        "*ngIf=\"${1:expression};else ${2:templateName}\""
+      ],
+      "description": "Angular *ngIfElse (Terminal GUI)"
+    },
+    "ngModel": {
+      "scope": "html",
+      "prefix": "a-ngModel",
+      "body": [
+        "[(ngModel)]=\"${1:binding}\""
+      ],
+      "description": "Angular ngModel (Terminal GUI)"
+    },
+    "ngRouterLink": {
+      "scope": "html",
+      "prefix": "a-routerLink",
+      "body": [
+        "[routerLink]=\"['/${1:routePath}']\" routerLinkActive=\"${2:router-link-active}\" $0"
+      ],
+      "description": "Angular routerLink (Terminal GUI)"
+    },
+    "ngRouterLinkWithParameter": {
+      "scope": "html",
+      "prefix": "a-routerLink-param",
+      "body": [
+        "[routerLink]=\"['${1:routePath}', ${2:routeParameterValue}]\"",
+        "routerLinkActive=\"${3:router-link-active}\"$0"
+      ],
+      "description": "Angular routerLink with a route parameter (Terminal GUI)"
+    },
+    "ngSelect": {
+      "scope": "html",
+      "prefix": "a-select",
+      "body": [
+        "<select [(ngModel)]=\"${1:model}\">",
+        "\t<option *ngFor=\"let ${2:item} of ${3:list}\" [value]=\"${2:item}\">{{${2:item}}}</option>",
+        "</select>"
+      ],
+      "description": "<select> control with ngModel (Terminal GUI)"
+    },
+    "ngStyle": {
+      "scope": "html",
+      "prefix": "a-ngStyle",
+      "body": [
+        "[ngStyle]=\"{${1:style}: ${2:expression}}\""
+      ],
+      "description": "Angular ngStyle (Terminal GUI)"
+    },
+    "ngSwitch": {
+      "scope": "html",
+      "prefix": "a-ngSwitch",
+      "body": [
+        "<div [ngSwitch]=\"${1:conditionExpression}\">",
+        "\t<div *ngSwitchCase=\"${2:expression}\">${3:output}</div>",
+        "\t<div *ngSwitchDefault>${4:output2}</div>",
+        "</div>"
+      ],
+      "description": "Angular ngSwitch (Terminal GUI)"
+    },
+    "pre w/ json": {
+      "scope": "html",
+      "prefix": "a-prej",
+      "body": [
+        "<pre>{{${1:model} | json}}</pre>$0"
+      ],
+      "description": "Angular pre debug | json (Terminal GUI)"
+    },
+    "pre w/ async json": {
+      "scope": "html",
+      "prefix": "a-preja",
+      "body": [
+        "<pre>{{${1:model} | async | json}}</pre>$0"
+      ],
+      "description": "Angular pre debug | async | json (Terminal GUI)"
+    },
+    "ng-container": {
+      "scope": "html",
+      "prefix": "a-ng-container",
+      "body": [
+        "<ng-container $0></ng-container>"
+      ],
+      "description": "Angular ng-container (Terminal GUI)"
+    },
+    "ng-content": {
+      "scope": "html",
+      "prefix": "a-ng-content",
+      "body": [
+        "<ng-content select=\"[${0:selector}]\"></ng-content>"
+      ],
+      "description": "Angular ng-content (Terminal GUI)"
+    }
   }
 },
 ```
@@ -1458,4 +1699,3 @@ Please feel free to report any issues or suggestions. Check out the [GitHub repo
 ## License
 
 This project is licensed under the [EULA License](https://github.com/BachiMjavanadze/terminal-gui2/blob/main/LICENSE).
-
