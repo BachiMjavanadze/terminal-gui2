@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.9.8] - 2025-08-03
+### Added
+- Support for two‐state “toggler” inputs via the new built-in variable `_[toggle]_` when `connectItems` is defined: renders checkbox items default-checked with 🟩/🟥 prefixes and concatenates the chosen command fragments.
+
 ## [0.9.3] - 2025-07-22
 ### Fixed
 - IntelliSense performance issue when editing placeholders.
