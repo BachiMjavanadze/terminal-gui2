@@ -1,10 +1,10 @@
 ## `Terminal GUI`
 
-**`Terminal GUI`** is a `VSCode` extension that lets you define custom terminal commands with interactive inputs. You can configure your commands in your `settings.json` (or in an external config file. See below how property `configFile` works), and when you run a command, any placeholders you've defined will prompt you for input.
+**`Terminal GUI`** is a `VS Code` extension that lets you define custom terminal commands with interactive inputs. You can configure your commands in your `settings.json` (or in an external config file. See below how property `configFile` works), and when you run a command, any placeholders you've defined will prompt you for input.
 
    - Note: **`Terminal GUI`** supports `Git Bash` and `PowerShell` scripting languages, so you can write very complex commands.
 
-   - Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VSCode`:
+   - Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VS Code`:
 
 ```json
 "terminal.integrated.defaultProfile.windows": "Git Bash",
@@ -163,7 +163,7 @@ in the status bar:
 
    - There are two types of commands: regular commands and context menu commands.
    
-   - If `"contextMenu": true` is set, the command is a context menu command, meaning it can be launched by right-clicking on a file or a folder in the `VSCode` explorer (or by combination of keybinding: `ctrl+shift+e`, navigate with up/down keyboard arrow buttons through files/folders, `shift+F10`, choose `Terminal GUI` menu item).
+   - If `"contextMenu": true` is set, the command is a context menu command, meaning it can be launched by right-clicking on a file or a folder in the `VS Code` explorer (or by combination of keybinding: `ctrl+shift+e`, navigate with up/down keyboard arrow buttons through files/folders, `shift+F10`, choose `Terminal GUI` menu item).
 
    - Regular commands can be launched via the button in the status bar (default keybinding: `ctrl+alt+l`. For Mac: `cmd+alt+l`).
 
@@ -178,11 +178,13 @@ in the status bar:
    
    - The `Enter` button allows you to move forward and execute commands.
 
+Image of choice list input:
+
 ![Image](https://github.com/user-attachments/assets/80d5013c-8573-49ab-83c7-6ee3aca8e826)
 
 ### Terminal Freeze Prevention
 
-   - To prevent `VSCode` terminals from freezing, `Terminal GUI` automatically sends special commands:
+   - To prevent `VS Code` terminals from freezing, `Terminal GUI` automatically sends special commands:
      - When a new terminal is created: `echo 'Terminal GUI started'`
      - Before each command execution: `echo 'HEALTH_CHECK_[number]'`
    
@@ -223,6 +225,8 @@ hello
 
 ### Custom Input Key Syntax
 
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/input-field.avif)
+
    You can differentiate between the input field prompt (what the user sees) and the command substitution placeholder (what gets replaced in your command).
 
    - Use a semicolon (`;`) in the input key to separate the two parts.  
@@ -236,8 +240,57 @@ hello
      ```
       - **prompt text:** What is displayed as the prompt.
       - **substitution placeholder:** The token in your command string to be replaced.
-      - **allowEmpty:** Set to `"true"` if empty input is allowed (default is `"false"`).
-      - **allowSpaces:** Set to `"true"` if spaces between words are allowed (default is `"true"`).
+      - **allowEmpty:** Set to `true` if empty input is allowed (default is `false`).
+      - **allowSpaces:** Set to `true` if spaces between words are allowed (default is `true`).
+      - **save** * If you use `;save`, on each run you'll see a QuickPick with two checkboxes:
+        * **Save** – remember the value but still prompt next time.
+        * **Save & Skip** – remember the value and auto-apply on future runs.
+
+For example:
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/save-input.avif)
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"lorem 1": {
+  "command": "echo _[var1]_",
+  "inputs": {
+    "enter some text; var1; true; true; save": ""
+  }
+},
+```
+
+Example for `ASP.NET WEB API` migrations:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"Add Migration": {
+  "command": "dotnet tool update --global dotnet-ef && dotnet ef migrations add \"_[migrationName]_\" --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\" --output-dir \"_[migrationFolder]_\"",
+  "group": "ASP.NET WEB API",
+  "inputs": {
+    "Enter a migration name; migrationName": "",
+    "Enter a DbContext project path; dbContextPath; true; true; save": "",
+    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
+    "Enter a StartUp project path; startProjectPath; true; true; save": "",
+    "Enter a migration folder path; migrationFolder; true; true; save": "",
+  },
+  "settings": {
+    "revealConsole": true
+  }
+},
+"Update DataBase": {
+  "command": "_[dbContextPath]_.value _[dbContextClassName]_.value _[startProjectPath]_.value dotnet ef database update --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\"",
+  "group": "ASP.NET WEB API",
+  "inputs": {
+    "Enter a DbContext project path; dbContextPath; true; true; save": "",
+    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
+    "Enter a StartUp project path; startProjectPath; true; true; save": "",
+  },
+  "settings": {
+    "revealConsole": true
+  }
+},
+```
 
    - The choice list input key supports an extended syntax:
      ```
@@ -245,8 +298,8 @@ hello
      ```
       - **prompt text:** The text displayed as the prompt for the user.
       - **substitution placeholder:** The token in the command that will be replaced with the chosen (or entered) value.
-      - **allowCustomValue:** A flag (`"true"` or `"false"`) that, when set to `"true"`, allows the user to enter a custom value that isn’t in the predefined choice list. If `"false"` (or omitted), the user must select one of the predefined options.
-      - **allowSpaces:** Set to `"true"` if spaces between words are allowed (default is `"true"`). If set to `"false"`, the user cannot enter spaces.
+      - **allowCustomValue:** A flag (`true` or `"false"`) that, when set to `true`, allows the user to enter a custom value that isn’t in the predefined choice list. If `"false"` (or omitted), the user must select one of the predefined options.
+      - **allowSpaces:** Set to `true` if spaces between words are allowed (default is `true`). If set to `false`, the user cannot enter spaces.
 
 For example:
 
@@ -267,6 +320,9 @@ For example:
 ```
 
 #### Checkbox list input
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/checkbox-list.avif)
+
 You can present a multi-select (checkbox-style) list.  
 Declare the choice object with a special key **`"connectItems"`** whose value is the string used to join the chosen command snippets.
 
@@ -276,8 +332,8 @@ Declare the choice object with a special key **`"connectItems"`** whose value is
   ```
   - **prompt text:** The text displayed as the prompt for the user.
   - **substitution placeholder:** The token in the command that will be replaced with the chosen (or entered) values.
-  - **allowEmpty:** Set to `"true"` if empty input is allowed (default is `"false"`).
-  - **save:** Set to `"true"` to remember and pre-select previously chosen items on next run (default is `"false"`).
+  - **allowEmpty:** Set to `true` if empty input is allowed (default is `false`).
+  - **save:** Set to `true` to remember and pre-select previously chosen items on next run (default is `false`).
 
   When `save` is `true`, selected items are saved in `.vscode/terminal-gui.temp/terminalgui.temp.json` under the `checkboxCommands` section, and will be pre-checked on subsequent invocations.
 
@@ -298,7 +354,44 @@ Declare the choice object with a special key **`"connectItems"`** whose value is
 },
 ```
 
-   - If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
+#### Two‐state “toggler” input
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/toggler-input.avif)
+
+You can define a two‐state toggler option by including exactly one `_[toggle]_` in both the key and the value of a checkbox input. It behaves like a single‐checkbox toggle:  
+- 🟩 (checked) runs the **left** snippet  
+- 🟥 (unchecked) runs the **right** snippet  
+
+You still need `"connectItems"` defined to join multiple command fragments.
+
+**Syntax**  
+```json
+"prompt text; substitution placeholder; allowEmpty; save": {
+  "connectItems": "<joiner>",
+  "LabelA _[toggle]_ LabelB": "cmdA _[toggle]_ cmdB"
+}
+```
+Example:
+
+```json
+"lorem": {
+  "command": "_[var1]_",
+  "inputs": {
+    "tmp; var1; true; true; save": {
+      "connectItems": "&&",
+      "Red _[toggle]_ Brown": "echo 'red color' _[toggle]_ echo 'brown color'",
+      "Blue _[toggle]_ Yellow": "echo 'blue color' _[toggle]_ echo 'yellow color'",
+      "Green _[toggle]_ Black": "echo 'green color' _[toggle]_ echo 'black color'"
+    },
+  }
+},
+```
+
+- Default shows 🟩 Build → runs npm run build
+
+- Uncheck shows 🟥 Clean → runs npm run clean
+
+If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
 
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
@@ -339,56 +432,6 @@ $ echo "Hello John Smith"
 Hello John Smith
 ```
 
-* If you use `;save`, on each run you'll see a QuickPick with two checkboxes:
-
-  * **Save** – remember the value but still prompt next time.
-  * **Save & Skip** – remember the value and auto-apply on future runs.
-* Persistent entries are stored in `.vscode/terminal-gui.temp/terminalgui.temp.json`. If `skip:true`, the prompt is bypassed.
-
-For example:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"foo": {
-  "command": "echo _[var1]_",
-  "inputs": {
-    "enter some text; var1; true; true; save": ""
-  }
-},
-```
-
-Example for `ASP.NET WEB API` migrations:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"Add Migration": {
-  "command": "dotnet tool update --global dotnet-ef && dotnet ef migrations add \"_[migrationName]_\" --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\" --output-dir \"_[migrationFolder]_\"",
-  "group": "ASP.NET",
-  "inputs": {
-    "Enter a migration name; migrationName": "",
-    "Enter a DbContext project path; dbContextPath; true; true; save": "",
-    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
-    "Enter a StartUp project path; startProjectPath; true; true; save": "",
-    "Enter a migration folder path; migrationFolder; true; true; save": "",
-  },
-  "settings": {
-    "revealConsole": true
-  }
-},
-"Update DataBase": {
-  "command": "_[dbContextPath]_.value _[dbContextClassName]_.value _[startProjectPath]_.value dotnet ef database update --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\"",
-  "group": "ASP.NET",
-  "inputs": {
-    "Enter a DbContext project path; dbContextPath; true; true; save": "",
-    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
-    "Enter a StartUp project path; startProjectPath; true; true; save": "",
-  },
-  "settings": {
-    "revealConsole": true
-  }
-},
-```
-
 ### Command settings
 
    You can customize a command with the `settings` property, which is an object with optional properties:
@@ -399,9 +442,9 @@ Example for `ASP.NET WEB API` migrations:
    - **`quickButton`**  
     Where to render this command’s icon as a quick-access button. One of:  
       - `"statusBar"` – show icon on the status bar.
-      - `"tabBar"` – show icon in the editor title/tab bar (`VSCode` allows only 8 icons visible; others will be hidden under the `More Actions...` button).
+      - `"tabBar"` – show icon in the editor title/tab bar (`VS Code` allows only 8 icons visible; others will be hidden under the `More Actions...` button).
       - `"both"` – show icon in both places.
-        - Note: `VSCode` doesn’t support dynamic title/tab-bar updates at runtime, so `Terminal GUI` rewrites `package.json` and will prompt you to reload the window **twice** to apply changes.
+        - Note: `VS Code` doesn’t support dynamic title/tab-bar updates at runtime, so `Terminal GUI` rewrites `package.json` and will prompt you to reload the window **twice** to apply changes.
 
 `tabBar` commands:
 
@@ -453,7 +496,7 @@ Example for `ASP.NET WEB API` migrations:
          You can specify how many `^C` signals should be sent by adding a number after the tooltip in `icon2`, separated by a semicolon (e.g. `"▢;stop server;4"`).
 
          - **Default Behavior:**  
-        If no interrupt count is provided (for example `"▢;stop server"`), the extension will send two `^C` signals – the first immediately and the second after a 300ms delay. This is because `VSCode` sometimes "swallows" one `^C` signal, meaning that instead of sending *n* signals, only *n-1* actually reach the terminal. Sending an extra signal helps ensure that the process is properly stopped.
+        If no interrupt count is provided (for example `"▢;stop server"`), the extension will send two `^C` signals – the first immediately and the second after a 300ms delay. This is because `VS Code` sometimes "swallows" one `^C` signal, meaning that instead of sending *n* signals, only *n-1* actually reach the terminal. Sending an extra signal helps ensure that the process is properly stopped.
 
         **Auto-reveal once:**  
         Even when `settings.revealConsole` is `false`, the terminal panel is revealed **the first time** a long-running command starts. Subsequent launches keep the panel hidden unless `revealConsole` is `true` or the process exits with an error.
@@ -795,13 +838,13 @@ FINISH
 
 ### Terminal-to-VSCode Modal Messages
 
-This feature lets you pass information from the terminal to `VSCode` using a special command pattern. If the output of the command contains the syntax:
+This feature lets you pass information from the terminal to `VS Code` using a special command pattern. If the output of the command contains the syntax:
 
 ```bash
 TERMINAL_GUI_MSG(Your message here)
 ```
 
-then `VSCode` will extract the message from the brackets and display it in a modal window.
+then `VS Code` will extract the message from the brackets and display it in a modal window.
 
 #### Example
 
@@ -863,7 +906,7 @@ TERMINAL_GUI_MSG(Wrong Answer)
 
 ### Built-In Basic Settings
 
-These settings, defined in your configuration under `settings.json ➜ "TerminalGui.config": { "basic": {} }`, control the appearance and behavior of built-in command buttons in the `VSCode` status and title bars.
+These settings, defined in your configuration under `settings.json ➜ "TerminalGui.config": { "basic": {} }`, control the appearance and behavior of built-in command buttons in the `VS Code` status and title bars.
 
 ```json
 // settings.json
@@ -912,10 +955,8 @@ These settings, defined in your configuration under `settings.json ➜ "Terminal
 
    - **pinTabBar**
 
-     - `VSCode` normally hides the tab bar when no files are open. When `true` (default), Terminal GUI “tricks” VS Code by opening a non-editable `Terminal GUI` placeholder file so the title/tab bar remains visible even with zero real files.  
+     - `VS Code` normally hides the tab bar when no files are open. When `true` (default), Terminal GUI “tricks” `VS Code` by opening a non-editable `Terminal GUI` placeholder file so the title/tab bar remains visible even with zero real files.  
      - Set to `false` to disable this workaround and allow the tab bar to collapse normally.
-
-Set to false to disable this behavior.
 
 ### External Configuration File
 
@@ -969,13 +1010,13 @@ Example of `terminalgui.config.jsonc` might look like this:
 
 Below is an example of `settings.json` configuration for different frameworks.
 
-- Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VSCode`:
+- Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VS Code`:
 
 ```json
 "terminal.integrated.defaultProfile.windows": "Git Bash",
 ```
 
-- Note: If you copy and paste the example below into `settings.json` of `VSCode`, the changes will not take effect immediately; you will also need to `Refresh` the settings using the keyboard shortcut `ctrl+alt+p` (on Mac: `cmd+alt+p`).
+- Note: If you copy and paste the example below into `settings.json` of `VS Code`, the changes will not take effect immediately; you will also need to `Refresh` the settings using the keyboard shortcut `ctrl+alt+p` (on Mac: `cmd+alt+p`).
 
 <details>
 <summary>🅰️ Angular</summary>
@@ -985,35 +1026,20 @@ Below is an example of `settings.json` configuration for different frameworks.
 "TerminalGui.config": {
   "commands": {
     "Create Angular Project": {
-      "command": "cd _[Select a folder(Select a parent folder for the project)]_ _[name]_.value _[version]_.value && npm install -g @angular/cli@_[version]_ && ng new _[name]_ --style=_[styles]_ --inline-style=_[inline-style]_ --inline-template=_[inline-html]_ --skip-tests=_[tests]_ --ssr=_[ssr]_ && cd _[name]_ _[eslint]_ && code -r .",
+      "command": "cd _[Select a folder(Select a parent folder for the project (press ENTER))]_ _[name]_.value _[version]_.value && npm install -g @angular/cli@_[version]_ && angularProjectPath=\"_[name]_\" && ng new \"_[name]_\" _[opts]_ && { [[ \"${PWD##*/}\" == \"$angularProjectPath\" ]] || cd \"$angularProjectPath\"; } && code -r .",
       "group": "🅰️ Angular",
       "inputs": {
-        "Enter a project name;name;false;false": "",
+        "Enter a project name; name; false; false": "",
         "Choose the Angular version: eg.: 4.1.2; version": "latest",
-        "Which stylesheet format would you like to use?;styles": {
-          "CSS": "css",
-          "SCSS": "scss",
-        },
-        "Inline Style?;inline-style": {
-          "true": "true",
-          "false": "false",
-        },
-        "Inline HTML?;inline-html": {
-          "true": "true",
-          "false": "false",
-        },
-        "Skip tests?;tests": {
-          "true": "true",
-          "false": "false",
-        },
-        "Do you want to enable SSR and SSG?;ssr": {
-          "true": "true",
-          "false": "false",
-        },
-        "Do you want to install ESlint?;eslint": {
-          "true": "&& ng add @angular-eslint/schematics --skip-confirmation=true && ng lint",
-          "false": " ",
-        },
+        "Angular options; opts; false; true": {
+          "connectItems": " ",
+          "CSS _[toggle]_ SCSS": "--style=css _[toggle]_ --style=scss",
+          "Inline Style _[toggle]_ No Inline Style": "--inline-style=true _[toggle]_ --inline-style=false",
+          "Inline HTML _[toggle]_ No Inline HTML": "--inline-template=true _[toggle]_ --inline-template=false",
+          "Skip tests _[toggle]_ Don't skip tests": "--skip-tests=true _[toggle]_ --skip-tests=false",
+          "Enable SSR/SSG _[toggle]_ No SSR/SSG": "--ssr=true _[toggle]_ --ssr=false",
+          "Install ESLint _[toggle]_ Skip ESLint": "&& cd \"$angularProjectPath\" && ng add @angular-eslint/schematics --skip-confirmation=true && ng lint _[toggle]_ && :"
+        }
       },
       "settings": {
         "terminalName": "Angular Project Creation",
@@ -1688,7 +1714,7 @@ Below is an example of `settings.json` configuration for different frameworks.
 </details>
 
 ### Known Issues
-- Placeholder IntelliSense may not activate until `VSCode` is restarted after installing or reactivating the extension.
+- Placeholder IntelliSense may not activate until `VS Code` is restarted after installing or reactivating the extension.
 
 ## Support and Feedback
 
