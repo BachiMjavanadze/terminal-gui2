@@ -362,7 +362,7 @@ You can define a two‐state toggler option by including exactly one `_[toggle]_
 - 🟩 (checked) runs the **left** snippet  
 - 🟥 (unchecked) runs the **right** snippet  
 
-You still need `"connectItems"` defined to join multiple command fragments.
+You still need `"connectItems"` defined to join multiple command fragments. By default, Two‐state “toggler” is checked.
 
 **Syntax**  
 ```json
@@ -387,9 +387,9 @@ Example:
 },
 ```
 
-- Default shows 🟩 Build → runs npm run build
+- Default shows 🟩 Red, Blue, Green
 
-- Uncheck shows 🟥 Clean → runs npm run clean
+- Uncheck shows 🟥 Brown, Yellow, Black
 
 If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
 
@@ -1392,15 +1392,33 @@ Below is an example of `settings.json` configuration for different frameworks.
 "TerminalGui.config": {
   "commands": {
     "Create React.js Project": {
-      "command": "cd _[Select a folder]_ && _[projectName]_.value npx --yes create-vite@_[version]_ _[projectName]_ --template _[variant]_ && cd _[projectName]_ && npm i && code -r .",
+      "command": "cd _[Select a folder(Select a parent folder for the project)]_ && tmpl=react && TG_DO_CSS=0 && TG_DO_PRETTIER=0 _[projectName]_.value _[version]_.value && _[reactOptions]_ && npx --yes create-vite@_[version]_ \"_[projectName]_\" --template \"$tmpl\" && cd \"_[projectName]_\" && npm i && _[bashScript]_ && ( [[ ${TG_DO_CSS:-0} -eq 1 ]] && tg_css_to_scss || : ) && ( [[ ${TG_DO_PRETTIER:-0} -eq 1 ]] && tg_setup_prettier _[prettierRc]_.file _[prettierIgnore]_.file || : ) && code -r .",
       "group": "⚛️ React.js",
       "inputs": {
         "Enter a project name; projectName; false; false": "",
         "Choose the React.js version: eg.: 4.1.2; version; false": "latest",
-        "Select a variant; variant": {
-          "JavaScript": "react",
-          "TypeScript": "react-ts"
+        "React options; reactOptions; false; true": {
+          "connectItems": "&&",
+          "JavaScript _[toggle]_ TypeScript": "tmpl=react _[toggle]_ tmpl=react-ts",
+          "CSS _[toggle]_ SCSS": "TG_DO_CSS=0 _[toggle]_ TG_DO_CSS=1",
+          "Prettier _[toggle]_ Skip Prettier": "TG_DO_PRETTIER=1 _[toggle]_ TG_DO_PRETTIER=0"
         }
+      },
+      "snippets": {
+        "prettierRc": [
+          "{",
+          "  \"singleQuote\": true,",
+          "  \"semi\": true,",
+          "  \"trailingComma\": \"es5\",",
+          "  \"printWidth\": 100",
+          "}"
+        ],
+        "prettierIgnore": [
+          "dist",
+          "build",
+          "coverage",
+          ".vscode/terminal-gui.temp"
+        ]
       },
       "settings": {
         "terminalName": "React Project Creation",
@@ -1421,22 +1439,27 @@ Below is an example of `settings.json` configuration for different frameworks.
       }
     },
     "Component": {
-      "command": "cd _[folderPath]_ && _[bashScript]_ && cmpName=\"_[componentName]_\" && capitalizeValue cmpName && createProcessedFile _[reactComponentSnippet]_.file \"${cmpName}.jsx\" cmpName",
+      "command": "cd _[folderPath]_ && _[bashScript]_ && detect_ts_js \"$PWD\" && cmpName=\"_[componentName]_\" && capitalizeValue cmpName && SNIP_JS=_[reactComponentSnippetJS]_.file && SNIP_TS=_[reactComponentSnippetTS]_.file && SRC=\"$SNIP_JS\"; [ \"$TG_LANG\" = ts ] && SRC=\"$SNIP_TS\"; createProcessedFile \"$SRC\" \"${cmpName}.${JSX_EXT}\" cmpName",
       "group": "⚛️ React.js",
       "inputs": {
         "Enter component name; componentName; false; false": ""
       },
       "snippets": {
-        "reactComponentSnippet": [
-          "import React from 'react';",
+        "reactComponentSnippetJS": [
+          "const _{$cmpName}_ = () => (",
+          "  <div>",
+          "    <h1>_{$cmpName}_ Component</h1>",
+          "  </div>",
+          ");",
           "",
-          "const _{$cmpName}_ = () => {",
-          "  return (",
-          "    <div>",
-          "      <h1>_{$cmpName}_ Component</h1>",
-          "    </div>",
-          "  );",
-          "};",
+          "export default _{$cmpName}_;"
+        ],
+        "reactComponentSnippetTS": [
+          "const _{$cmpName}_ = () => (",
+          "  <div>",
+          "    <h1>_{$cmpName}_ Component</h1>",
+          "  </div>",
+          ");",
           "",
           "export default _{$cmpName}_;"
         ]
@@ -1446,117 +1469,135 @@ Below is an example of `settings.json` configuration for different frameworks.
       }
     },
     "Custom Hook": {
-      "command": "cd _[folderPath]_ && _[bashScript]_ && hookName=\"_[hookName]_\" && capitalizeValue hookName && createProcessedFile _[reactHookSnippet]_.file \"${hookName}.js\" hookName",
+      "command": "cd _[folderPath]_ && _[bashScript]_ && detect_ts_js \"$PWD\" && hookName=\"_[name]_\" && capitalizeValue hookName && SNIP_JS=_[reactHookSnippetJS]_.file && SNIP_TS=_[reactHookSnippetTS]_.file && SRC=\"$SNIP_JS\"; [ \"$TG_LANG\" = ts ] && SRC=\"$SNIP_TS\"; createProcessedFile \"$SRC\" \"use${hookName}.${HOOK_EXT}\" hookName && code \"use${hookName}.${HOOK_EXT}\"",
       "group": "⚛️ React.js",
       "inputs": {
-        "Enter hook name; hookName; false; false": ""
+        "Hook base name (e.g. Toggle); name; false; false": ""
       },
       "snippets": {
-        "reactHookSnippet": [
-          "import { useState, useEffect, useCallback, useRef } from 'react';",
+        "reactHookSnippetJS": [
+          "import { useState, useCallback } from 'react';",
           "",
-          "const use_{$hookName}_ = (initialValue, options = {}) => {",
-          "  const [data, setData] = useState(initialValue);",
-          "  const [loading, setLoading] = useState(false);",
-          "  const [error, setError] = useState(null);",
-          "",
-          "  const isMounted = useRef(true);",
-          "  const optionsRef = useRef(options);",
-          "",
-          "  useEffect(() => {",
-          "    optionsRef.current = options;",
-          "  }, [options]);",
-          "",
-          "  useEffect(() => {",
-          "    return () => {",
-          "      isMounted.current = false;",
-          "    };",
+          "export default function use_{$hookName}_ (initial = false) {",
+          "  const [on, setOn] = useState(initial);",
+          "  const toggle = useCallback(() => {",
+          "    setOn(v => !v);",
           "  }, []);",
+          "  return { on, toggle, setOn };",
+          "}"
+        ],
+        "reactHookSnippetTS": [
+          "import { useState, useCallback } from 'react';",
           "",
-          "  const fetchData = useCallback(async (params = {}) => {",
-          "    setLoading(true);",
-          "    setError(null);",
-          "",
-          "    try {",
-          "      // Your async logic here",
-          "      const result = null; // Replace with actual result",
-          "      if (isMounted.current) {",
-          "        setData(result);",
-          "      }",
-          "      return result;",
-          "    } catch (err) {",
-          "      if (isMounted.current) {",
-          "        setError(err);",
-          "      }",
-          "      return null;",
-          "    } finally {",
-          "      if (isMounted.current) {",
-          "        setLoading(false);",
-          "      }",
-          "    }",
+          "export default function use_{$hookName}_(initial: boolean = false) {",
+          "  const [on, setOn] = useState<boolean>(initial);",
+          "  const toggle = useCallback(() => {",
+          "    setOn(v => !v);",
           "  }, []);",
-          "",
-          "  const reset = useCallback(() => {",
-          "    setData(initialValue);",
-          "    setError(null);",
-          "  }, [initialValue]);",
-          "",
-          "  return {",
-          "    data,",
-          "    loading,",
-          "    error,",
-          "    fetchData,",
-          "    reset,",
-          "    setData",
-          "  };",
-          "};",
-          "",
-          "export default use_{$hookName}_;"
+          "  return { on, toggle, setOn } as const;",
+          "}"
         ]
       },
       "settings": {
         "contextMenu": true
       }
     },
-    "Context Provider": {
-      "command": "cd _[folderPath]_ && _[bashScript]_ && ctxName=\"_[contextName]_\" && capitalizeValue ctxName && createProcessedFile _[reactContextSnippet]_.file \"${ctxName}Context.js\" ctxName",
+    "Context": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && detect_ts_js \"$PWD\" && ctxName=\"_[contextName]_\" && capitalizeValue ctxName && CORE_JS=_[reactContextCoreJS]_.file && CORE_TS=_[reactContextCoreTS]_.file && PROV_JS=_[reactContextProviderJS]_.file && PROV_TS=_[reactContextProviderTS]_.file && CORE=\"$CORE_JS\" && PROV=\"$PROV_JS\" && [ \"$TG_LANG\" = ts ] && CORE=\"$CORE_TS\" && PROV=\"$PROV_TS\" ; createProcessedFile \"$CORE\" \"${ctxName}Context.${HOOK_EXT}\" ctxName && createProcessedFile \"$PROV\" \"${ctxName}Provider.${JSX_EXT}\" ctxName",
       "group": "⚛️ React.js",
       "inputs": {
         "Enter context name; contextName; false; false": ""
       },
       "snippets": {
-        "reactContextSnippet": [
-          "import { createContext, useContext, useState } from 'react';",
-          "",
-          "const _{$ctxName}_Context = createContext(null);",
-          "",
-          "export const use_{$ctxName}_Context = () => {",
-          "  const context = useContext(_{$ctxName}_Context);",
-          "  if (!context) {",
-          "    throw new Error('use_{$ctxName}_Context must be used within a _{$ctxName}_ContextProvider');",
-          "  }",
-          "  return context;",
+        "reactContextCoreJS": [
+          "import { createContext, useContext } from 'react';",
+          "export const _{$ctxName}_Context = createContext(null);",
+          "export function use_{$ctxName}_() {",
+          "  const c = useContext(_{$ctxName}_Context);",
+          "  if (!c) throw new Error('Wrap with _{$ctxName}_Provider');",
+          "  return c;",
+          "}"
+        ],
+        "reactContextCoreTS": [
+          "import { createContext, useContext } from 'react';",
+          "type _{$ctxName}_Ctx = {",
+          "  value: unknown;",
+          "  setValue: React.Dispatch<React.SetStateAction<unknown>>;",
           "};",
-          "",
-          "export const _{$ctxName}_ContextProvider = ({ children }) => {",
-          "  const [value, setValue] = useState('default value');",
-          "  const [loading, setLoading] = useState(false);",
-          "",
-          "  const updateValue = (newValue) => setValue(newValue);",
-          "",
-          "  const contextValue = {",
-          "    value,",
-          "    loading,",
-          "    updateValue,",
-          "    setLoading",
-          "  };",
-          "",
+          "export const _{$ctxName}_Context = createContext<_{$ctxName}_Ctx | null>(null);",
+          "export function use_{$ctxName}_(): _{$ctxName}_Ctx {",
+          "  const c = useContext(_{$ctxName}_Context);",
+          "  if (!c) throw new Error('Wrap with _{$ctxName}_Provider');",
+          "  return c;",
+          "}"
+        ],
+        "reactContextProviderJS": [
+          "import { useState } from 'react';",
+          "import { _{$ctxName}_Context } from './_{$ctxName}_Context';",
+          "export default function _{$ctxName}_Provider({ children }) {",
+          "  const [value, setValue] = useState(null);",
           "  return (",
-          "    <_{$ctxName}_Context.Provider value={contextValue}>",
+          "    <_{$ctxName}_Context.Provider value={{ value, setValue }}>",
           "      {children}",
           "    </_{$ctxName}_Context.Provider>",
           "  );",
-          "};"
+          "}"
+        ],
+        "reactContextProviderTS": [
+          "import { useState } from 'react';",
+          "import { _{$ctxName}_Context } from './_{$ctxName}_Context';",
+          "export default function _{$ctxName}_Provider({ children }: { children: React.ReactNode }) {",
+          "  const [value, setValue] = useState<unknown>(null);",
+          "  return (",
+          "    <_{$ctxName}_Context.Provider value={{ value, setValue }}>",
+          "      {children}",
+          "    </_{$ctxName}_Context.Provider>",
+          "  );",
+          "}"
+        ]
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "API service": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && detect_ts_js \"$PWD\" && SNIP_JS=_[APIserviceSnippetJS]_.file && SNIP_TS=_[APIserviceSnippetTS]_.file && SRC=\"$SNIP_JS\"; [ \"$TG_LANG\" = ts ] && SRC=\"$SNIP_TS\"; cp \"$SRC\" \"_[fileName]_.${SERVICE_EXT}\" && code -r \"_[fileName]_.${SERVICE_EXT}\"",
+      "group": "⚛️ React.js",
+      "inputs": {
+        "Enter file name; fileName; false; false": ""
+      },
+      "snippets": {
+        "APIserviceSnippetJS": [
+          "export async function getJson(url, init) {",
+          "  const r = await fetch(url, init);",
+          "  if (!r.ok) throw new Error(String(r.status));",
+          "  return r.json();",
+          "}",
+          "",
+          "export async function postJson(url, body, init = {}) {",
+          "  return getJson(url, {",
+          "    ...init,",
+          "    method: 'POST',",
+          "    headers: { 'Content-Type': 'application/json', ...(init.headers || {}) },",
+          "    body: JSON.stringify(body)",
+          "  });",
+          "}"
+        ],
+        "APIserviceSnippetTS": [
+          "export async function getJson<T = unknown>(url: string, init?: RequestInit): Promise<T> {",
+          "  const r = await fetch(url, init);",
+          "  if (!r.ok) throw new Error(String(r.status));",
+          "  return r.json() as Promise<T>;",
+          "}",
+          "",
+          "export async function postJson<T = unknown>(url: string, body: unknown, init: RequestInit = {}): Promise<T> {",
+          "  return getJson<T>(url, {",
+          "    ...init,",
+          "    method: 'POST',",
+          "    headers: { 'Content-Type': 'application/json', ...(init.headers || {}) },",
+          "    body: JSON.stringify(body)",
+          "  });",
+          "}"
         ]
       },
       "settings": {
@@ -1628,86 +1669,366 @@ Below is an example of `settings.json` configuration for different frameworks.
       "  local varValue=\"${!varName}\"",
       "  sed \"s|_{\\\\\\$${varName}}_|${varValue}|g\" \"$src\" > \"$dest\" && code \"$dest\"",
       "}",
+      "",
+      "detect_ts_js() {",
+      "  local start_dir=\"${1:-$PWD}\"",
+      "  TG_LANG=js; JSX_EXT=jsx; HOOK_EXT=js; SERVICE_EXT=js  # updated",
+      "  local git_root",
+      "  git_root=$(git -C \"$start_dir\" rev-parse --show-toplevel 2>/dev/null || echo \"/\")",
+      "  local cur=\"$start_dir\"",
+      "  while :; do",
+      "    if compgen -G \"$cur/tsconfig*.json\" > /dev/null; then TG_LANG=ts; break; fi",
+      "    if [ -f \"$cur/package.json\" ] && grep -qiE '\"typescript\"|\"@types/react\"|@typescript-eslint' \"$cur/package.json\"; then TG_LANG=ts; break; fi",
+      "    [ \"$cur\" = \"$git_root\" ] && break",
+      "    local parent; parent=$(dirname \"$cur\")",
+      "    [ \"$parent\" = \"$cur\" ] && break",
+      "    cur=\"$parent\"",
+      "  done",
+      "  if [ \"$TG_LANG\" = js ]; then",
+      "    if compgen -G \"$start_dir/*.tsx\" > /dev/null || compgen -G \"$start_dir/*.ts\" > /dev/null; then TG_LANG=ts; fi",
+      "  fi",
+      "  if [ \"$TG_LANG\" = ts ]; then",
+      "    JSX_EXT=tsx; HOOK_EXT=ts; SERVICE_EXT=ts",
+      "  else",
+      "    JSX_EXT=jsx; HOOK_EXT=js; SERVICE_EXT=js",
+      "  fi",
+      "}",
+      "",
+      "tg_norm_path() {",
+      "  # strip surrounding quotes if present",
+      "  local p=\"$1\"",
+      "  p=\"${p%\\\"}\"; p=\"${p#\\\"}\"",
+      "  p=\"${p%\\'}\"; p=\"${p#\\'}\"",
+      "  if command -v cygpath >/dev/null 2>&1; then",
+      "    cygpath -u \"$p\"",
+      "  else",
+      "    echo \"$p\" | sed -E 's|^([A-Za-z]):|/\\L\\1|; s|\\\\\\\\|/|g; s|\\\\|/|g'",
+      "  fi",
+      "}",
+      "",
+      "tg_css_to_scss() {",
+      "  npm i -D sass || return 0",
+      "  for f in src/App.css src/index.css; do",
+      "    [ -f \"$f\" ] && mv \"$f\" \"${f%.css}.scss\"",
+      "  done",
+      "  for f in src/main.jsx src/main.tsx src/App.jsx src/App.tsx; do",
+      "    [ -f \"$f\" ] && sed -i 's/\\.css/\\.scss/g' \"$f\"",
+      "  done",
+      "}",
+      "",
+      "tg_setup_prettier() {",
+      "  local rc_raw=\"$1\"; local ig_raw=\"$2\"",
+      "  local rc; rc=$(tg_norm_path \"$rc_raw\")",
+      "  local ig; ig=$(tg_norm_path \"$ig_raw\")",
+      "  npm i -D prettier || return 0",
+      "  if [ -f \"$rc\" ]; then cp \"$rc\" .prettierrc.json; else echo '{\"singleQuote\":true,\"semi\":true,\"trailingComma\":\"es5\",\"printWidth\":100}' > .prettierrc.json; fi",
+      "  if [ -f \"$ig\" ]; then cp \"$ig\" .prettierignore; else printf 'dist\\nbuild\\ncoverage\\n.vscode/terminal-gui.temp\\n' > .prettierignore; fi",
+      "  npm pkg set scripts.format='prettier . --write' scripts.'format:check'='prettier . --check' 2>/dev/null || node -e 'const fs=require(\"fs\");const f=\"package.json\";const j=JSON.parse(fs.readFileSync(f,\"utf8\"));j.scripts=j.scripts||{};j.scripts.format=\"prettier . --write\";j.scripts[\"format:check\"]=\"prettier . --check\";fs.writeFileSync(f, JSON.stringify(j,null,2));'",
+      "}",
+      ""
     ]
-  }
-},
-```
-</details>
-
-<details>
-<summary>🟩 Node.js</summary>
-
-```json
-// settings.json
-"TerminalGui.config": {
-  "commands": {
-    "Create Node.js Project": {
-      "command": "cd _[Select a folder]_ && mkdir _[projectName]_ && cd _[projectName]_ && npm init -y && npm pkg set type=\"module\" main=\"_[entryPoint]_.js\" scripts.start=\"node --watch _[entryPoint]_.js\" && npm pkg delete scripts.test && npm i express@_[version]_ && cp _[mainFile]_.file _[entryPoint]_.js && code -r .",
-      "group": "🟩 Node.js",
-      "inputs": {
-        "Enter a project name; projectName": "",
-        "Enter an entry-point file name; entryPoint; false; false": "index",
-        "Choose the Express.js version: eg.: 4.1.2; version; false": "latest",
-      },
-      "snippets": {
-        "mainFile": [
-          "import express from 'express';",
-          "",
-          "const app = express();",
-          "const PORT = process.env.PORT || 3000;",
-          "",
-          "app.get('/', (req, res) => {",
-          "  res.send('Hello World!');",
-          "});",
-          "",
-          "app.listen(PORT, () => {",
-          "  console.log(`Server running on http://localhost:${PORT}`);",
-          "});"
-        ]
-      },
-      "settings": {
-        "terminalName": "NodeJS Project Creation",
-        "showWhenEmptyWorkspace": "emptyWorkspace",
-        "revealConsole": true
-      }
+  },
+  "VSCodeSnippets": {
+    "useMemo (JS)": {
+      "scope": "javascript,javascriptreact",
+      "prefix": "ume",
+      "body": [
+        "const ${1:value} = useMemo(() => {",
+        "  ${2:// compute}",
+        "  return ${3:result};",
+        "}, [${4:deps}]);"
+      ],
+      "description": "useMemo (JS)"
     },
-    "Run Node.js Server": {
-      "command": "npm run start",
-      "icon": "▶;run server",
-      "icon2": "▢;stop server",
-      "group": "🟩 Node.js",
-      "settings": {
-        "terminalName": "Node.js Server",
-        "quickButton": "statusBar",
-        "showWhenEmptyWorkspace": "fullWorkspace"
-      }
+    "useMemo (TS)": {
+      "scope": "typescript,typescriptreact",
+      "prefix": "ume",
+      "body": [
+        "const ${1:value} = useMemo<${2:Type}>(() => {",
+        "  ${3:// compute}",
+        "  return ${4:result};",
+        "}, [${5:deps}]);"
+      ],
+      "description": "useMemo (TS)"
     },
-    "🛠️ Install NPM Packages": {
-      "command": "npm i _[package]_@_[version]_ _[dependency]_",
-      "group": "🟩 Node.js",
-      "inputs": {
-        "Choose the package; package; true": {
-          "nodemailer": "nodemailer",
-          "socket.io": "socket.io",
-          "helmet": "helmet",
-          "dotenv": "dotenv",
-          "cors": "cors",
-          "mongoose": "mongoose",
-          "jsonwebtoken": "jsonwebtoken",
-          "bcrypt": "bcrypt",
-          // "express": "express",
-          // "winston": "winston",
-        },
-        "Choose the version: eg.: 4.1.2; version; false": "latest",
-        "Saved package as a dependency or devDependency;dependency": {
-          "dependency": "-S",
-          "devDependency": "-D"
-        },
-      },
-      "settings": {
-        "revealConsole": true,
-      }
+    "useId (JS)": {
+      "scope": "javascript,javascriptreact",
+      "prefix": "uid",
+      "body": [
+        "const ${1:id} = useId();"
+      ],
+      "description": "useId (JS)"
     },
+    "useId (TS)": {
+      "scope": "typescript,typescriptreact",
+      "prefix": "uid",
+      "body": [
+        "const ${1:id} = useId();"
+      ],
+      "description": "useId (TS)"
+    },
+    "useTransition (JS)": {
+      "scope": "javascript,javascriptreact",
+      "prefix": "utr",
+      "body": [
+        "const [${1:isPending}, ${2:startTransition}] = useTransition();",
+        "${2:startTransition}(() => {",
+        "  ${3:// state update}",
+        "});"
+      ],
+      "description": "useTransition (JS)"
+    },
+    "useTransition (TS)": {
+      "scope": "typescript,typescriptreact",
+      "prefix": "utr",
+      "body": [
+        "const [${1:isPending}, ${2:startTransition}] = useTransition();",
+        "${2:startTransition}(() => {",
+        "  ${3:// state update}",
+        "});"
+      ],
+      "description": "useTransition (TS)"
+    },
+    "useDeferredValue (JS)": {
+      "scope": "javascript,javascriptreact",
+      "prefix": "udv",
+      "body": [
+        "const ${1:deferred} = useDeferredValue(${2:value});"
+      ],
+      "description": "useDeferredValue (JS)"
+    },
+    "useDeferredValue (TS)": {
+      "scope": "typescript,typescriptreact",
+      "prefix": "udv",
+      "body": [
+        "const ${1:deferred} = useDeferredValue(${2:value});"
+      ],
+      "description": "useDeferredValue (TS)"
+    },
+    "useReducer (init, JS)": {
+      "scope": "javascript,javascriptreact",
+      "prefix": "ured",
+      "body": [
+        "const ${1:initialState} = ${2:{ count: 0 }};",
+        "function ${3:reducer}(state = ${1:initialState}, action) {",
+        "  switch (action.type) {",
+        "    case '${4:increment}': return { ...state, count: state.count + 1 };",
+        "    default: return state;",
+        "  }",
+        "}",
+        "const [${5:state}, ${6:dispatch}] = useReducer(${3:reducer}, ${1:initialState});"
+      ],
+      "description": "useReducer with initial state (JS)"
+    },
+    "useReducer (init, TS)": {
+      "scope": "typescript,typescriptreact",
+      "prefix": "ured",
+      "body": [
+        "type ${1:State} = { count: number };",
+        "type ${2:Action} = { type: 'increment' } | { type: 'decrement' };",
+        "function ${3:reducer}(state: ${1:State}, action: ${2:Action}): ${1:State} {",
+        "  switch (action.type) {",
+        "    case 'increment': return { ...state, count: state.count + 1 };",
+        "    case 'decrement': return { ...state, count: state.count - 1 };",
+        "    default: return state;",
+        "  }",
+        "}",
+        "const [${4:state}, ${5:dispatch}] = useReducer(${3:reducer}, { count: 0 });"
+      ],
+      "description": "useReducer with initial state (TS)"
+    },
+    "useRef (JS)": {
+      "scope": "javascript,javascriptreact",
+      "prefix": "uref",
+      "body": [
+        "const ${1:ref} = useRef(null);"
+      ],
+      "description": "useRef (JS)"
+    },
+    "useRef (TS)": {
+      "scope": "typescript,typescriptreact",
+      "prefix": "uref",
+      "body": [
+        "const ${1:ref} = useRef<${2:HTMLDivElement} | null>(null);"
+      ],
+      "description": "useRef (typed TS)"
+    },
+    "React.lazy + Suspense (JS)": {
+      "scope": "javascriptreact",
+      "prefix": "rlz",
+      "body": [
+        "import { lazy, Suspense } from 'react';",
+        "const ${1:Page} = lazy(() => import('${2:./Page}'));",
+        "",
+        "<Suspense fallback={<div>Loading...</div>}>",
+        "  <${1:Page} />",
+        "</Suspense>"
+      ],
+      "description": "lazy() + Suspense (JSX)"
+    },
+    "React.lazy + Suspense (TS)": {
+      "scope": "typescriptreact",
+      "prefix": "rlz",
+      "body": [
+        "import { lazy, Suspense } from 'react';",
+        "const ${1:Page} = lazy(() => import('${2:./Page}'));",
+        "",
+        "<Suspense fallback={<div>Loading...</div>}>",
+        "  <${1:Page} />",
+        "</Suspense>"
+      ],
+      "description": "lazy() + Suspense (TSX)"
+    },
+    "Suspense boundary (JS)": {
+      "scope": "javascriptreact",
+      "prefix": "rsus",
+      "body": [
+        "import { Suspense } from 'react';",
+        "<Suspense fallback={<div>Loading...</div>}>",
+        "  ${1:/* children */}",
+        "</Suspense>"
+      ],
+      "description": "Suspense boundary (JSX)"
+    },
+    "Suspense boundary (TS)": {
+      "scope": "typescriptreact",
+      "prefix": "rsus",
+      "body": [
+        "import { Suspense } from 'react';",
+        "<Suspense fallback={<div>Loading...</div>}>",
+        "  ${1:/* children */}",
+        "</Suspense>"
+      ],
+      "description": "Suspense boundary (TSX)"
+    },
+    "createRoot entry (JS)": {
+      "scope": "javascriptreact",
+      "prefix": "crt",
+      "body": [
+        "import { createRoot } from 'react-dom/client';",
+        "import ${1:App} from '${2:./App}';",
+        "",
+        "const root = createRoot(document.getElementById('root'));",
+        "root.render(<${1:App} />);"
+      ],
+      "description": "React 18/19 entry (JS)"
+    },
+    "createRoot entry (TS)": {
+      "scope": "typescriptreact",
+      "prefix": "crt",
+      "body": [
+        "import { createRoot } from 'react-dom/client';",
+        "import ${1:App} from '${2:./App}';",
+        "",
+        "const el = document.getElementById('root');",
+        "if (!el) throw new Error('Root element not found');",
+        "createRoot(el).render(<${1:App} />);"
+      ],
+      "description": "React 18/19 entry (TS)"
+    },
+    "List render .map (JS)": {
+      "scope": "javascriptreact",
+      "prefix": "rmap",
+      "body": [
+        "{${1:items}.map((${2:item}) => (",
+        "  <li key={${2}.id}>${3}</li>",
+        "))}"
+      ],
+      "description": "Render list with .map (JSX)"
+    },
+    "List render .map (TS)": {
+      "scope": "typescriptreact",
+      "prefix": "rmap",
+      "body": [
+        "{${1:items}.map((${2:item}) => (",
+        "  <li key={${2}.id}>${3}</li>",
+        "))}"
+      ],
+      "description": "Render list with .map (TSX)"
+    },
+    "Conditional className (JS)": {
+      "scope": "javascriptreact",
+      "prefix": "rcls",
+      "body": [
+        "className={[${1:'base'}, ${2:cond} && '${3:whenTrue}'].filter(Boolean).join(' ')}"
+      ],
+      "description": "Conditional className (JSX)"
+    },
+    "Conditional className (TS)": {
+      "scope": "typescriptreact",
+      "prefix": "rcls",
+      "body": [
+        "className={[${1:'base'}, ${2:cond} && '${3:whenTrue}'].filter(Boolean).join(' ')}"
+      ],
+      "description": "Conditional className (TSX)"
+    },
+    "Vite env import.meta.env (JS)": {
+      "scope": "javascript,javascriptreact",
+      "prefix": "ienv",
+      "body": [
+        "const ${1:apiUrl} = import.meta.env.${2:VITE_API_URL};"
+      ],
+      "description": "Vite env access (JS)"
+    },
+    "Vite env import.meta.env (TS)": {
+      "scope": "typescript,typescriptreact",
+      "prefix": "ienv",
+      "body": [
+        "const ${1:apiUrl}: string = import.meta.env.${2:VITE_API_URL};"
+      ],
+      "description": "Vite env access (TS)"
+    },
+    "Fetch in useEffect (AbortController, JS)": {
+      "scope": "javascript,javascriptreact",
+      "prefix": "ufetch",
+      "body": [
+        "useEffect(() => {",
+        "  const ac = new AbortController();",
+        "  (async () => {",
+        "    try {",
+        "      const r = await fetch('${1:/api}', { signal: ac.signal });",
+        "      if (!r.ok) throw new Error(String(r.status));",
+        "      const data = await r.json();",
+        "      ${2:setState}(data);",
+        "    } catch (e) {",
+        "      if (e.name !== 'AbortError') console.error(e);",
+        "    }",
+        "  })();",
+        "  return () => ac.abort();",
+        "}, [${3:deps}]);"
+      ],
+      "description": "Fetch in useEffect with AbortController (JS)"
+    },
+    "Fetch in useEffect (AbortController, TS)": {
+      "scope": "typescript,typescriptreact",
+      "prefix": "ufetch",
+      "body": [
+        "useEffect(() => {",
+        "  const ac = new AbortController();",
+        "  (async () => {",
+        "    try {",
+        "      const r = await fetch('${1:/api}', { signal: ac.signal });",
+        "      if (!r.ok) throw new Error(String(r.status));",
+        "      const data: ${2:any} = await r.json();",
+        "      ${3:setState}(data);",
+        "    } catch (e) {",
+        "      if ((e as any).name !== 'AbortError') console.error(e);",
+        "    }",
+        "  })();",
+        "  return () => ac.abort();",
+        "}, [${4:deps}]);"
+      ],
+      "description": "Fetch in useEffect with AbortController (TS)"
+    },
+    "CSS Module import (JS/TS)": {
+      "scope": "javascript,javascriptreact,typescript,typescriptreact",
+      "prefix": "icssm",
+      "body": [
+        "import styles from '${1:./File.module.css}';",
+        "<div className={styles.${2:box}}>${3}</div>"
+      ],
+      "description": "Import & use CSS Module"
+    }
   }
 },
 ```
