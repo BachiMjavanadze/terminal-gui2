@@ -656,11 +656,18 @@ When a command is run, `Terminal GUI` scans for these built-in variables within 
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
 "temp": {
-  "command": "echo \"Filename: _[itemName]_\"",
+  "command": "echo Filename: _[itemName]_",
   "settings": {
     "contextMenu": true
   },
 },
+```
+
+  - In the above example, if user selects a file with the name of "hello world.txt", then the output in terminal will be:
+
+```bash
+$ echo Filename: "hello world"
+Filename: hello world
 ```
 
    - Example with `_[selectedText]_` variables:
