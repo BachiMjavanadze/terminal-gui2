@@ -1398,7 +1398,7 @@ Below is an example of `settings.json` configuration for different frameworks.
       "inputs": {
         "Enter a project name; projectName; false; false": "",
         "Choose the React.js version: eg.: 4.1.2; version; false": "latest",
-        "React options; reactOptions; false; true": {
+        "React options; reactOptions; false; false": {
           "connectItems": "&&",
           "JavaScript _[toggle]_ TypeScript": "tmpl=react _[toggle]_ tmpl=react-ts",
           "CSS _[toggle]_ SCSS": "TG_DO_CSS=0 _[toggle]_ TG_DO_CSS=1",
