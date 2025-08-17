@@ -178,6 +178,33 @@ in the status bar:
    
    - The `Enter` button allows you to move forward and execute commands.
 
+### Input Fields Overview
+
+`Terminal GUI` supports **five types of input fields** that you can mix and match inside your commands. Each type has its own syntax and behavior, allowing you to create dynamic and interactive command strings.
+
+⚠️ **Important rule:** It is impossible to reference one input field inside another.
+
+```json
+"hello": {
+  "command": "echo _[var1]_ && _[var2]_",
+  "inputs": {
+    "temp 1; var1": "",
+    "temp 2; var2": {
+      "Red": "echo red",
+      "Green": "echo _[var1]_"  // impossible
+    }
+  }
+}
+```
+
+The available input field types are:
+
+1. **Free Text Input** – user types arbitrary text (with options for default value, allow empty, allow spaces, and saving).
+2. **Choice List Input** – user selects one value from a predefined list (optionally allow custom values).
+3. **Checkbox List Input** – user selects multiple values from a predefined list, joined with `connectItems`.
+4. **Two-state “Toggler” Input** – behaves like a switch; checked/unchecked expands to different snippets.
+5. **Built-in Special Inputs** – reserved placeholders like `_[Select a folder]_`, `_[Select a file]_`, or context variables (`_[projectPath]_`, `_[itemPath]_`, etc.).
+
 Image of choice list input:
 
 ![Image](https://github.com/user-attachments/assets/80d5013c-8573-49ab-83c7-6ee3aca8e826)
@@ -242,7 +269,7 @@ hello
       - **substitution placeholder:** The token in your command string to be replaced.
       - **allowEmpty:** Set to `true` if empty input is allowed (default is `false`).
       - **allowSpaces:** Set to `true` if spaces between words are allowed (default is `true`).
-      - **save** * If you use `;save`, on each run you'll see a QuickPick with two checkboxes:
+      - **save:** If you use `;save`, on each run you'll see a QuickPick with two checkboxes:
         * **Save** – remember the value but still prompt next time.
         * **Save & Skip** – remember the value and auto-apply on future runs.
 
@@ -481,8 +508,28 @@ Hello John Smith
   },
 },
 ```
+### Command Icons (`icon`)
 
-### Long-Running Commands (`icon` and `icon2`)
+You can assign an `icon` property to a command to display a quick-access button in the **status bar** or the **tab/title bar** (depending on the `quickButton` setting).
+The icon can be an emoji or an HTML entity, and you may also include an optional tooltip after a semicolon.
+
+**Syntax:**
+
+```json
+"commandName": {
+  "command": "echo Hello",
+  "icon": "⚡;Run Command",
+  "settings": {
+    "quickButton": "statusBar" // or "tabBar" or "both"
+  }
+}
+```
+
+* The first part (`⚡`) is the symbol.
+* The second part (`Run Command`) is shown as a tooltip when you hover over the icon.
+* The location is controlled by `"quickButton"` (status bar, tab bar, or both).
+
+### Long-Running Commands (`icon2`)
 
    - If a command is long running (server watching, project creation), you may define `icon` and `icon2` poperies. You can use an emoji or an HTML entity as an icon.
 
@@ -498,8 +545,8 @@ Hello John Smith
          - **Default Behavior:**  
         If no interrupt count is provided (for example `"▢;stop server"`), the extension will send two `^C` signals – the first immediately and the second after a 300ms delay. This is because `VS Code` sometimes "swallows" one `^C` signal, meaning that instead of sending *n* signals, only *n-1* actually reach the terminal. Sending an extra signal helps ensure that the process is properly stopped.
 
-        **Auto-reveal once:**  
-        Even when `settings.revealConsole` is `false`, the terminal panel is revealed **the first time** a long-running command starts. Subsequent launches keep the panel hidden unless `revealConsole` is `true` or the process exits with an error.
+   - **Auto-reveal once:**
+       For long-running commands, even when `settings.revealConsole` is `false`, the terminal panel is revealed **the first time** the command starts. On later runs the panel stays hidden unless `revealConsole` is `true` or the process exits with an error.
 
 ```json
 // settings.json ➜ "TerminalGui.config": { "commands": {...} }
@@ -562,7 +609,7 @@ Hello John Smith
 
 ### Other Built-In Variables
 
-`Terminal GUI` supports several built-in variables for context menu commands (so `contextMenu` property should be `true`). These variables are embedded in your command strings using the format `_[variableName]_` and are automatically replaced at runtime with context-specific values based on the selected file or folder.
+`Terminal GUI` supports several built-in variables for context menu commands (so `contextMenu` property should be `true`. Exception: `_[projectPath]_` — this variable always works, even for regular commands, not only context menu). These variables are embedded in your command strings using the format `_[variableName]_` and are automatically replaced at runtime with context-specific values based on the selected file or folder.
 
    - **`_[itemPath]_`**  
       The full path of the clicked item (either a file or a folder).
@@ -583,7 +630,7 @@ Hello John Smith
       The file extension (without the dot) of the selected item. For folders, this will be an empty string.
 
    - **`_[projectPath]_`**  
-      The path of the workspace folder (project) in which the command was executed.
+      The path of the workspace folder (project) in which the command was executed (works in both regular and context menu commands).
 
    - **`_[selectedText]_`**  
       The text currently selected in the active editor. If no text is selected, it returns empty quotes.
