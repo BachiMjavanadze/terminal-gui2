@@ -2144,6 +2144,679 @@ Below is an example of `settings.json` configuration for different frameworks.
 ```
 </details>
 
+<details>
+<summary>🐦 NestJS</summary>
+
+```json
+// settings.json
+"TerminalGui.config": {
+  "commands": {
+    "Create NestJS Project": {
+      "command": "cd _[Select a folder(Select a parent folder for the project)]_ && : _[projectName]_.value && : _[version]_.value && _[projectOptions]_ && ( SKIP=''; [[ \"${TG_GIT_MODE:-terminal}\" = \"terminal\" ]] && SKIP='--skip-git'; npx --yes @nestjs/cli@_[version]_ new \"_[projectName]_\" --package-manager npm --language ts --strict $SKIP ) && cd \"_[projectName]_\" && ( [[ \"${TG_GIT_MODE:-terminal}\" = \"terminal\" ]] && git init || : ) && _[projectOptions]_ && ( [[ -f .gitignore ]] || cp _[gitignore]_.file .gitignore ) && ( [[ ${TG_DO_DEBUG:-1} -eq 1 ]] && mkdir -p .vscode && cp _[launchJson]_.file .vscode/launch.json || : ) && ( [[ ${TG_DO_PRETTIER:-0} -eq 1 ]] && _[bashScript]_ && tg_setup_prettier _[prettierRc]_.file _[prettierIgnore]_.file || : ) && code -r .",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter a project name; projectName; false; false": "",
+        "Choose the NestJS CLI version (e.g., 10.3.2); version; false": "latest",
+        "Project options; projectOptions; true; true": {
+          "connectItems": "&&",
+          "Use custom Prettier config _[toggle]_ Use Nest CLI default Prettier": "TG_DO_PRETTIER=1 _[toggle]_ TG_DO_PRETTIER=0",
+          // Choose how to initialize Git: 
+          // - NestJS → lets Nest CLI handle git init (use this if the built-in bug is fixed)
+          // - Terminal GUI → adds --skip-git and runs `git init` manually (works around VS Code Git Bash issues; sometimes the built-in terminal may not init the repo)
+          "Git (NestJS) _[toggle]_ Git (Terminal GUI)": "TG_GIT_MODE=nestjs _[toggle]_ TG_GIT_MODE=terminal",
+          "VS Code debugging (launch.json) _[toggle]_ Skip debugging config": "TG_DO_DEBUG=1 _[toggle]_ TG_DO_DEBUG=0"
+        }
+      },
+      "snippets": {
+        "prettierRc": [
+          "{",
+          "  \"singleQuote\": true,",
+          "  \"trailingComma\": \"all\",",
+          "  \"endOfLine\": \"auto\"",
+          "}"
+        ],
+        "prettierIgnore": [
+          "dist",
+          "node_modules",
+          ".vscode"
+        ],
+        "gitignore": [
+          "# log",
+          "logs",
+          "*.log",
+          "npm-debug.log*",
+          "yarn-debug.log*",
+          "yarn-error.log*",
+          "lerna-debug.log*",
+          "pnpm-debug.log*",
+          "",
+          "# Diagnostic reports",
+          "report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json",
+          "",
+          "# Runtime data",
+          "pids",
+          "*.pid",
+          "*.seed",
+          "*.pid.lock",
+          "",
+          "# Coverage",
+          "coverage",
+          "*.lcov",
+          ".nyc_output",
+          "",
+          "# Compiled addons",
+          "build/Release",
+          "",
+          "# Dependencies",
+          "node_modules/",
+          "jspm_packages/",
+          "web_modules/",
+          "",
+          "# TypeScript",
+          "*.tsbuildinfo",
+          "",
+          "# Caches",
+          ".npm",
+          ".eslintcache",
+          ".stylelintcache",
+          ".cache",
+          ".parcel-cache",
+          ".vite/",
+          ".svelte-kit/",
+          ".docusaurus",
+          ".serverless/",
+          ".fusebox/",
+          ".dynamodb/",
+          ".firebase/",
+          ".tern-port",
+          ".vscode-test",
+          "",
+          "# Yarn v3 (PnP)",
+          ".pnp.*",
+          ".yarn/*",
+          "!.yarn/patches",
+          "!.yarn/plugins",
+          "!.yarn/releases",
+          "!.yarn/sdks",
+          "!.yarn/versions",
+          "",
+          "# Build outputs",
+          "dist/",
+          "out/",
+          ".next",
+          ".nuxt",
+          ".output",
+          "",
+          "# dotenv files",
+          ".env",
+          ".env.*",
+          "!.env.example",
+          "",
+          "# IDEs",
+          ".idea/",
+          "",
+          "# VS Code",
+          ".vscode/*",
+          "!.vscode/settings.json",
+          "!.vscode/tasks.json",
+          "!.vscode/launch.json",
+          "!.vscode/extensions.json",
+          "!.vscode/*.code-snippets",
+          "",
+          "# OS",
+          ".DS_Store",
+          "Thumbs.db",
+          "ehthumbs.db",
+          "Desktop.ini",
+          "",
+          ""
+        ],
+        "launchJson": [
+          "{",
+          "  \"version\": \"0.2.0\",",
+          "  \"configurations\": [",
+          "    {",
+          "      \"type\": \"node\",",
+          "      \"request\": \"launch\",",
+          "      \"name\": \"Debug NestJS App\",",
+          "      \"runtimeExecutable\": \"npm\",",
+          "      \"runtimeArgs\": [",
+          "        \"run\",",
+          "        \"start:debug\"",
+          "      ]",
+          "    }",
+          "  ]",
+          "}"
+        ]
+      },
+      "settings": {
+        "terminalName": "NestJS Project Creation",
+        "showWhenEmptyWorkspace": "emptyWorkspace",
+        "revealConsole": true
+      }
+    },
+    "Add Prisma Migrations": {
+      "command": "cd _[projectPath]_ && npx prisma migrate dev --name _[migrationName]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter a migration name; migrationName": "",
+      },
+      "settings": {
+        "revealConsole": true
+      }
+    },
+    "Run Prisma Studio": {
+      "command": "cd _[projectPath]_ && npx prisma studio --browser none",
+      "group": "🐦 NestJS",
+      "icon": "⚫;Run Prisma Studio",
+      "icon2": "🌎;Stop Prisma Studio",
+      "settings": {
+        "terminalName": "Prisma Studio",
+        "quickButton": "statusBar",
+      }
+    },
+    "NestJS Server": {
+      "command": "npm run start:dev",
+      "group": "🐦 NestJS",
+      "icon": "▶;Run NestJS Server",
+      "icon2": "▢;Stop NestJS Server",
+      "settings": {
+        "terminalName": "NestJS Server",
+        "quickButton": "statusBar",
+      }
+    },
+    "Resource": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open resource _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the resource name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \"\"",
+          "Into Folder _[toggle]_ Flat": "\"\" _[toggle]_ --flat"
+        }
+      },
+      "settings": {
+        "contextMenu": true,
+        "revealConsole": true
+      }
+    },
+    "Controller": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open controller _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the controller name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \"",
+          "Into Folder _[toggle]_ Flat": "\"\" _[toggle]_ --flat"
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Class": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open class _[name]_ --no-spec --flat",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the class name; name; false; false": "",
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Class - DTO": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open class _[name]_.dto --no-spec --flat",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the class name; name; false; false": "",
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Class - Model": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open class _[name]_.model --no-spec --flat",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the class name; name; false; false": "",
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Interface": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open interface _[name]_ --no-spec --flat",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the interface name; name; false; false": ""
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Middleware": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open middleware _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the middleware name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "Flat _[toggle]_ Not Flat": "--flat _[toggle]_ \" \"",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \""
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Service": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open service _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the service name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "Flat _[toggle]_ Not Flat": "--flat _[toggle]_ \" \"",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \""
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Filter": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open filter _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the filter name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "Flat _[toggle]_ Not Flat": "--flat _[toggle]_ \" \"",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \""
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Guard": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open guard _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the guard name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "Flat _[toggle]_ Not Flat": "--flat _[toggle]_ \" \"",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \""
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Pipe": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open pipe _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the pipe name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "Flat _[toggle]_ Not Flat": "--flat _[toggle]_ \" \"",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \""
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Module": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open module _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the module name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "Into Folder _[toggle]_ Flat": "\" \" _[toggle]_ --flat"
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Provider": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open provider _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the provider name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \"",
+          "Into Folder _[toggle]_ Flat": "\" \" _[toggle]_ --flat",
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Resolver": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open resolver _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the resolver name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \"",
+          "Into Folder _[toggle]_ Flat": "\" \" _[toggle]_ --flat",
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Interceptor": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open interceptor _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the interceptor name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \"",
+          "Into Folder _[toggle]_ Flat": "\" \" _[toggle]_ --flat",
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "Library": {
+      "command": "cd _[projectPath]_ && _[bashScript]_ && tg_nest_generate_and_open library _[name]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the library name; name; false; false": ""
+      },
+      "settings": {
+        "revealConsole": true
+      }
+    },
+    "Gateway": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_nest_generate_and_open gateway _[name]_ _[options]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Enter the gateway name; name; false; false": "",
+        "Options; options; true; true; save": {
+          "connectItems": " ",
+          "No Spec _[toggle]_ With Spec": "--no-spec _[toggle]_ \" \"",
+          "Into Folder _[toggle]_ Flat": "\" \" _[toggle]_ --flat",
+        }
+      },
+      "settings": {
+        "contextMenu": true
+      }
+    },
+    "🛠️ Add NestJS Libraries": {
+      "command": "cd _[projectPath]_ && _[packages]_",
+      "group": "🐦 NestJS",
+      "inputs": {
+        "Choose libraries to install; packages; true; true": {
+          "Config": "npm i @nestjs/config",
+          "TS Config Paths": "npm i -D tsconfig-paths",
+          "Swagger": "npm i @nestjs/swagger swagger-ui-express",
+          "Validator & Transformer": "npm i class-validator class-transformer",
+          "Passport": "npm i @nestjs/passport passport passport-local",
+          "JWT (Passport strategy)": "npm i @nestjs/passport passport passport-jwt @types/passport-jwt @types/passport",
+          "Helmet": "npm i helmet",
+          "Mongoose": "npm i @nestjs/mongoose mongoose",
+          "TypeORM (PostgreSQL)": "npm i @nestjs/typeorm typeorm pg && npm i -D ts-node @types/node",
+          "Prisma (PostgreSQL)": "npm i -D prisma && npm i @prisma/client && npx prisma init --datasource-provider postgresql",
+          "Prisma (SQLite)": "npm i -D prisma && npm i @prisma/client && npx prisma init --datasource-provider sqlite",
+          "GraphQL (Apollo)": "npm i @nestjs/graphql @nestjs/apollo graphql @apollo/server",
+          "CQRS": "npm i @nestjs/cqrs",
+          "Rate Limiting (Throttler)": "npm i @nestjs/throttler",
+          "Scheduling (Cron)": "npm i @nestjs/schedule",
+          "Health Checks (Terminus)": "npm i @nestjs/terminus",
+          "WebSockets (Socket.IO)": "npm i @nestjs/websockets @nestjs/platform-socket.io",
+          "WebSockets (GraphQL)": "npm i @nestjs/websockets @nestjs/platform-socket.io @nestjs/graphql @nestjs/apollo @apollo/server graphql",
+          "Event Emitter": "npm i @nestjs/event-emitter",
+          "Serve Static": "npm i @nestjs/serve-static",
+          "Cache (in-memory)": "npm i @nestjs/cache-manager cache-manager",
+          "Cache (Redis store)": "npm i @nestjs/cache-manager cache-manager cache-manager-ioredis-yet ioredis",
+          "Queues (Bull + Redis)": "npm i @nestjs/bull bull ioredis",
+          "Logging (Pino)": "npm i nestjs-pino pino",
+          "Logging (Winston)": "npm i nest-winston winston",
+          "Internationalization (i18n)": "npm i nestjs-i18n",
+          "Metrics (Prometheus)": "npm i @willsoto/nestjs-prometheus prom-client",
+          "Microservices: NestJS": "npm i --save @nestjs/microservices",
+          "Microservices: Kafka": "npm i kafkajs",
+          "Microservices: NATS": "npm i nats",
+          "Microservices: RabbitMQ": "npm i amqplib",
+          "Microservices: Redis": "npm i ioredis",
+          "Testing": "npm i -D @nestjs/testing supertest"
+        }
+      },
+      "settings": {
+        "revealConsole": true
+      }
+    }
+  },
+  "scripts": {
+    "bash": [
+      "tg_setup_prettier() {",
+      "  local rc=\"$1\" ig=\"$2\"",
+      "  npm i -D prettier || return 0",
+      "  cp \"$rc\" .prettierrc",
+      "  cp \"$ig\" .prettierignore",
+      "  npm pkg set scripts.format='prettier --write \"src/**/*.ts\" \"test/**/*.ts\"'",
+      "}",
+      "",
+      "tg_strip_ansi_cr() {",
+      "  tr -d '\\r' | sed -E 's/\\x1B\\[[0-9;]*[[:alpha:]]//g'",
+      "}",
+      "",
+      "tg_cache_dir() {",
+      "  local script=\"${BASH_SOURCE[0]}\"",
+      "  local dir",
+      "  dir=\"$(cd \"$(dirname \"$script\")\" && pwd)\"",
+      "  printf '%s\\n' \"$dir\"",
+      "}",
+      "",
+      "tg_nest_generate_and_open() {",
+      "  local type=\"$1\"",
+      "  local name=\"$2\"",
+      "  shift 2",
+      "  local options=\"$@\"",
+      "",
+      "  local log_dir=\"$(tg_cache_dir)\"",
+      "  local log_file=\"$log_dir/nest_last.log\"",
+      "  mkdir -p \"$log_dir\"",
+      "",
+      "  if [[ \"$type\" == \"resource\" ]]; then",
+      "    nest g \"$type\" \"$name\" $options",
+      "    : > \"$log_file\"",
+      "  else",
+      "    nest g \"$type\" \"$name\" $options 2>&1 | tee /dev/tty | tg_strip_ansi_cr > \"$log_file\"",
+      "  fi",
+      "",
+      "  local clean created_lines",
+      "  clean=$(cat \"$log_file\" 2>/dev/null)",
+      "  created_lines=$(printf '%s\\n' \"$clean\" | grep -E 'CREATE[[:space:]]+')",
+      "  local created=()",
+      "  while IFS= read -r line; do",
+      "    [[ -z \"$line\" ]] && continue",
+      "    local p",
+      "    p=$(sed -E 's/.*CREATE[[:space:]]+([^[:space:]]+).*/\\1/' <<< \"$line\")",
+      "    [[ -n \"$p\" ]] && created+=(\"${p//\\\\//}\")",
+      "  done <<< \"$created_lines\"",
+      "",
+      "  local picks=() p",
+      "  for p in \"${created[@]}\"; do",
+      "    [[ \"$p\" == *.spec.ts ]] && continue",
+      "    picks+=(\"$p\")",
+      "  done",
+      "",
+      "  local pattern file_to_open=\"\"",
+      "  case \"$type\" in",
+      "    resource)    pattern='\\.service\\.ts$' ;;",
+      "    library)     pattern='^libs/.*/src/index\\.ts$' ;;",
+      "    interface)   pattern='\\.interface\\.ts$' ;;",
+      "    controller)  pattern='\\.controller\\.ts$' ;;",
+      "    service)     pattern='\\.service\\.ts$' ;;",
+      "    guard)       pattern='\\.guard\\.ts$' ;;",
+      "    pipe)        pattern='\\.pipe\\.ts$' ;;",
+      "    filter)      pattern='\\.filter\\.ts$' ;;",
+      "    interceptor) pattern='\\.interceptor\\.ts$' ;;",
+      "    resolver)    pattern='\\.resolver\\.ts$' ;;",
+      "    gateway)     pattern='\\.gateway\\.ts$' ;;",
+      "    module)      pattern='\\.module\\.ts$' ;;",
+      "    middleware)  pattern='\\.middleware\\.ts$' ;;",
+      "    provider)    pattern='\\.provider\\.ts$' ;;",
+      "    class)       pattern='\\.ts$' ;;",
+      "    *)           pattern='\\.ts$' ;;",
+      "  esac",
+      "",
+      "  for p in \"${picks[@]}\"; do",
+      "    if [[ \"$type\" == \"class\" ]]; then",
+      "      [[ \"$p\" == *.controller.ts || \"$p\" == *.service.ts || \"$p\" == *.guard.ts || \"$p\" == *.pipe.ts || \\",
+      "         \"$p\" == *.filter.ts || \"$p\" == *.interceptor.ts || \"$p\" == *.resolver.ts || \"$p\" == *.gateway.ts || \\",
+      "         \"$p\" == *.module.ts || \"$p\" == *.middleware.ts || \"$p\" == *.interface.ts || \"$p\" == *.provider.ts ]] && continue",
+      "      [[ \"$p\" == *.ts ]] && file_to_open=\"$p\"",
+      "    else",
+      "      [[ \"$p\" =~ $pattern ]] && file_to_open=\"$p\"",
+      "    fi",
+      "  done",
+      "",
+      "  if [[ -z \"$file_to_open\" && ${#picks[@]} -gt 0 ]]; then",
+      "    file_to_open=\"${picks[${#picks[@]}-1]}\"",
+      "  fi",
+      "",
+      "  if [[ -z \"$file_to_open\" && \"$type\" == \"resource\" ]]; then",
+      "    local flat=0",
+      "    [[ \"$options\" == *\"--flat\"* ]] && flat=1",
+      "    local in_src=0",
+      "    [[ \"${PWD##*/}\" == \"src\" ]] && in_src=1",
+      "",
+      "    declare -a candidates=()",
+      "    if [[ $flat -eq 1 ]]; then",
+      "      candidates+=(\"${name}.service.ts\" \"${name}.controller.ts\" \"${name}.module.ts\")",
+      "      if [[ $in_src -eq 0 ]]; then",
+      "        candidates+=(\"src/${name}.service.ts\" \"src/${name}.controller.ts\" \"src/${name}.module.ts\")",
+      "      fi",
+      "    else",
+      "      candidates+=(\"${name}/${name}.service.ts\" \"${name}/${name}.controller.ts\" \"${name}/${name}.module.ts\")",
+      "      if [[ $in_src -eq 0 ]]; then",
+      "        candidates+=(\"src/${name}/${name}.service.ts\" \"src/${name}/${name}.controller.ts\" \"src/${name}/${name}.module.ts\")",
+      "      fi",
+      "    fi",
+      "",
+      "    for f in \"${candidates[@]}\"; do",
+      "      if [[ -f \"$f\" ]]; then",
+      "        file_to_open=\"$f\"",
+      "        break",
+      "      fi",
+      "    done",
+      "  fi",
+      "",
+      "  if [[ -n \"$file_to_open\" && -f \"$file_to_open\" ]]; then",
+      "    code -r \"$file_to_open\"",
+      "  else",
+      "    echo \"TERMINAL_GUI_MSG(Warning: Could not find the generated file to open it: ${file_to_open:-unknown})\"",
+      "  fi",
+      "}",
+      ""
+    ]
+  },
+  "VSCodeSnippets": {
+    "NestJS Controller": {
+      "scope": "typescript",
+      "prefix": "n-controller",
+      "body": [
+        "import { Controller, Get } from '@nestjs/common';",
+        "",
+        "@Controller('${1:path}')",
+        "export class ${2:My}Controller {",
+        "\tconstructor(private readonly ${3:my}Service: ${2:My}Service) {}",
+        "",
+        "\t@Get()",
+        "\tfindAll() {",
+        "\t\treturn this.${3:my}Service.findAll();",
+        "\t}",
+        "}"
+      ],
+      "description": "NestJS Controller"
+    },
+    "NestJS Service": {
+      "scope": "typescript",
+      "prefix": "n-service",
+      "body": [
+        "import { Injectable } from '@nestjs/common';",
+        "",
+        "@Injectable()",
+        "export class ${1:My}Service {",
+        "\tfindAll() {",
+        "\t\treturn `This action returns all items`;",
+        "\t}",
+        "}"
+      ],
+      "description": "NestJS Service"
+    },
+    "NestJS Module": {
+      "scope": "typescript",
+      "prefix": "n-module",
+      "body": [
+        "import { Module } from '@nestjs/common';",
+        "",
+        "@Module({",
+        "\tcontrollers: [${1:My}Controller],",
+        "\tproviders: [${2:My}Service],",
+        "})",
+        "export class ${3:My}Module {}"
+      ],
+      "description": "NestJS Module"
+    },
+    "NestJS DTO": {
+      "scope": "typescript",
+      "prefix": "n-dto",
+      "body": [
+        "import { IsString, IsInt } from 'class-validator';",
+        "",
+        "export class Create${1:Item}Dto {",
+        "\t@IsString()",
+        "\treadonly name: string;",
+        "",
+        "\t@IsInt()",
+        "\treadonly age: number;",
+        "}"
+      ],
+      "description": "NestJS Data Transfer Object (DTO)"
+    },
+    "NestJS GET Route": {
+      "scope": "typescript",
+      "prefix": "n-get",
+      "body": [
+        "@Get('${1:id}')",
+        "findOne(@Param('${1:id}') id: string) {",
+        "\treturn this.${2:my}Service.findOne(+id);",
+        "}"
+      ],
+      "description": "NestJS GET route handler"
+    },
+    "NestJS POST Route": {
+      "scope": "typescript",
+      "prefix": "n-post",
+      "body": [
+        "@Post()",
+        "create(@Body() create${1:Item}Dto: Create${1:Item}Dto) {",
+        "\treturn this.${2:my}Service.create(create${1:Item}Dto);",
+        "}"
+      ],
+      "description": "NestJS POST route handler"
+    }
+  }
+},
+```
+</details>
+
 ### Known Issues
 - Placeholder IntelliSense may not activate until `VS Code` is restarted after installing or reactivating the extension.
 
