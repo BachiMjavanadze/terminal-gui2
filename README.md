@@ -2076,7 +2076,7 @@ Below is an example of `settings.json` configuration for different frameworks.
       "command": "cd _[Select a folder]_ && mkdir _[projectName]_ && cd _[projectName]_ && npm init -y && npm pkg set type=\"module\" main=\"_[entryPoint]_.js\" scripts.start=\"node --watch _[entryPoint]_.js\" && npm pkg delete scripts.test && npm i express@_[version]_ && cp _[mainFile]_.file _[entryPoint]_.js && code -r .",
       "group": "🟩 Node.js",
       "inputs": {
-        "Enter a project name; projectName": "",
+        "Enter a project name; projectName; false; false": "",
         "Enter an entry-point file name; entryPoint; false; false": "index",
         "Choose the Express.js version: eg.: 4.1.2; version; false": "latest",
       },
