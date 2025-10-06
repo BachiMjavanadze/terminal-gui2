@@ -325,7 +325,7 @@ Example for `ASP.NET WEB API` migrations:
      ```
       - **prompt text:** The text displayed as the prompt for the user.
       - **substitution placeholder:** The token in the command that will be replaced with the chosen (or entered) value.
-      - **allowCustomValue:** A flag (`true` or `"false"`) that, when set to `true`, allows the user to enter a custom value that isn’t in the predefined choice list. If `"false"` (or omitted), the user must select one of the predefined options.
+      - **allowCustomValue:** A flag (`true` or `false`) that, when set to `true`, allows the user to enter a custom value that isn’t in the predefined choice list. If `false` (or omitted), the user must select one of the predefined options.
       - **allowSpaces:** Set to `true` if spaces between words are allowed (default is `true`). If set to `false`, the user cannot enter spaces.
 
 For example:
@@ -2073,15 +2073,15 @@ Below is an example of `settings.json` configuration for different frameworks.
 "TerminalGui.config": {
   "commands": {
     "Create Node.js Project": {
-      "command": "cd _[Select a folder]_ && mkdir _[projectName]_ && cd _[projectName]_ && npm init -y && npm pkg set type=\"module\" main=\"_[entryPoint]_.js\" scripts.start=\"node --watch _[entryPoint]_.js\" && npm pkg delete scripts.test && npm i express@_[version]_ && cp _[mainFile]_.file _[entryPoint]_.js && code -r .",
+      "command": "cd _[Select a folder(Select a parent folder for the project (press ENTER))]_ && _[bashScript]_ && tg_node_create_project \"_[projectName]_\" \"_[entryPoint]_\" _[indexFile]_.file _[envFile]_.file _[gitignore]_.file _[prettierIgnore]_.file _[prettierRc]_.file _[eslintConfig]_.file",
       "group": "🟩 Node.js",
       "inputs": {
         "Enter a project name; projectName; false; false": "",
-        "Enter an entry-point file name; entryPoint; false; false": "index",
-        "Choose the Express.js version: eg.: 4.1.2; version; false": "latest",
+        "Enter an entry-point file name; entryPoint; false; false": "index"
       },
       "snippets": {
-        "mainFile": [
+        "indexFile": [
+          "import 'dotenv/config';",
           "import express from 'express';",
           "",
           "const app = express();",
@@ -2092,8 +2092,63 @@ Below is an example of `settings.json` configuration for different frameworks.
           "});",
           "",
           "app.listen(PORT, () => {",
-          "  console.log(`Server running on http://localhost:${PORT}`);",
+          "  console.log(`Server running at http://localhost:${PORT}`);",
           "});"
+        ],
+        "envFile": [
+          "PORT=3000"
+        ],
+        "gitignore": [
+          "node_modules/",
+          "dist/",
+          "logs/",
+          ".vscode/",
+          ".idea/"
+        ],
+        "prettierIgnore": [
+          "node_modules",
+          "dist",
+          "logs",
+          ".vscode",
+          "eslint.config.js",
+          ".prettierrc",
+          "README.md"
+        ],
+        "prettierRc": [
+          "{",
+          "  \"printWidth\": 80,",
+          "  \"useTabs\": false,",
+          "  \"tabWidth\": 4,",
+          "  \"singleQuote\": true,",
+          "  \"trailingComma\": \"es5\",",
+          "  \"semi\": true",
+          "}"
+        ],
+        "eslintConfig": [
+          "export default [",
+          "  {",
+          "    ignores: [",
+          "      'eslint.config.js',",
+          "      'node_modules',",
+          "      'dist',",
+          "      'logs',",
+          "      '.vscode',",
+          "    ],",
+          "  },",
+          "  {",
+          "    files: ['**/*.js'],",
+          "    languageOptions: {",
+          "      ecmaVersion: 'latest',",
+          "      sourceType: 'module',",
+          "    },",
+          "    rules: {",
+          "      indent: ['error', 4],",
+          "      quotes: ['error', 'single'],",
+          "      semi: ['error', 'always'],",
+          "      'linebreak-style': ['error', 'unix'],",
+          "    },",
+          "  },",
+          "];"
         ]
       },
       "settings": {
@@ -2104,8 +2159,8 @@ Below is an example of `settings.json` configuration for different frameworks.
     },
     "Run Node.js Server": {
       "command": "npm run start",
-      "icon": "▶;run server",
-      "icon2": "▢;stop server",
+      "icon": "▶;Run Node.js Server",
+      "icon2": "▢;Stop Node.js Server",
       "group": "🟩 Node.js",
       "settings": {
         "terminalName": "Node.js Server",
@@ -2113,32 +2168,253 @@ Below is an example of `settings.json` configuration for different frameworks.
         "showWhenEmptyWorkspace": "fullWorkspace"
       }
     },
-    "🛠️ Install NPM Packages": {
-      "command": "npm i _[package]_@_[version]_ _[dependency]_",
+    "Service": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_make_service \"_[name]_\" _[serviceSnippet]_.file",
       "group": "🟩 Node.js",
       "inputs": {
-        "Choose the package; package; true": {
-          "nodemailer": "nodemailer",
-          "socket.io": "socket.io",
-          "helmet": "helmet",
-          "dotenv": "dotenv",
-          "cors": "cors",
-          "mongoose": "mongoose",
-          "jsonwebtoken": "jsonwebtoken",
-          "bcrypt": "bcrypt",
-          // "express": "express",
-          // "winston": "winston",
-        },
-        "Choose the version: eg.: 4.1.2; version; false": "latest",
-        "Saved package as a dependency or devDependency;dependency": {
-          "dependency": "-S",
-          "devDependency": "-D"
+        "Service name (e.g. user); name; false; false": ""
+      },
+      "snippets": {
+        "serviceSnippet": [
+          "export const __CAMEL__Service = {",
+          "    async create__PASCAL__() {},",
+          "};"
+        ]
+      },
+      "settings": {
+        "contextMenu": true,
+        "revealConsole": true
+      }
+    },
+    "Route": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_make_route \"_[name]_\" _[routeSnippet]_.file",
+      "group": "🟩 Node.js",
+      "inputs": {
+        "Route name (e.g. profile); name; false; false": ""
+      },
+      "snippets": {
+        "routeSnippet": [
+          "import { Router } from 'express';",
+          "",
+          "export const __CAMEL__Router = Router();",
+          "",
+          "__CAMEL__Router.get('/__BASE__', async (req, res) => {",
+          "",
+          "});"
+        ]
+      },
+      "settings": {
+        "contextMenu": true,
+        "revealConsole": true
+      }
+    },
+    "Middleware": {
+      "command": "cd _[folderPath]_ && _[bashScript]_ && tg_make_middleware \"_[name]_\" \"_[kind]_\" _[mwStandard]_.file _[mwError]_.file _[mwFactory]_.file",
+      "group": "🟩 Node.js",
+      "inputs": {
+        "Middleware name (e.g. auth); name; false; false": "",
+        "Choose middleware type; kind": {
+          "Standard": "standard",
+          "Error handler": "error",
+          "Factory (with options)": "factory"
+        }
+      },
+      "snippets": {
+        "mwStandard": [
+          "export const __CAMEL__Middleware = (req, res, next) => {",
+          "    next();",
+          "};"
+        ],
+        "mwError": [
+          "export const __CAMEL__Middleware = (err, req, res, next) => {",
+          "    res.status(500).json({ error: 'Internal Server Error' });",
+          "};"
+        ],
+        "mwFactory": [
+          "export const __CAMEL__Middleware = (options = {}) => (req, res, next) => {",
+          "    next();",
+          "};"
+        ]
+      },
+      "settings": {
+        "contextMenu": true,
+        "revealConsole": true
+      }
+    },
+    "🛠️ Install NPM Packages": {
+      "command": "cd _[projectPath]_ && _[packages]_",
+      "group": "🟩 Node.js",
+      "inputs": {
+        "Choose the package; packages; true": {
+          "bcrypt": "npm i bcrypt",
+          "jsonwebtoken": "npm i jsonwebtoken",
+          "nodemailer": "npm i nodemailer",
+          "cors": "npm i cors",
+          "socket.io": "npm i socket.io",
+          "helmet": "npm i helmet",
+          "express-rate-limit": "npm i express-rate-limit",
+          "Swagger (docs)": "npm i swagger-ui-express swagger-jsdoc",
+          "mongoose": "npm i mongoose",
+          "Prisma (ORM) + init (PostgreSQL)": "npm i @prisma/client && npm i -D prisma && npx prisma init --datasource-provider postgresql",
+          "Vitest (unit tests)": "npm i -D vitest",
+          "Supertest (HTTP tests)": "npm i -D supertest",
         },
       },
       "settings": {
-        "revealConsole": true,
+        "revealConsole": true
       }
-    },
+    }
+  },
+  "scripts": {
+    "bash": [
+      "# --- Node.Js helpers ---",
+      "tg_slugify() {",
+      "  # to-lower; replace non-alnum with '-'; collapse repeats; trim dashes",
+      "  local s=\"$*\"",
+      "  s=$(echo \"$s\" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/-+/-/g; s/^-|-$//g')",
+      "  printf '%s' \"$s\"",
+      "}",
+      "",
+      "tg_to_camel() {",
+      "  # slug -> camelCase",
+      "  local slug=\"$1\"",
+      "  local snake=${slug//-/_}",
+      "  echo \"$snake\" | awk -F'_' '{",
+      "    for (i=1; i<=NF; i++) {",
+      "      w=$i;",
+      "      if (i==1) printf(\"%s\", w);",
+      "      else printf(\"%s%s\", toupper(substr(w,1,1)), substr(w,2));",
+      "    }",
+      "  }'",
+      "}",
+      "",
+      "tg_to_pascal() {",
+      "  local camel=\"$1\"",
+      "  echo \"$camel\" | awk '{print toupper(substr($0,1,1)) substr($0,2)}'",
+      "}",
+      "",
+      "tg_scaffold_from_snip() {",
+      "  # Usage: tg_scaffold_from_snip <snippet-file> <name> <suffix>",
+      "  local snip=\"$1\"",
+      "  local rawname=\"$2\"",
+      "  local suffix=\"$3\"",
+      "  local base; base=$(tg_slugify \"$rawname\")",
+      "  local camel; camel=$(tg_to_camel \"$base\")",
+      "  local pascal; pascal=$(tg_to_pascal \"$camel\")",
+      "  local out=\"${base}.${suffix}\"",
+      "  local tmp=\"$out.tmp\"",
+      "  cp \"$snip\" \"$tmp\"",
+      "  # Replace placeholders",
+      "  sed -i \"s/__CAMEL__/${camel}/g; s/__PASCAL__/${pascal}/g; s/__BASE__/${base}/g\" \"$tmp\"",
+      "  mv \"$tmp\" \"$out\"",
+      "  code -r \"$out\"",
+      "}",
+      "",
+      "tg_make_service() {",
+      "  # tg_make_service <name> <snippet-file>",
+      "  local name=\"$1\" snip=\"$2\"",
+      "  tg_scaffold_from_snip \"$snip\" \"$name\" \"service.js\"",
+      "}",
+      "",
+      "tg_make_route() {",
+      "  # tg_make_route <name> <snippet-file>",
+      "  local name=\"$1\" snip=\"$2\"",
+      "  tg_scaffold_from_snip \"$snip\" \"$name\" \"routes.js\"",
+      "}",
+      "",
+      "# Scaffold a middleware file from name + kind",
+      "tg_make_middleware() {",
+      "  # tg_make_middleware <name> <kind> <snipStd> <snipErr> <snipFac>",
+      "  local name=\"$1\" kind=\"$2\" snStd=\"$3\" snErr=\"$4\" snFac=\"$5\"",
+      "  local base; base=$(tg_slugify \"$name\")",
+      "  local camel; camel=$(tg_to_camel \"$base\")",
+      "  local pascal; pascal=$(tg_to_pascal \"$camel\")",
+      "  local out=\"${base}.middleware.js\"",
+      "  local src",
+      "  case \"$kind\" in",
+      "    standard) src=\"$snStd\" ;;",
+      "    error)    src=\"$snErr\" ;;",
+      "    factory)  src=\"$snFac\" ;;",
+      "    *)        src=\"$snStd\" ;;",
+      "  esac",
+      "  local tmp=\"$out.tmp\"",
+      "  cp \"$src\" \"$tmp\"",
+      "  sed -i \"s/__CAMEL__/${camel}/g; s/__PASCAL__/${pascal}/g; s/__BASE__/${base}/g\" \"$tmp\"",
+      "  mv \"$tmp\" \"$out\"",
+      "  code -r \"$out\"",
+      "}",
+      "",
+      "tg_node_create_project() {",
+      "  local proj=\"$1\"",
+      "  local entry=\"$2\"",
+      "  local sn_index=\"$3\"",
+      "  local sn_env=\"$4\"",
+      "  local sn_gitignore=\"$5\"",
+      "  local sn_prettier_ignore=\"$6\"",
+      "  local sn_prettier_rc=\"$7\"",
+      "  local sn_eslint=\"$8\"",
+      "",
+      "  # Guard: existing folder",
+      "  if [ -d \"$proj\" ]; then",
+      "    echo \"TERMINAL_GUI_MSG('$proj' folder already exists. Please choose another project name.)\"",
+      "    return 0",
+      "  fi",
+      "",
+      "  echo \"▶ Creating project folder: $proj\"",
+      "  mkdir -p \"$proj\" || { echo \"TERMINAL_GUI_MSG(Failed to create '$proj' folder.)\"; return 0; }",
+      "  cd \"$proj\" || { echo \"TERMINAL_GUI_MSG(Failed to enter '$proj' folder.)\"; return 0; }",
+      "",
+      "  echo \"▶ Initializing package.json\"",
+      "  npm init -y",
+      "",
+      "  echo \"▶ Setting package metadata & scripts\"",
+      "  npm pkg set type=\"module\" \\",
+      "    main=\"src/${entry}.js\" \\",
+      "    scripts.start=\"node src/${entry}.js\" \\",
+      "    scripts.watch=\"node --watch src/${entry}.js\" \\",
+      "    scripts.dev=\"node --inspect --watch src/${entry}.js\" \\",
+      "    scripts.lint=\"eslint .\" \\",
+      "    scripts.'prettier:check'=\"prettier --check .\" \\",
+      "    scripts.'prettier:write'=\"prettier --write .\" \\",
+      "    scripts.build=\"npm run lint && npm run prettier:check\"",
+      "",
+      "  echo \"▶ Installing runtime deps: express dotenv winston\"",
+      "  npm i express dotenv winston",
+      "",
+      "  echo \"▶ Installing dev deps: eslint eslint-plugin-prettier husky lint-staged prettier\"",
+      "  npm i -D eslint eslint-plugin-prettier husky lint-staged prettier",
+      "",
+      "  echo \"▶ Writing files\"",
+      "  mkdir -p src",
+      "  cp \"$sn_index\" \"src/${entry}.js\"",
+      "  cp \"$sn_env\" \".env\"",
+      "  cp \"$sn_gitignore\" \".gitignore\"",
+      "  cp \"$sn_prettier_ignore\" \".prettierignore\"",
+      "  cp \"$sn_prettier_rc\" \".prettierrc\"",
+      "  cp \"$sn_eslint\" \"eslint.config.js\"",
+      "",
+      "  echo \"▶ Cleaning unwanted scripts (if present)\"",
+      "  npm pkg delete scripts.test || true",
+      "  npm pkg delete scripts.'backup:users' || true",
+      "",
+      "  echo \"▶ Initializing Git (if available)\"",
+      "  if command -v git >/dev/null 2>&1; then",
+      "    if [ -d \".git\" ]; then",
+      "      echo \"... Git already initialized, skipping\"",
+      "    else",
+      "      # use default branch from user config; keep it simple",
+      "      git init",
+      "      echo \"... Git repository initialized\"",
+      "    fi",
+      "  else",
+      "    echo \"... Git not found on PATH, skipping git init\"",
+      "  fi",
+      "",
+      "  echo \"✅ Project ready → opening in VS Code\"",
+      "  code -r .",
+      "}",
+      ""
+    ]
   }
 },
 ```
