@@ -353,7 +353,7 @@ For example:
 You can present a multi-select (checkbox-style) list.  
 Declare the choice object with a special key **`"connectItems"`** whose value is the string used to join the chosen command snippets.
 
-- The checkbox list input key supports an extended syntax:
+- The `checkbox list input key` supports an extended syntax (notice: `choice list input key` does not support `allowCustomValue` option):
   ```text
   "prompt text; substitution placeholder; allowEmpty; save"
   ```
