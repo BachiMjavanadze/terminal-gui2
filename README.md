@@ -418,6 +418,30 @@ Example:
 
 - Uncheck shows 🟥 Brown, Yellow, Black
 
+If you want one of the two sides to send nothing to the terminal, replace that side with a no-op command (`:` in `Git Bash`, `$null` in `PowerShell`). This keeps the `&&` chain valid without printing anything:
+
+<p>
+"Blue _[toggle]_ <span style='color:red'>NO VALUE</span>": "echo 'blue color' _[toggle]_ <span style='color:red; font-weight:bold;'>:</span>",
+</p>
+
+Example:
+
+```json
+"commands": {
+  "lorem": {
+    "command": "_[var1]_",
+    "inputs": {
+      "tmp; var1; true; true; save": {
+        "connectItems": "&&",
+        "Red _[toggle]_ Brown": "echo 'red color' _[toggle]_ echo 'brown color'",
+        "Blue _[toggle]_ No color": "echo 'blue color' _[toggle]_ :",
+        "Green _[toggle]_ Black": "echo 'green color' _[toggle]_ echo 'black color'"
+      }
+    }
+  }
+}
+```
+
 If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
 
 ```json
