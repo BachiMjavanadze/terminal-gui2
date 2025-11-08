@@ -10,13 +10,17 @@
 "terminal.integrated.defaultProfile.windows": "Git Bash",
 ```
 
-Below are some simple command examples to quickly evaluate the extension (at the end of the document you may find more practical commands for different frameworks).
+### Example Configurations
+
+Below are some simple command examples to quickly evaluate the extension. Also, there are some more practical commands for different frameworks.
 
    - Note: when you create a new command or update an existing one, changes do not take effect immediately; You additionally need to click on the `Refresh` button or use the keybinding `ctrl+alt+p` (for Mac: `cmd+alt+p`):
 
 in the status bar:
 
    ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/refresh.avif)
+
+##### Examples:
 
 <details>
 <summary>📂 Simple Examples</summary>
@@ -158,943 +162,6 @@ in the status bar:
 },
 ```
 </details>
-
-### Run Commands
-
-   - There are two types of commands: regular commands and context menu commands.
-   
-   - If `"contextMenu": true` is set, the command is a context menu command, meaning it can be launched by right-clicking on a file or a folder in the `VS Code` explorer (or by combination of keybinding: `ctrl+shift+e`, navigate with up/down keyboard arrow buttons through files/folders, `shift+F10`, choose `Terminal GUI` menu item).
-
-   - Regular commands can be launched via the button in the status bar (default keybinding: `ctrl+alt+l`. For Mac: `cmd+alt+l`).
-
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/regular%20commands.avif)
-
-   - When a command contains placeholders, you'll be prompted to enter the required values.
-
-   - You can navigate through inputs with left/right arrows located on the title bar of the command or use keybindings:
-
-        - **Navigate Right:** `ctrl+alt+.` (for Mac: `cmd+alt+.`)
-        - **Navigate Left:** `ctrl+alt+,`  (for Mac: `cmd+alt+,`)
-   
-   - The `Enter` button allows you to move forward and execute commands.
-
-### Input Fields Overview
-
-`Terminal GUI` supports **five types of input fields** that you can mix and match inside your commands. Each type has its own syntax and behavior, allowing you to create dynamic and interactive command strings.
-
-⚠️ **Important rule:** It is impossible to reference one input field inside another.
-
-```json
-"hello": {
-  "command": "echo _[var1]_ && _[var2]_",
-  "inputs": {
-    "temp 1; var1": "",
-    "temp 2; var2": {
-      "Red": "echo red",
-      "Green": "echo _[var1]_"  // impossible
-    }
-  }
-}
-```
-
-The available input field types are:
-
-1. **Free Text Input** – user types arbitrary text (with options for default value, allow empty, allow spaces, and saving).
-2. **Choice List Input** – user selects one value from a predefined list (optionally allow custom values).
-3. **Checkbox List Input** – user selects multiple values from a predefined list, joined with `connectItems`.
-4. **Two-state “Toggler” Input** – behaves like a switch; checked/unchecked expands to different snippets.
-5. **Built-in Special Inputs** – reserved placeholders like `_[Select a folder]_`, `_[Select a file]_`, or context variables (`_[projectPath]_`, `_[itemPath]_`, etc.).
-
-Image of choice list input:
-
-![Image](https://github.com/user-attachments/assets/80d5013c-8573-49ab-83c7-6ee3aca8e826)
-
-### Terminal Freeze Prevention
-
-   - To prevent `VS Code` terminals from freezing, `Terminal GUI` automatically sends special commands:
-     - When a new terminal is created: `echo 'Terminal GUI started'`
-     - Before each command execution: `echo 'HEALTH_CHECK_[number]'`
-   
-   - These commands help ensure the terminal remains responsive, especially when running invalid commands.
-
-### Define Commands with interactive Inputs
-
-   - In your configuration, create commands with placeholders wrapped in `_[ ... ]_` (for example, `_[Enter text]_`). At runtime, `Terminal GUI` will replace these placeholders with values you provide.
-
-   - You can specify inputs for your commands – either as `free text` or as a `choice list` – to dynamically build your command string.
-
-   - For command you may use optional `icon` property with emoji or HTML entity and optional `group` property to organize similar commands into one group.
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"🚀 Print Color and Custom Text": {
-  "command": "echo _[choose color]_ && echo _[enter some text]_",
-  "group": "🅰️ Angular",
-  "inputs": {
-    // choice list input
-    "choose color": {
-      "Red": "red color",
-      "Blue": "blue color"
-    },
-    // free text input
-    "enter some text": ""
-  },
-},
-```
-
-In the above example, if the user selects "Red" from "choose color" and enters "hello" in "enter some text", then the output in the `Git Bash` terminal will be:
-
-```bash
-$ echo red color && echo hello
-red color
-hello
-```
-
-### Custom Input Key Syntax
-
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/input-field.avif)
-
-   You can differentiate between the input field prompt (what the user sees) and the command substitution placeholder (what gets replaced in your command).
-
-   - Use a semicolon (`;`) in the input key to separate the two parts.  
-     For example, `"choose color; my var"` will display **"choose color"** as the prompt while using **"my var"** as the placeholder in the command string.
-
-   - If no semicolon is provided, the key is used for both the prompt and command substitution.
-
-   - The free text input key supports an extended syntax:
-     ```json
-     "prompt text; substitution placeholder; allowEmpty; allowSpaces": "default value"
-     ```
-      - **prompt text:** What is displayed as the prompt.
-      - **substitution placeholder:** The token in your command string to be replaced.
-      - **allowEmpty:** Set to `true` if empty input is allowed (default is `false`).
-      - **allowSpaces:** Set to `true` if spaces between words are allowed (default is `true`).
-      - **save:** If you use `;save`, on each run you'll see a QuickPick with two checkboxes:
-        * **Save** – remember the value but still prompt next time.
-        * **Save & Skip** – remember the value and auto-apply on future runs.
-
-For example:
-
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/save-input.avif)
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"lorem 1": {
-  "command": "echo _[var1]_",
-  "inputs": {
-    "enter some text; var1; true; true; save": ""
-  }
-},
-```
-
-Example for `ASP.NET WEB API` migrations:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"Add Migration": {
-  "command": "dotnet tool update --global dotnet-ef && dotnet ef migrations add \"_[migrationName]_\" --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\" --output-dir \"_[migrationFolder]_\"",
-  "group": "ASP.NET WEB API",
-  "inputs": {
-    "Enter a migration name; migrationName": "",
-    "Enter a DbContext project path; dbContextPath; true; true; save": "",
-    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
-    "Enter a StartUp project path; startProjectPath; true; true; save": "",
-    "Enter a migration folder path; migrationFolder; true; true; save": "",
-  },
-  "settings": {
-    "revealConsole": true
-  }
-},
-"Update DataBase": {
-  "command": "_[dbContextPath]_.value _[dbContextClassName]_.value _[startProjectPath]_.value dotnet ef database update --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\"",
-  "group": "ASP.NET WEB API",
-  "inputs": {
-    "Enter a DbContext project path; dbContextPath; true; true; save": "",
-    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
-    "Enter a StartUp project path; startProjectPath; true; true; save": "",
-  },
-  "settings": {
-    "revealConsole": true
-  }
-},
-```
-
-   - The choice list input key supports an extended syntax:
-     ```
-     "prompt text; substitution placeholder; allowCustomValue; allowSpaces"
-     ```
-      - **prompt text:** The text displayed as the prompt for the user.
-      - **substitution placeholder:** The token in the command that will be replaced with the chosen (or entered) value.
-      - **allowCustomValue:** A flag (`true` or `false`) that, when set to `true`, allows the user to enter a custom value that isn’t in the predefined choice list. If `false` (or omitted), the user must select one of the predefined options.
-      - **allowSpaces:** Set to `true` if spaces between words are allowed (default is `true`). If set to `false`, the user cannot enter spaces.
-
-For example:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"🚀 Print Color and Custom Text": {
-  "command": "echo _[var1]_ && echo _[var2]_",
-  "inputs": {
-    // Here the third parameter "true" enables free text input and the fourth parameter "false" disallows spaces.
-    "choose color; var1; true; false": {
-      "Red": "red color",
-      "Blue": "blue color"
-    },
-    // Here the third parameter "false" means empty input is not allowed and the fourth parameter "false" disallows spaces.
-    "enter some text; var2; false; false": "my value"
-  }
-}
-```
-
-#### Checkbox list input
-
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/checkbox-list.avif)
-
-You can present a multi-select (checkbox-style) list.  
-Declare the choice object with a special key **`"connectItems"`** whose value is the string used to join the chosen command snippets.
-
-- The `checkbox list input key` supports an extended syntax (notice: `choice list input key` does not support `allowCustomValue` option):
-  ```text
-  "prompt text; substitution placeholder; allowEmpty; save"
-  ```
-  - **prompt text:** The text displayed as the prompt for the user.
-  - **substitution placeholder:** The token in the command that will be replaced with the chosen (or entered) values.
-  - **allowEmpty:** Set to `true` if empty input is allowed (default is `false`).
-  - **save:** Set to `true` to remember and pre-select previously chosen items on next run (default is `false`).
-
-  When `save` is `true`, selected items are saved in `.vscode/terminal-gui.temp/terminalgui.temp.json` under the `checkboxCommands` section, and will be pre-checked on subsequent invocations.
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"temp": {
-  "command": "echo _[var1]_ && _[var2]_ && echo _[var3]_",
-  "inputs": {
-    "enter txt1; var1": "",
-    "choose some values; var2; false; true": { // allowEmpty = false, save = true
-      "connectItems": "&&", // REQUIRED → identifies a checkbox list
-      "Red": "echo 'red color'",
-      "Blue": "echo 'blue color'",
-      "Green": "echo 'green color'"
-    },
-    "enter txt2; var3": ""
-  }
-},
-```
-
-#### Two‐state “toggler” input
-
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/toggler-input.avif)
-
-You can define a two‐state toggler option by including exactly one `_[toggle]_` in both the key and the value of a checkbox input. It behaves like a single‐checkbox toggle:  
-- 🟩 (checked) runs the **left** snippet  
-- 🟥 (unchecked) runs the **right** snippet  
-
-You still need `"connectItems"` defined to join multiple command fragments. By default, Two‐state “toggler” is checked.
-
-**Syntax**  
-```json
-"prompt text; substitution placeholder; allowEmpty; save": {
-  "connectItems": "<joiner>",
-  "LabelA _[toggle]_ LabelB": "cmdA _[toggle]_ cmdB"
-}
-```
-Example:
-
-```json
-"lorem": {
-  "command": "_[var1]_",
-  "inputs": {
-    "tmp; var1; true; true; save": {
-      "connectItems": "&&",
-      "Red _[toggle]_ Brown": "echo 'red color' _[toggle]_ echo 'brown color'",
-      "Blue _[toggle]_ Yellow": "echo 'blue color' _[toggle]_ echo 'yellow color'",
-      "Green _[toggle]_ Black": "echo 'green color' _[toggle]_ echo 'black color'"
-    },
-  }
-},
-```
-
-- Default shows 🟩 Red, Blue, Green
-
-- Uncheck shows 🟥 Brown, Yellow, Black
-
-If you want one of the two sides to send nothing to the terminal, replace that side with a no-op command (`:` in `Git Bash`, `$null` in `PowerShell`). This keeps the `&&` chain valid without printing anything:
-
-<p>
-"Blue _[toggle]_ <span style='color:red'>NO VALUE</span>": "echo 'blue color' _[toggle]_ <span style='color:red; font-weight:bold;'>:</span>",
-</p>
-
-Example:
-
-```json
-"commands": {
-  "lorem": {
-    "command": "_[var1]_",
-    "inputs": {
-      "tmp; var1; true; true; save": {
-        "connectItems": "&&",
-        "Red _[toggle]_ Brown": "echo 'red color' _[toggle]_ echo 'brown color'",
-        "Blue _[toggle]_ No color": "echo 'blue color' _[toggle]_ :",
-        "Green _[toggle]_ Black": "echo 'green color' _[toggle]_ echo 'black color'"
-      }
-    }
-  }
-}
-```
-
-If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"temp": {
-  "command": "echo _[var1]_ && echo _[var1]_ && echo _[var1]_",
-  "inputs": {
-    "enter some text; var1": ""
-  }
-},
-```
-
-In the example above, the user will only see one input. If the user enters, say, "hello", the output in the terminal will be "hello" 3 times:
-
-```bash
-$ echo hello && echo hello && echo hello
-hello
-hello
-hello
-```
-
-   - Sometimes you don't need the input to return a value immediately. In that case, use the `_[...]_.value` syntax.
-
-For example:
-
-```json
-"temp": {
-  "command": "_[var1]_.value echo \"Hello _[var1]_\"",
-  "inputs": {
-    "enter some text; var1": ""
-  }
-},
-```
-
-   - Note: In the above example, we don't use the `echo` at the start of the command or `&&` operator after `_[var1]_.value` because it doesn't return anything at that point, that part of the command will be removed when the command is executed. If the user enters, say, "John Smith", the output in the terminal will be:
-
-```bash
-$ echo "Hello John Smith"
-Hello John Smith
-```
-
-### Command settings
-
-   You can customize a command with the `settings` property, which is an object with optional properties:
-
-   - **`terminalName`**  
-     Label to be shown as terminal name. If none, regular terminal name will be shown instead.
-
-   - **`quickButton`**  
-    Where to render this command’s icon as a quick-access button. One of:  
-      - `"statusBar"` – show icon on the status bar.
-      - `"tabBar"` – show icon in the editor title/tab bar (`VS Code` allows only 8 icons visible; others will be hidden under the `More Actions...` button).
-      - `"both"` – show icon in both places.
-        - Note: `VS Code` doesn’t support dynamic title/tab-bar updates at runtime, so `Terminal GUI` rewrites `package.json` and will prompt you to reload the window **twice** to apply changes.
-
-`tabBar` commands:
-
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/tab-bar.webp)
-
-`statusBar` commands:
-
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/satatus-bar.webp)
-
-   - **`reUseTerminal`**  
-     Reuse existing terminal or create new terminal for each command (default: true).
-
-   - **`contextMenu`**  
-     Determines whether the command is displayed in the context menu (default: false).
-
-   - **`revealConsole`**  
-     Whether to reveal the terminal console when running the command (default: `false`). `false` value keeps the terminal hidden on successful execution and automatically reveal it when a non-zero exit code is detected.
-
-   - **`showWhenEmptyWorkspace`**  
-     Show command only when:
-        - `fullWorkspace` - a workspace is open (default).
-        - `emptyWorkspace` - no folder is open.
-        - `both` - always shown.
-
-```json
-"temp": {
-  "command": "echo Hello",
-  "settings": {
-    "reUseTerminal": true,
-    "revealConsole": true,
-    "contextMenu": false,
-    "terminalName": "Temp Command",
-    "showWhenEmptyWorkspace": "fullWorkspace"
-  },
-},
-```
-### Command Icons (`icon`)
-
-You can assign an `icon` property to a command to display a quick-access button in the **status bar** or the **tab/title bar** (depending on the `quickButton` setting).
-The icon can be an emoji or an HTML entity, and you may also include an optional tooltip after a semicolon.
-
-**Syntax:**
-
-```json
-"commandName": {
-  "command": "echo Hello",
-  "icon": "⚡;Run Command",
-  "settings": {
-    "quickButton": "statusBar" // or "tabBar" or "both"
-  }
-}
-```
-
-* The first part (`⚡`) is the symbol.
-* The second part (`Run Command`) is shown as a tooltip when you hover over the icon.
-* The location is controlled by `"quickButton"` (status bar, tab bar, or both).
-
-### Long-Running Commands (`icon2`)
-
-   - If a command is long running (server watching, project creation), you may define `icon` and `icon2` poperies. You can use an emoji or an HTML entity as an icon.
-
-       - `icon` - an icon and optional tooltip (format: `icon;tooltip`) to display when command is not running.
-       - `icon2` - an icon, tooltip and optional interrupts count (format: `icon;tooltip;interrupts`) to display when command is running. The interrupt count controls how the command is stopped:
-
-         - **Stopping Behavior:**  
-         When you click a long-running command (one with `icon2` defined) a second time, `Terminal GUI` stops its execution by sending interrupt signals (`^C`) to the terminal.
-
-         - **Custom Interrupt Count:**  
-         You can specify how many `^C` signals should be sent by adding a number after the tooltip in `icon2`, separated by a semicolon (e.g. `"▢;stop server;4"`).
-
-         - **Default Behavior:**  
-        If no interrupt count is provided (for example `"▢;stop server"`), the extension will send two `^C` signals – the first immediately and the second after a 300ms delay. This is because `VS Code` sometimes "swallows" one `^C` signal, meaning that instead of sending *n* signals, only *n-1* actually reach the terminal. Sending an extra signal helps ensure that the process is properly stopped.
-
-   - **Auto-reveal once:**
-       For long-running commands, even when `settings.revealConsole` is `false`, the terminal panel is revealed **the first time** the command starts. On later runs the panel stays hidden unless `revealConsole` is `true` or the process exits with an error.
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"Launch Angular Server": {
-  "command": "ng serve",
-  "icon": "▶;run server",
-  "icon2": "▢;stop server",
-  "group": "🅰️ Angular",
-  "settings": {
-    "terminalName": "Angular Server",
-    "statusBar": true,
-  }
-},
-```
-
-### `_[Select a folder]_` (Built-In Variable)
-
-  - This built-in variable is an input field where the user can manually enter the path to a folder or press the `Enter` key to bring up the folder explorer and select the desired folder.
-
-  ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/selectafolder.avif)
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-// Uses an interactive prompt to select a folder and then navigates to it
-"Change Directory to Selected Folder": {
-  "command": "cd _[Select a folder]_ && echo _[Select a folder]_",
-},
-```
-
-   - You can include your own prompt text in parentheses. For example, `_[Select a folder(Hello World!)]_` will display **Hello World!** as the placeholder in the input box, while still behaving exactly like `_[Select a folder]_`.
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-// Uses a custom prompt message when selecting a folder
-"Change Directory to Selected Folder 2": {
-  "command": "cd _[Select a folder(Lorem ipsum Dolor)]_",
-},
-```
-
-   - Note: By default `_[Select a folder]_` refers to the current project, but you can change this with the `defaultPath` parameter:
-
-```json
-// settings.json
-"files.dialog.defaultPath": "D:/Development",
-```
-
-### `_[Select a file]_` (Built‑In Variable)
-
-- This built‑in variable is an input field where the user can manually enter the path to a file or press the `Enter` key to bring up the file explorer and select the desired file.
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-// Uses an interactive prompt to select a file and then opens it in VS Code
-"Open Selected File": {
-  "command": "code _[Select a file]_",
-},
-```
-
-- You can include your own prompt text in parentheses. For example, `_[Select a file(Hello World!)]_`.
-
-### Other Built-In Variables
-
-`Terminal GUI` supports several built-in variables for context menu commands (so `contextMenu` property should be `true`. Exception: `_[projectPath]_` — this variable always works, even for regular commands, not only context menu). These variables are embedded in your command strings using the format `_[variableName]_` and are automatically replaced at runtime with context-specific values based on the selected file or folder.
-
-   - **`_[itemPath]_`**  
-      The full path of the clicked item (either a file or a folder).
-
-   - **`_[parentPath]_`**  
-      The path to the parent directory of the clicked item.
-
-   - **`_[folderPath]_`**  
-      If the selected item is a folder, this is its path. If it's a file, this represents the path of the directory containing the file.
-
-   - **`_[itemFullName]_`**  
-      The complete name of the selected item, including its extension (if any).
-
-   - **`_[itemName]_`**  
-      The name of the selected item without the file extension.
-
-   - **`_[itemExtension]_`**  
-      The file extension (without the dot) of the selected item. For folders, this will be an empty string.
-
-   - **`_[projectPath]_`**  
-      The path of the workspace folder (project) in which the command was executed (works in both regular and context menu commands).
-
-   - **`_[selectedText]_`**  
-      The text currently selected in the active editor. If no text is selected, it returns empty quotes.
-
-   - **`_[clickedWord]_`**  
-      The word under the cursor at the time of the right‑click in the editor.
-
-When a command is run, `Terminal GUI` scans for these built-in variables within your command string. The extension replaces each placeholder with its corresponding value before executing the command. This enables you to build dynamic, context-aware commands such as:
-
-   - Changing directories to the folder containing the clicked file:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"temp": {
-  "command": "cd _[folderPath]_",
-  "settings": {
-    "contextMenu": true
-  },
-},
-```
-   - Echoing file-specific information:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"temp": {
-  "command": "echo Filename: _[itemName]_",
-  "settings": {
-    "contextMenu": true
-  },
-},
-```
-
-  - In the above example, if user selects a file with the name of "hello world.txt", then the output in terminal will be:
-
-```bash
-$ echo Filename: "hello world"
-Filename: hello world
-```
-
-   - Example with `_[selectedText]_` variables:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"temp": {
-  "command": "echo _[selectedText]_",
-  "settings": {
-    "contextMenu": true
-  }
-},
-```
-
-   - In the above example, if user selects "hello world", then the output in terminal will be:
-
-```bash
-$ echo "hello world"
-hello world
-```
-   - Example with `_[clickedWord]_` variables:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"temp": {
-  "command": "echo _[clickedWord]_",
-  "settings": {
-    "contextMenu": true
-  }
-},
-```
-
-   - In the above example, if the text "hello world" is present and the user right‑clicks on the word "hello" (without making a selection), the command will output:
-
-```bash
-$ echo "hello"
-hello
-```
-
-   - Example with all other built in variables:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"File Context Info": {
-  "command": "echo itemPath: _[itemPath]_ && echo parentPath: _[parentPath]_ && echo folderPath: _[folderPath]_ && echo itemFullName: _[itemFullName]_ && echo itemName: _[itemName]_ && echo itemExtension: _[itemExtension]_ && echo projectPath: _[projectPath]_",
-  "settings": {
-    "contextMenu": true
-  }
-},
-```
-
-   - In the above example, if the clicked item is `F:\Development\terminal-gui\src\statusBar`, then the output in terminal will be:
-
-```bash
-$ echo itemPath: "f:\Development\terminal-gui\src\statusBar" && echo parentPath: "f:\Development\terminal-gui\src" && echo folderPath: "f:\Development\terminal-gui\src\statusBar" && echo itemFullName: "statusBar" && echo itemName: "statusBar" && echo itemExtension:  && echo projectPath: "f:\Development\terminal-gui"
-
-itemPath: f:\Development\terminal-gui\src\statusBar
-parentPath: f:\Development\terminal-gui\src
-folderPath: f:\Development\terminal-gui\src\statusBar
-itemFullName: statusBar
-itemName: statusBar
-itemExtension:
-projectPath: f:\Development\terminal-gui
-```
-
-   - In the above example, if the clicked item is `F:\Development\terminal-gui\src\statusBar\StatusBarManager.ts`, then the output in terminal will be:
-
-```bash
-$ echo itemPath: "f:\Development\terminal-gui\src\statusBar\StatusBarManager.ts" && echo parentPath: "f:\Development\terminal-gui\src\statusBar" && echo folderPath: "f:\Development\terminal-gui\src\statusBar" && echo itemFullName: "StatusBarManager.ts" && echo itemName: "StatusBarManager" && echo itemExtension: ts && echo projectPath: "f:\Development\terminal-gui"
-
-itemPath: f:\Development\terminal-gui\src\statusBar\StatusBarManager.ts
-parentPath: f:\Development\terminal-gui\src\statusBar
-folderPath: f:\Development\terminal-gui\src\statusBar
-itemFullName: StatusBarManager.ts
-itemName: StatusBarManager
-itemExtension: ts
-projectPath: f:\Development\terminal-gui
-```
-
-### Snippets
-
-   The extension supports a snippets syntax that lets you create files with custom content on the fly (for creating templates I recommend using the [snippet-generator](https://snippet-generator.app/?description=&tabtrigger=&snippet=&mode=vscode). Copy only the `body` part).
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"temp": {
-  "command": "echo -e _[my snippet]_ > temp.txt",
-  "snippets": {
-    "my snippet": [
-      "hello",
-      "world"
-    ]
-  },
-},
-```
-
-In the above example, `my snippet` will be concatenated with the `\n` character and written to the file `temp.txt`. The terminal output will be:
-
-```bash
-$ echo -e "hello\nworld" > temp.txt
-```
-
-However, this approach has limitations: if the concatenated string contains special characters (`!`, `$`) or nested punctuation marks (eg: 'Lorem 'Ipsum' dolor'), then you need to be an expert bash script writer to handle such complex cases. These problems do not occur when copying from one file to another, so you may use this syntax:
-
-  - `_[snippet]_.file` - creates a temporal file containing the provided content from the `snippets` property. The file is placed in `.vscode/terminal-gui.temp` folder (do not forget to add the folder in `.gitignore`).
-
-For example:
-
-```json
-// settings.json ➜ "TerminalGui.config": { "commands": {...} }
-"temp": {
-  "command": "cp _[my snippet 1]_.file temp1.txt && cp _[my snippet 2]_.file temp2.txt",
-  "snippets": {
-    "my snippet 1": [
-      "hello",
-      "world"
-    ],
-    "my snippet 2": [
-      "lorem",
-      "ipsum"
-    ],
-  },
-},
-```
-
-In the above example, the terminal output will be:
-
-```bash
-cp "d:\my-project\.vscode\terminal-gui.temp\0-0.txt" temp1.txt && cp "d:\my-project\.vscode\terminal-gui.temp\0-1.txt" temp2.txt
-```
-
-### VSCode Snippets
-
-You can also register **normal VSCode snippets** directly from your settings — no external `*.code-snippets` file needed. Simply add a `VSCodeSnippets` block next to `commands` (for creating snippets I recommend using the [snippet-generator](https://snippet-generator.app/?description=&tabtrigger=&snippet=&mode=vscode)):
-
-```jsonc
-// settings.json ➜ "TerminalGui.config"
-{
-  "commands": {
-    "build": { "command": "npm run build" }
-  },
-  "VSCodeSnippets": {
-    "if statement": {
-      "scope": "javascript,typescript,javascriptreact,typescriptreact",
-      "prefix": "if",
-      "body": [
-        "if ($1) {",
-        "\t$0",
-        "}"
-      ],
-      "description": "Standard JavaScript/TypeScript if statement"
-    },
-    "csharp-function": {
-      "scope": "csharp",
-      "prefix": "f",
-      "body": [
-        "${1:void} ${2:Foo}($3)",
-        "{",
-        "\t$0",
-        "}"
-      ],
-      "description": "C# function template"
-    }
-  }
-}
-```
-
-* Snippets appear in IntelliSense for the languages listed in `scope`.
-* Full tab-stop and placeholder behaviour is supported.
-* Press `Refresh` on the status bar or use `ctrl+alt+p` (for Mac: `cmd+alt+p`) to reload edited snippets immediately.
-
-### Optional Scripts for Bash and PowerShell
-
-You can define optional scripts in your configuration under the `scripts` property. These scripts let you source custom `Git Bash` or `PowerShell` code when executing commands.
-
-For example, update your `settings.json` like this:
-
-```json
-// settings.json ➜ "TerminalGui.config": {...}
-"commands": {
-  "temp 1": {
-    "command": "echo START && _[bashScript]_ && foo _[var1]_ && echo FINISH",
-    "inputs": {
-      "Enter any text; var1": ""
-    }
-  },
-  "temp 2": {
-    "command": "echo START ; _[shellScript]_ ; foo _[var1]_ ; echo FINISH",
-    "inputs": {
-      "Enter any text; var1": ""
-    }
-  }
-},
-"scripts": {
-  "bash": [
-    "foo() {",
-    "  echo \"${1^^}.component\"",
-    "}"
-  ],
-  "shell": [
-    "function foo {",
-    "    param([string]$text)",
-    "    $text.ToUpper() + \".item\"",
-    "}"
-  ]
-}
-```
-
-In the above example, if the user will enter "hello", then the output in terminal will be as follows:
-```bash
-$ echo START && source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo hello && echo FINISH
-START
-HELLO.component
-FINISH
-```
-
-**How It Works:**
-
-- When your command contains `_[bashScript]_` (or `_[shellScript]_`), the extension checks if a script file (`bash.sh` or `shell.ps1`) exists in the `.vscode/terminal-gui.temp` folder.
-- If the script file exists, it replaces the placeholder with a sourcing command (e.g. `source "path/to/bash.sh"` for `Git Bash` or `. "path/to/shell.ps1"` for `PowerShell`).
-- If the script file doesn't exist but the corresponding `scripts` array is defined, the extension creates the script file with the given script content and then performs the substitution.
-
-### Terminal-to-VSCode Modal Messages
-
-This feature lets you pass information from the terminal to `VS Code` using a special command pattern. If the output of the command contains the syntax:
-
-```bash
-TERMINAL_GUI_MSG(Your message here)
-```
-
-then `VS Code` will extract the message from the brackets and display it in a modal window.
-
-#### Example
-
-```json
-// settings.json
-"TerminalGui.config": {
-  "commands": {
-    "temp": {
-      "command": "_[bashScript]_ && foo _[var1]_",
-      "inputs": {
-        "Choose; var1": {
-          "Agree": "true",
-          "DisAgree": "false"
-        }
-      }
-    },
-  },
-  "scripts": {
-    "bash": [
-      "foo() {",
-      "    if [ \"$1\" = \"true\" ]; then",
-      "        echo \"Ok\"",
-      "    else",
-      "        echo 'TERMINAL_GUI_MSG(Wrong Answer)'",
-      "    fi",
-      "}"
-    ]
-  }
-},
-```
-
-In the example above, if the user selects "Agree", terminal output will be as follows:
-
-```bash
-$ source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo true
-Ok
-```
-
-but if the user selects "Disagree", a modal window will open with the message "Wrong Answer":
-
-   ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/modal-window.avif)
-
-and the terminal output will be as follows:
-
-```bash
-$ source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo false
-TERMINAL_GUI_MSG(Wrong Answer)
-```
-
-### Search and Filter Commands
-
-  ![Image](https://github.com/user-attachments/assets/f12bfa46-c2c6-4518-a058-8e7b86074beb)
-
-  - At the top of the commands dropdown, there is an input field that lets you search for commands.
-
-  - In search mode, the extension will look through both ungrouped commands and those inside groups, displaying any command that matches your query.
-
-  - When the search field is cleared, the dropdown reverts to its hierarchical view (including the recently used commands).
-
-### Built-In Basic Settings
-
-These settings, defined in your configuration under `settings.json ➜ "TerminalGui.config": { "basic": {} }`, control the appearance and behavior of built-in command buttons in the `VS Code` status and title bars.
-
-```json
-// settings.json
-// "TerminalGui.configFile": ".vscode/terminalgui.config.json",
-
-// settings.json ➜ "TerminalGui.config": { "basic": {...} }
-"basic": {
-  "recentlyUsedCommands": 7,
-  "autoSaveToggler": true,
-  "killAllTasks": true,
-  "toggleTerminal": true,
-  "pinTabBar": true
-},
-```
-
-   - **autoSaveToggler**
-
-     ![Image](https://github.com/user-attachments/assets/450403a2-0167-41d9-84bc-7175e7eae6d8)
-
-     - When set to `true`, the extension displays auto save toggle buttons on the title bar.   
-     - These buttons let you quickly switch between auto save enabled and disabled, giving you fast control over file saving behavior.
-
-   - **killAllTasks**
-
-     ![Image](https://github.com/user-attachments/assets/acc9fa62-4f82-45e7-b396-36fd8afc0859)
-
-     Show `killAllTasks` button on status bar when `true` or `undefined`.
-
-   - **toggleTerminal**
-
-     ![Image](https://github.com/user-attachments/assets/618333cb-a471-4dc0-830e-cf875278e433)
-   
-     Show `toggleTerminal` button on status bar `true` or `undefined`.
-
-   - **commandsMenuOnStatusBar**
-
-     - Show commands menu button in the status-bar (right side. By default it is `true`).
-
-   - **commandsMenuRefreshOnStatusBar**
-
-     -  Show refresh button for Terminal GUI commands in the status-bar (right side. By default it is `true`).
-
-   - **recentlyUsedCommands**
-
-     - This setting controls how many recently used commands are shown at the top of the commands dropdown. The extension saves the full command names in a temporary folder (`.vscode/terminal-gui.temp`. Do not forget to add the folder in `.gitignore`) and displays them at the top of the dropdown for quick access. The maximum number of recently used commands displayed is configurable (default is 5; minimum 0, maximum 15).
-
-   - **pinTabBar**
-
-     - `VS Code` normally hides the tab bar when no files are open. When `true` (default), Terminal GUI “tricks” `VS Code` by opening a non-editable `Terminal GUI` placeholder file so the title/tab bar remains visible even with zero real files.  
-     - Set to `false` to disable this workaround and allow the tab bar to collapse normally.
-
-### External Configuration File
-
-You can use either JSON or JSONC (JSON with comments & trailing commas) for your external config.
-
-The `TerminalGui.configFile` setting specifies the path to an external configuration file. You can name it `.json` or `.jsonc`, for example:
-
-```jsonc
-// settings.json
-"TerminalGui.configFile": ".vscode/terminalgui.config.jsonc",
-```
-
-If `configFile` isn't defined, the extension will first look for `terminalgui.config.jsonc` in the workspace root, then for `terminalgui.config.json`. If neither file exists, it falls back to the `TerminalGui.config` section in your `settings.json`.
-
-Example of `terminalgui.config.jsonc` might look like this:
-
-```jsonc
-{
-  // Using a .jsonc file lets you add comments and trailing commas
-  "basic": {
-    "autoSaveToggler": true,
-    "recentlyUsedCommands": 7,
-    "commandsMenuOnStatusBar": true,
-    "commandsMenuRefreshOnStatusBar": true,
-  },
-  "commands": {
-    "bash example": {
-      "command": "echo START && _[bashScript]_ && foo hello && echo FINISH"
-    },
-    "sell example": {
-      "command": "echo START; _[shellScript]_; foo hello; echo FINISH"
-    }
-  },
-  "scripts": {
-    "bash": [
-      "foo() {",
-      "  echo \"${1^^}.component\"",
-      "}"
-    ],
-    "shell": [
-      "function foo {",
-      "    param([string]$text)",
-      "    $text.ToUpper() + \".item\"",
-      "}"
-    ]
-  }
-}
-```
-
-### Example Configuration
-
-Below is an example of `settings.json` configuration for different frameworks.
-
-- Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VS Code`:
-
-```json
-"terminal.integrated.defaultProfile.windows": "Git Bash",
-```
-
-- Note: If you copy and paste the example below into `settings.json` of `VS Code`, the changes will not take effect immediately; you will also need to `Refresh` the settings using the keyboard shortcut `ctrl+alt+p` (on Mac: `cmd+alt+p`).
 
 <details>
 <summary>🅰️ Angular</summary>
@@ -3236,6 +2303,986 @@ Below is an example of `settings.json` configuration for different frameworks.
 },
 ```
 </details>
+
+### Run Commands
+
+   - There are two types of commands: regular commands and context menu commands.
+   
+   - If `"contextMenu": true` is set, the command is a context menu command, meaning it can be launched by right-clicking on a file or a folder in the `VS Code` explorer (or by combination of keybinding: `ctrl+shift+e`, navigate with up/down keyboard arrow buttons through files/folders, `shift+F10`, choose `Terminal GUI` menu item).
+
+   - Regular commands can be launched via the button in the status bar (default keybinding: `ctrl+alt+l`. For Mac: `cmd+alt+l`).
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/regular%20commands.avif)
+
+   - When a command contains placeholders, you'll be prompted to enter the required values.
+
+   - You can navigate through inputs with left/right arrows located on the title bar of the command or use keybindings:
+
+        - **Navigate Right:** `ctrl+alt+.` (for Mac: `cmd+alt+.`)
+        - **Navigate Left:** `ctrl+alt+,`  (for Mac: `cmd+alt+,`)
+   
+   - The `Enter` button allows you to move forward and execute commands.
+
+### Input Fields Overview
+
+`Terminal GUI` supports **five types of input fields** that you can mix and match inside your commands. Each type has its own syntax and behavior, allowing you to create dynamic and interactive command strings.
+
+⚠️ **Important rule:** It is impossible to reference one input field inside another.
+
+```json
+"hello": {
+  "command": "echo _[var1]_ && _[var2]_",
+  "inputs": {
+    "temp 1; var1": "",
+    "temp 2; var2": {
+      "Red": "echo red",
+      "Green": "echo _[var1]_"  // impossible
+    }
+  }
+}
+```
+
+The available input field types are:
+
+1. **Free Text Input** – user types arbitrary text (with options for default value, allow empty, allow spaces, and saving).
+2. **Choice List Input** – user selects one value from a predefined list (optionally allow custom values).
+3. **Checkbox List Input** – user selects multiple values from a predefined list, joined with `connectItems`.
+4. **Two-state “Toggler” Input** – behaves like a switch; checked/unchecked expands to different snippets.
+5. **Built-in Special Inputs** – reserved placeholders like `_[Select a folder]_`, `_[Select a file]_`, or context variables (`_[projectPath]_`, `_[itemPath]_`, etc.).
+
+Image of choice list input:
+
+![Image](https://github.com/user-attachments/assets/80d5013c-8573-49ab-83c7-6ee3aca8e826)
+
+### Terminal Freeze Prevention
+
+   - To prevent `VS Code` terminals from freezing, `Terminal GUI` automatically sends special commands:
+     - When a new terminal is created: `echo 'Terminal GUI started'`
+     - Before each command execution: `echo 'HEALTH_CHECK_[number]'`
+   
+   - These commands help ensure the terminal remains responsive, especially when running invalid commands.
+
+### Define Commands with interactive Inputs
+
+   - In your configuration, create commands with placeholders wrapped in `_[ ... ]_` (for example, `_[Enter text]_`). At runtime, `Terminal GUI` will replace these placeholders with values you provide.
+
+   - You can specify inputs for your commands – either as `free text` or as a `choice list` – to dynamically build your command string.
+
+   - For command you may use optional `icon` property with emoji or HTML entity and optional `group` property to organize similar commands into one group.
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"🚀 Print Color and Custom Text": {
+  "command": "echo _[choose color]_ && echo _[enter some text]_",
+  "group": "🅰️ Angular",
+  "inputs": {
+    // choice list input
+    "choose color": {
+      "Red": "red color",
+      "Blue": "blue color"
+    },
+    // free text input
+    "enter some text": ""
+  },
+},
+```
+
+In the above example, if the user selects "Red" from "choose color" and enters "hello" in "enter some text", then the output in the `Git Bash` terminal will be:
+
+```bash
+$ echo red color && echo hello
+red color
+hello
+```
+
+### Custom Input Key Syntax
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/input-field.avif)
+
+   You can differentiate between the input field prompt (what the user sees) and the command substitution placeholder (what gets replaced in your command).
+
+   - Use a semicolon (`;`) in the input key to separate the two parts.  
+     For example, `"choose color; my var"` will display **"choose color"** as the prompt while using **"my var"** as the placeholder in the command string.
+
+   - If no semicolon is provided, the key is used for both the prompt and command substitution.
+
+   - The free text input key supports an extended syntax:
+     ```json
+     "prompt text; substitution placeholder; allowEmpty; allowSpaces": "default value"
+     ```
+      - **prompt text:** What is displayed as the prompt.
+      - **substitution placeholder:** The token in your command string to be replaced.
+      - **allowEmpty:** Set to `true` if empty input is allowed (default is `false`).
+      - **allowSpaces:** Set to `true` if spaces between words are allowed (default is `true`).
+      - **save:** If you use `;save`, on each run you'll see a QuickPick with two checkboxes:
+        * **Save** – remember the value but still prompt next time.
+        * **Save & Skip** – remember the value and auto-apply on future runs.
+
+For example:
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/save-input.avif)
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"lorem 1": {
+  "command": "echo _[var1]_",
+  "inputs": {
+    "enter some text; var1; true; true; save": ""
+  }
+},
+```
+
+Example for `ASP.NET WEB API` migrations:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"Add Migration": {
+  "command": "dotnet tool update --global dotnet-ef && dotnet ef migrations add \"_[migrationName]_\" --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\" --output-dir \"_[migrationFolder]_\"",
+  "group": "ASP.NET WEB API",
+  "inputs": {
+    "Enter a migration name; migrationName": "",
+    "Enter a DbContext project path; dbContextPath; true; true; save": "",
+    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
+    "Enter a StartUp project path; startProjectPath; true; true; save": "",
+    "Enter a migration folder path; migrationFolder; true; true; save": "",
+  },
+  "settings": {
+    "revealConsole": true
+  }
+},
+"Update DataBase": {
+  "command": "_[dbContextPath]_.value _[dbContextClassName]_.value _[startProjectPath]_.value dotnet ef database update --project \"_[dbContextPath]_\" --context _[dbContextClassName]_ --startup-project \"_[startProjectPath]_\"",
+  "group": "ASP.NET WEB API",
+  "inputs": {
+    "Enter a DbContext project path; dbContextPath; true; true; save": "",
+    "Enter a DbContext class name; dbContextClassName; true; true; save": "",
+    "Enter a StartUp project path; startProjectPath; true; true; save": "",
+  },
+  "settings": {
+    "revealConsole": true
+  }
+},
+```
+
+   - The choice list input key supports an extended syntax:
+     ```
+     "prompt text; substitution placeholder; allowCustomValue; allowSpaces"
+     ```
+      - **prompt text:** The text displayed as the prompt for the user.
+      - **substitution placeholder:** The token in the command that will be replaced with the chosen (or entered) value.
+      - **allowCustomValue:** A flag (`true` or `false`) that, when set to `true`, allows the user to enter a custom value that isn’t in the predefined choice list. If `false` (or omitted), the user must select one of the predefined options.
+      - **allowSpaces:** Set to `true` if spaces between words are allowed (default is `true`). If set to `false`, the user cannot enter spaces.
+
+For example:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"🚀 Print Color and Custom Text": {
+  "command": "echo _[var1]_ && echo _[var2]_",
+  "inputs": {
+    // Here the third parameter "true" enables free text input and the fourth parameter "false" disallows spaces.
+    "choose color; var1; true; false": {
+      "Red": "red color",
+      "Blue": "blue color"
+    },
+    // Here the third parameter "false" means empty input is not allowed and the fourth parameter "false" disallows spaces.
+    "enter some text; var2; false; false": "my value"
+  }
+}
+```
+
+#### Checkbox list input
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/checkbox-list.avif)
+
+You can present a multi-select (checkbox-style) list.  
+Declare the choice object with a special key **`"connectItems"`** whose value is the string used to join the chosen command snippets.
+
+- The `checkbox list input key` supports an extended syntax (notice: `choice list input key` does not support `allowCustomValue` option):
+  ```text
+  "prompt text; substitution placeholder; allowEmpty; save"
+  ```
+  - **prompt text:** The text displayed as the prompt for the user.
+  - **substitution placeholder:** The token in the command that will be replaced with the chosen (or entered) values.
+  - **allowEmpty:** Set to `true` if empty input is allowed (default is `false`).
+  - **save:** Set to `true` to remember and pre-select previously chosen items on next run (default is `false`).
+
+  When `save` is `true`, selected items are saved in `.vscode/terminal-gui.temp/terminalgui.temp.json` under the `checkboxCommands` section, and will be pre-checked on subsequent invocations.
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo _[var1]_ && _[var2]_ && echo _[var3]_",
+  "inputs": {
+    "enter txt1; var1": "",
+    "choose some values; var2; false; true": { // allowEmpty = false, save = true
+      "connectItems": "&&", // REQUIRED → identifies a checkbox list
+      "Red": "echo 'red color'",
+      "Blue": "echo 'blue color'",
+      "Green": "echo 'green color'"
+    },
+    "enter txt2; var3": ""
+  }
+},
+```
+
+#### Two‐state “toggler” input
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/toggler-input.avif)
+
+You can define a two‐state toggler option by including exactly one `_[toggle]_` in both the key and the value of a checkbox input. It behaves like a single‐checkbox toggle:  
+- 🟩 (checked) runs the **left** snippet  
+- 🟥 (unchecked) runs the **right** snippet  
+
+You still need `"connectItems"` defined to join multiple command fragments. By default, Two‐state “toggler” is checked.
+
+**Syntax**  
+```json
+"prompt text; substitution placeholder; allowEmpty; save": {
+  "connectItems": "<joiner>",
+  "LabelA _[toggle]_ LabelB": "cmdA _[toggle]_ cmdB"
+}
+```
+Example:
+
+```json
+"lorem": {
+  "command": "_[var1]_",
+  "inputs": {
+    "tmp; var1; true; true; save": {
+      "connectItems": "&&",
+      "Red _[toggle]_ Brown": "echo 'red color' _[toggle]_ echo 'brown color'",
+      "Blue _[toggle]_ Yellow": "echo 'blue color' _[toggle]_ echo 'yellow color'",
+      "Green _[toggle]_ Black": "echo 'green color' _[toggle]_ echo 'black color'"
+    },
+  }
+},
+```
+
+- Default shows 🟩 Red, Blue, Green
+
+- Uncheck shows 🟥 Brown, Yellow, Black
+
+If you want one of the two sides to send nothing to the terminal, replace that side with a no-op command (`:` in `Git Bash`, `$null` in `PowerShell`). This keeps the `&&` chain valid without printing anything:
+
+<p>
+"Blue _[toggle]_ <span style='color:red'>NO VALUE</span>": "echo 'blue color' _[toggle]_ <span style='color:red; font-weight:bold;'>:</span>",
+</p>
+
+Example:
+
+```json
+"commands": {
+  "lorem": {
+    "command": "_[var1]_",
+    "inputs": {
+      "tmp; var1; true; true; save": {
+        "connectItems": "&&",
+        "Red _[toggle]_ Brown": "echo 'red color' _[toggle]_ echo 'brown color'",
+        "Blue _[toggle]_ No color": "echo 'blue color' _[toggle]_ :",
+        "Green _[toggle]_ Black": "echo 'green color' _[toggle]_ echo 'black color'"
+      }
+    }
+  }
+}
+```
+
+If the same input is used multiple times in the `command` property, the user will only see one input. eg.:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo _[var1]_ && echo _[var1]_ && echo _[var1]_",
+  "inputs": {
+    "enter some text; var1": ""
+  }
+},
+```
+
+In the example above, the user will only see one input. If the user enters, say, "hello", the output in the terminal will be "hello" 3 times:
+
+```bash
+$ echo hello && echo hello && echo hello
+hello
+hello
+hello
+```
+
+   - Sometimes you don't need the input to return a value immediately. In that case, use the `_[...]_.value` syntax.
+
+For example:
+
+```json
+"temp": {
+  "command": "_[var1]_.value echo \"Hello _[var1]_\"",
+  "inputs": {
+    "enter some text; var1": ""
+  }
+},
+```
+
+   - Note: In the above example, we don't use the `echo` at the start of the command or `&&` operator after `_[var1]_.value` because it doesn't return anything at that point, that part of the command will be removed when the command is executed. If the user enters, say, "John Smith", the output in the terminal will be:
+
+```bash
+$ echo "Hello John Smith"
+Hello John Smith
+```
+
+### Command settings
+
+   You can customize a command with the `settings` property, which is an object with optional properties:
+
+   - **`terminalName`**  
+     Label to be shown as terminal name. If none, regular terminal name will be shown instead.
+
+   - **`quickButton`**  
+    Where to render this command’s icon as a quick-access button. One of:  
+      - `"statusBar"` – show icon on the status bar.
+      - `"tabBar"` – show icon in the editor title/tab bar (`VS Code` allows only 8 icons visible; others will be hidden under the `More Actions...` button).
+      - `"both"` – show icon in both places.
+        - Note: `VS Code` doesn’t support dynamic title/tab-bar updates at runtime, so `Terminal GUI` rewrites `package.json` and will prompt you to reload the window **twice** to apply changes.
+
+`tabBar` commands:
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/tab-bar.webp)
+
+`statusBar` commands:
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/satatus-bar.webp)
+
+   - **`reUseTerminal`**  
+     Reuse existing terminal or create new terminal for each command (default: true).
+
+   - **`contextMenu`**  
+     Determines whether the command is displayed in the context menu (default: false).
+
+   - **`revealConsole`**  
+     Whether to reveal the terminal console when running the command (default: `false`). `false` value keeps the terminal hidden on successful execution and automatically reveal it when a non-zero exit code is detected.
+
+  - **`showWhenEmptyWorkspace`**  
+      Controls when a command is visible:
+
+    - `fullWorkspace` – shown only when a workspace is open (default).  
+    - `emptyWorkspace` – shown only when no folder is open.  
+    - `both` – always shown.  
+    - `hidden` – never shown in menus or buttons, but can still be executed programmatically via `TERMINAL_GUI_COMMAND(_[command name]_)` (useful for background or utility commands).
+
+```json
+"temp": {
+  "command": "echo Hello",
+  "settings": {
+    "reUseTerminal": true,
+    "revealConsole": true,
+    "contextMenu": false,
+    "terminalName": "Temp Command",
+    "showWhenEmptyWorkspace": "fullWorkspace"
+  },
+},
+```
+### Command Icons (`icon`)
+
+You can assign an `icon` property to a command to display a quick-access button in the **status bar** or the **tab/title bar** (depending on the `quickButton` setting).
+The icon can be an emoji or an HTML entity, and you may also include an optional tooltip after a semicolon.
+
+**Syntax:**
+
+```json
+"commandName": {
+  "command": "echo Hello",
+  "icon": "⚡;Run Command",
+  "settings": {
+    "quickButton": "statusBar" // or "tabBar" or "both"
+  }
+}
+```
+
+* The first part (`⚡`) is the symbol.
+* The second part (`Run Command`) is shown as a tooltip when you hover over the icon.
+* The location is controlled by `"quickButton"` (status bar, tab bar, or both).
+
+### Long-Running Commands (`icon2`)
+
+   - If a command is long running (server watching, project creation), you may define `icon` and `icon2` poperies. You can use an emoji or an HTML entity as an icon.
+
+       - `icon` - an icon and optional tooltip (format: `icon;tooltip`) to display when command is not running.
+       - `icon2` - an icon, tooltip and optional interrupts count (format: `icon;tooltip;interrupts`) to display when command is running. The interrupt count controls how the command is stopped:
+
+         - **Stopping Behavior:**  
+         When you click a long-running command (one with `icon2` defined) a second time, `Terminal GUI` stops its execution by sending interrupt signals (`^C`) to the terminal.
+
+         - **Custom Interrupt Count:**  
+         You can specify how many `^C` signals should be sent by adding a number after the tooltip in `icon2`, separated by a semicolon (e.g. `"▢;stop server;4"`).
+
+         - **Default Behavior:**  
+        If no interrupt count is provided (for example `"▢;stop server"`), the extension will send two `^C` signals – the first immediately and the second after a 300ms delay. This is because `VS Code` sometimes "swallows" one `^C` signal, meaning that instead of sending *n* signals, only *n-1* actually reach the terminal. Sending an extra signal helps ensure that the process is properly stopped.
+
+   - **Auto-reveal once:**
+       For long-running commands, even when `settings.revealConsole` is `false`, the terminal panel is revealed **the first time** the command starts. On later runs the panel stays hidden unless `revealConsole` is `true` or the process exits with an error.
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"Launch Angular Server": {
+  "command": "ng serve",
+  "icon": "▶;run server",
+  "icon2": "▢;stop server",
+  "group": "🅰️ Angular",
+  "settings": {
+    "terminalName": "Angular Server",
+    "statusBar": true,
+  }
+},
+```
+
+### `_[Select a folder]_` and `_[Select a folder in project]_` (Built-In Variables)
+
+  - This built-in variable is an input field where the user can manually enter the path to a folder or press the `Enter` key to bring up the folder explorer and select the desired folder.
+
+  ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/selectafolder.avif)
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+// Uses an interactive prompt to select a folder and then navigates to it
+"Change Directory to Selected Folder": {
+  "command": "cd _[Select a folder]_ && echo _[Select a folder]_",
+},
+```
+
+   - You can include your own prompt text in parentheses. For example, `_[Select a folder(Hello World!)]_` will display **Hello World!** as the placeholder in the input box, while still behaving exactly like `_[Select a folder]_`.
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+// Uses a custom prompt message when selecting a folder
+"Change Directory to Selected Folder 2": {
+  "command": "cd _[Select a folder(Lorem ipsum Dolor)]_",
+},
+```
+
+   - Note: By default `_[Select a folder]_` refers to the current project, but you can change this with the `defaultPath` parameter:
+
+```json
+// settings.json
+"files.dialog.defaultPath": "D:/Development",
+```
+
+`_[Select a folder in project]_` works exactly the same, except its explorer dialog is restricted to the currently opened project (workspace) root.
+
+### `_[Select a file]_` and `_[Select a file in project]_` (Built‑In Variables)
+
+- This built‑in variable is an input field where the user can manually enter the path to a file or press the `Enter` key to bring up the file explorer and select the desired file.
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+// Uses an interactive prompt to select a file and then opens it in VS Code
+"Open Selected File": {
+  "command": "code _[Select a file]_",
+},
+```
+
+- You can include your own prompt text in parentheses. For example, `_[Select a file(Hello World!)]_`.
+
+`_[Select a file in project]_` works exactly the same, except its explorer dialog is restricted to the currently opened project (workspace) root.
+
+### Other Built-In Variables
+
+`Terminal GUI` supports several built-in variables for context menu commands (so `contextMenu` property should be `true`. Exception: `_[projectPath]_` — this variable always works, even for regular commands, not only context menu). These variables are embedded in your command strings using the format `_[variableName]_` and are automatically replaced at runtime with context-specific values based on the selected file or folder.
+
+   - **`_[itemPath]_`**  
+      The full path of the clicked item (either a file or a folder).
+
+   - **`_[parentPath]_`**  
+      The path to the parent directory of the clicked item.
+
+   - **`_[folderPath]_`**  
+      If the selected item is a folder, this is its path. If it's a file, this represents the path of the directory containing the file.
+
+   - **`_[itemFullName]_`**  
+      The complete name of the selected item, including its extension (if any).
+
+   - **`_[itemName]_`**  
+      The name of the selected item without the file extension.
+
+   - **`_[itemExtension]_`**  
+      The file extension (without the dot) of the selected item. For folders, this will be an empty string.
+
+   - **`_[projectPath]_`**  
+      The path of the workspace folder (project) in which the command was executed (works in both regular and context menu commands).
+
+   - **`_[selectedText]_`**  
+      The text currently selected in the active editor. If no text is selected, it returns empty quotes.
+
+   - **`_[clickedWord]_`**  
+      The word under the cursor at the time of the right‑click in the editor.
+
+When a command is run, `Terminal GUI` scans for these built-in variables within your command string. The extension replaces each placeholder with its corresponding value before executing the command. This enables you to build dynamic, context-aware commands such as:
+
+   - Changing directories to the folder containing the clicked file:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "cd _[folderPath]_",
+  "settings": {
+    "contextMenu": true
+  },
+},
+```
+   - Echoing file-specific information:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo Filename: _[itemName]_",
+  "settings": {
+    "contextMenu": true
+  },
+},
+```
+
+  - In the above example, if user selects a file with the name of "hello world.txt", then the output in terminal will be:
+
+```bash
+$ echo Filename: "hello world"
+Filename: hello world
+```
+
+   - Example with `_[selectedText]_` variables:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo _[selectedText]_",
+  "settings": {
+    "contextMenu": true
+  }
+},
+```
+
+   - In the above example, if user selects "hello world", then the output in terminal will be:
+
+```bash
+$ echo "hello world"
+hello world
+```
+   - Example with `_[clickedWord]_` variables:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo _[clickedWord]_",
+  "settings": {
+    "contextMenu": true
+  }
+},
+```
+
+   - In the above example, if the text "hello world" is present and the user right‑clicks on the word "hello" (without making a selection), the command will output:
+
+```bash
+$ echo "hello"
+hello
+```
+
+   - Example with all other built in variables:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"File Context Info": {
+  "command": "echo itemPath: _[itemPath]_ && echo parentPath: _[parentPath]_ && echo folderPath: _[folderPath]_ && echo itemFullName: _[itemFullName]_ && echo itemName: _[itemName]_ && echo itemExtension: _[itemExtension]_ && echo projectPath: _[projectPath]_",
+  "settings": {
+    "contextMenu": true
+  }
+},
+```
+
+   - In the above example, if the clicked item is `F:\Development\terminal-gui\src\statusBar`, then the output in terminal will be:
+
+```bash
+$ echo itemPath: "f:\Development\terminal-gui\src\statusBar" && echo parentPath: "f:\Development\terminal-gui\src" && echo folderPath: "f:\Development\terminal-gui\src\statusBar" && echo itemFullName: "statusBar" && echo itemName: "statusBar" && echo itemExtension:  && echo projectPath: "f:\Development\terminal-gui"
+
+itemPath: f:\Development\terminal-gui\src\statusBar
+parentPath: f:\Development\terminal-gui\src
+folderPath: f:\Development\terminal-gui\src\statusBar
+itemFullName: statusBar
+itemName: statusBar
+itemExtension:
+projectPath: f:\Development\terminal-gui
+```
+
+   - In the above example, if the clicked item is `F:\Development\terminal-gui\src\statusBar\StatusBarManager.ts`, then the output in terminal will be:
+
+```bash
+$ echo itemPath: "f:\Development\terminal-gui\src\statusBar\StatusBarManager.ts" && echo parentPath: "f:\Development\terminal-gui\src\statusBar" && echo folderPath: "f:\Development\terminal-gui\src\statusBar" && echo itemFullName: "StatusBarManager.ts" && echo itemName: "StatusBarManager" && echo itemExtension: ts && echo projectPath: "f:\Development\terminal-gui"
+
+itemPath: f:\Development\terminal-gui\src\statusBar\StatusBarManager.ts
+parentPath: f:\Development\terminal-gui\src\statusBar
+folderPath: f:\Development\terminal-gui\src\statusBar
+itemFullName: StatusBarManager.ts
+itemName: StatusBarManager
+itemExtension: ts
+projectPath: f:\Development\terminal-gui
+```
+
+### Snippets
+
+   The extension supports a snippets syntax that lets you create files with custom content on the fly (for creating templates I recommend using the [snippet-generator](https://snippet-generator.app/?description=&tabtrigger=&snippet=&mode=vscode). Copy only the `body` part).
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "echo -e _[my snippet]_ > temp.txt",
+  "snippets": {
+    "my snippet": [
+      "hello",
+      "world"
+    ]
+  },
+},
+```
+
+In the above example, `my snippet` will be concatenated with the `\n` character and written to the file `temp.txt`. The terminal output will be:
+
+```bash
+$ echo -e "hello\nworld" > temp.txt
+```
+
+However, this approach has limitations: if the concatenated string contains special characters (`!`, `$`) or nested punctuation marks (eg: 'Lorem 'Ipsum' dolor'), then you need to be an expert bash script writer to handle such complex cases. These problems do not occur when copying from one file to another, so you may use this syntax:
+
+  - `_[snippet]_.file` - creates a temporal file containing the provided content from the `snippets` property. The file is placed in `.vscode/terminal-gui.temp` folder (do not forget to add the folder in `.gitignore`).
+
+For example:
+
+```json
+// settings.json ➜ "TerminalGui.config": { "commands": {...} }
+"temp": {
+  "command": "cp _[my snippet 1]_.file temp1.txt && cp _[my snippet 2]_.file temp2.txt",
+  "snippets": {
+    "my snippet 1": [
+      "hello",
+      "world"
+    ],
+    "my snippet 2": [
+      "lorem",
+      "ipsum"
+    ],
+  },
+},
+```
+
+In the above example, the terminal output will be:
+
+```bash
+cp "d:\my-project\.vscode\terminal-gui.temp\0-0.txt" temp1.txt && cp "d:\my-project\.vscode\terminal-gui.temp\0-1.txt" temp2.txt
+```
+
+### VSCode Snippets
+
+You can also register **normal VSCode snippets** directly from your settings — no external `*.code-snippets` file needed. Simply add a `VSCodeSnippets` block next to `commands` (for creating snippets I recommend using the [snippet-generator](https://snippet-generator.app/?description=&tabtrigger=&snippet=&mode=vscode)):
+
+```jsonc
+// settings.json ➜ "TerminalGui.config"
+{
+  "commands": {
+    "build": { "command": "npm run build" }
+  },
+  "VSCodeSnippets": {
+    "if statement": {
+      "scope": "javascript,typescript,javascriptreact,typescriptreact",
+      "prefix": "if",
+      "body": [
+        "if ($1) {",
+        "\t$0",
+        "}"
+      ],
+      "description": "Standard JavaScript/TypeScript if statement"
+    },
+    "csharp-function": {
+      "scope": "csharp",
+      "prefix": "f",
+      "body": [
+        "${1:void} ${2:Foo}($3)",
+        "{",
+        "\t$0",
+        "}"
+      ],
+      "description": "C# function template"
+    }
+  }
+}
+```
+
+* Snippets appear in IntelliSense for the languages listed in `scope`.
+* Full tab-stop and placeholder behaviour is supported.
+* Press `Refresh` on the status bar or use `ctrl+alt+p` (for Mac: `cmd+alt+p`) to reload edited snippets immediately.
+
+### Optional Scripts for Bash and PowerShell
+
+You can define optional scripts in your configuration under the `scripts` property. These scripts let you source custom `Git Bash` or `PowerShell` code when executing commands.
+
+For example, update your `settings.json` like this:
+
+```json
+// settings.json ➜ "TerminalGui.config": {...}
+"commands": {
+  "temp 1": {
+    "command": "echo START && _[bashScript]_ && foo _[var1]_ && echo FINISH",
+    "inputs": {
+      "Enter any text; var1": ""
+    }
+  },
+  "temp 2": {
+    "command": "echo START ; _[shellScript]_ ; foo _[var1]_ ; echo FINISH",
+    "inputs": {
+      "Enter any text; var1": ""
+    }
+  }
+},
+"scripts": {
+  "bash": [
+    "foo() {",
+    "  echo \"${1^^}.component\"",
+    "}"
+  ],
+  "shell": [
+    "function foo {",
+    "    param([string]$text)",
+    "    $text.ToUpper() + \".item\"",
+    "}"
+  ]
+}
+```
+
+In the above example, if the user will enter "hello", then the output in terminal will be as follows:
+```bash
+$ echo START && source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo hello && echo FINISH
+START
+HELLO.component
+FINISH
+```
+
+**How It Works:**
+
+- When your command contains `_[bashScript]_` (or `_[shellScript]_`), the extension checks if a script file (`bash.sh` or `shell.ps1`) exists in the `.vscode/terminal-gui.temp` folder.
+- If the script file exists, it replaces the placeholder with a sourcing command (e.g. `source "path/to/bash.sh"` for `Git Bash` or `. "path/to/shell.ps1"` for `PowerShell`).
+- If the script file doesn't exist but the corresponding `scripts` array is defined, the extension creates the script file with the given script content and then performs the substitution.
+
+### Terminal-to-VSCode Modal Messages
+
+This feature lets you pass information from the terminal to `VS Code` using a special command pattern. If the output of the command contains the syntax:
+
+```bash
+TERMINAL_GUI_MSG(Your message here)
+```
+
+then `VS Code` will extract the message from the brackets and display it in a modal window.
+
+#### Example
+
+```json
+// settings.json
+"TerminalGui.config": {
+  "commands": {
+    "temp": {
+      "command": "_[bashScript]_ && foo _[var1]_",
+      "inputs": {
+        "Choose; var1": {
+          "Agree": "true",
+          "DisAgree": "false"
+        }
+      }
+    },
+  },
+  "scripts": {
+    "bash": [
+      "foo() {",
+      "    if [ \"$1\" = \"true\" ]; then",
+      "        echo \"Ok\"",
+      "    else",
+      "        echo 'TERMINAL_GUI_MSG(Wrong Answer)'",
+      "    fi",
+      "}"
+    ]
+  }
+},
+```
+
+In the example above, if the user selects "Agree", terminal output will be as follows:
+
+```bash
+$ source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo true
+Ok
+```
+
+but if the user selects "Disagree", a modal window will open with the message "Wrong Answer":
+
+   ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/modal-window.avif)
+
+and the terminal output will be as follows:
+
+```bash
+$ source "d:\temp-app\.vscode\terminal-gui.temp\bash.sh" && foo false
+TERMINAL_GUI_MSG(Wrong Answer)
+```
+
+#### Run Commands from Terminal
+
+If the output contains:
+
+```bash
+TERMINAL_GUI_COMMAND(_[command name]_)
+```
+
+VS Code will **automatically execute** another command defined in `TerminalGui.config.commands`.
+
+##### Example
+
+```json
+"TerminalGui.config": {
+  "commands": {
+    "lorem 1": {
+      "command": "echo _[llama]_",
+      "inputs": { 
+        "llama": "" 
+      },
+      "settings": { 
+        "showWhenEmptyWorkspace": "both" 
+      }
+    },
+    "temp": {
+      "command": "_[bashScript]_ && foo _[var1]_",
+      "inputs": {
+        "Choose; var1": {
+          "Agree": "true",
+          "DisAgree": "false"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "bash": [
+      "foo() {",
+      "  if [ \"$1\" = \"true\" ]; then",
+      "    echo \"Ok\"",
+      "  else",
+      "    echo 'TERMINAL_GUI_COMMAND(_[lorem 1]_)'",
+      "  fi",
+      "}"
+    ]
+  }
+}
+```
+
+If "Disagree" is selected, the command **`lorem 1`** will run automatically, opening its input prompt for `llama`.
+
+### Search and Filter Commands
+
+  ![Image](https://github.com/user-attachments/assets/f12bfa46-c2c6-4518-a058-8e7b86074beb)
+
+  - At the top of the commands dropdown, there is an input field that lets you search for commands.
+
+  - In search mode, the extension will look through both ungrouped commands and those inside groups, displaying any command that matches your query.
+
+  - When the search field is cleared, the dropdown reverts to its hierarchical view (including the recently used commands).
+
+### Built-In Basic Settings
+
+These settings, defined in your configuration under `settings.json ➜ "TerminalGui.config": { "basic": {} }`, control the appearance and behavior of built-in command buttons in the `VS Code` status and title bars.
+
+```json
+// settings.json
+// "TerminalGui.configFile": ".vscode/terminalgui.config.json",
+// settings.json ➜ "TerminalGui.config": { "basic": {...} }
+"basic": {
+  "recentlyUsedCommands": 7,
+  "autoSaveToggler": true,
+  "killAllTasks": true,
+  "toggleTerminal": true,
+  "pinTabBar": true
+},
+```
+
+   - **autoSaveToggler**
+
+     ![Image](https://github.com/user-attachments/assets/450403a2-0167-41d9-84bc-7175e7eae6d8)
+
+     - When set to `true`, the extension displays auto save toggle buttons on the title bar.   
+     - These buttons let you quickly switch between auto save enabled and disabled, giving you fast control over file saving behavior.
+
+   - **killAllTasks**
+
+     ![Image](https://github.com/user-attachments/assets/acc9fa62-4f82-45e7-b396-36fd8afc0859)
+
+     Show `killAllTasks` button on status bar when `true` or `undefined`.
+
+   - **toggleTerminal**
+
+     ![Image](https://github.com/user-attachments/assets/618333cb-a471-4dc0-830e-cf875278e433)
+   
+     Show `toggleTerminal` button on status bar `true` or `undefined`.
+
+   - **commandsMenuOnStatusBar**
+
+     - Show commands menu button in the status-bar (right side. By default it is `true`).
+
+   - **commandsMenuRefreshOnStatusBar**
+
+     -  Show refresh button for Terminal GUI commands in the status-bar (right side. By default it is `true`).
+
+   - **recentlyUsedCommands**
+
+     - This setting controls how many recently used commands are shown at the top of the commands dropdown. The extension saves the full command names in a temporary folder (`.vscode/terminal-gui.temp`. Do not forget to add the folder in `.gitignore`) and displays them at the top of the dropdown for quick access. The maximum number of recently used commands displayed is configurable (default is 5; minimum 0, maximum 15).
+
+   - **pinTabBar**
+
+     - `VS Code` normally hides the tab bar when no files are open. When `true` (default), Terminal GUI “tricks” `VS Code` by opening a non-editable `Terminal GUI` placeholder file so the title/tab bar remains visible even with zero real files.  
+     - Set to `false` to disable this workaround and allow the tab bar to collapse normally.
+
+### External Configuration File
+
+You can use either JSON or JSONC (JSON with comments & trailing commas) for your external config.
+
+The `TerminalGui.configFile` setting specifies the path to an external configuration file. You can name it `.json` or `.jsonc`, for example:
+
+```jsonc
+// settings.json
+"TerminalGui.configFile": ".vscode/terminalgui.config.jsonc",
+```
+
+If `configFile` isn't defined, the extension will first look for `terminalgui.config.jsonc` in the workspace root, then for `terminalgui.config.json`. If neither file exists, it falls back to the `TerminalGui.config` section in your `settings.json`.
+
+Example of `terminalgui.config.jsonc` might look like this:
+
+```jsonc
+{
+  // Using a .jsonc file lets you add comments and trailing commas
+  "basic": {
+    "autoSaveToggler": true,
+    "recentlyUsedCommands": 7,
+    "commandsMenuOnStatusBar": true,
+    "commandsMenuRefreshOnStatusBar": true,
+  },
+  "commands": {
+    "bash example": {
+      "command": "echo START && _[bashScript]_ && foo hello && echo FINISH"
+    },
+    "sell example": {
+      "command": "echo START; _[shellScript]_; foo hello; echo FINISH"
+    }
+  },
+  "scripts": {
+    "bash": [
+      "foo() {",
+      "  echo \"${1^^}.component\"",
+      "}"
+    ],
+    "shell": [
+      "function foo {",
+      "    param([string]$text)",
+      "    $text.ToUpper() + \".item\"",
+      "}"
+    ]
+  }
+}
+```
 
 ### Known Issues
 - Placeholder IntelliSense may not activate until `VS Code` is restarted after installing or reactivating the extension.

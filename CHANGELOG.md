@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.9.100] - 2025-11-07
+### Added
+- New built-in inputs `_[Select a folder in project]_` and `_[Select a file in project]_`, which behave the same as `_[Select a folder]_` and `_[Select a file]_` but open the explorer dialog **restricted to the current workspace root**.
+- New terminal-to-VSCode pattern `TERMINAL_GUI_COMMAND(_[command]_)` — allows one command’s output to **trigger another Terminal GUI command** defined in config.
+- Added `hidden` option for `settings.showWhenEmptyWorkspace`, which hides commands from all menus and buttons but still allows them to be **executed internally via** `TERMINAL_GUI_COMMAND(_[command]_)`.
+
 ## [0.9.97] - 2025-10-29
 ### Fixed
 - Dual-state (`icon2`) commands now automatically reset their `icon` state when the associated terminal is **manually closed or killed**, preventing them from staying stuck in the "active" state.
