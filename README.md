@@ -2901,7 +2901,7 @@ Hello John Smith
     - `fullWorkspace` – shown only when a workspace is open (default).  
     - `emptyWorkspace` – shown only when no folder is open.  
     - `both` – always shown.  
-    - `hidden` – never shown in menus or buttons, but can still be executed programmatically via `TERMINAL_GUI_COMMAND(_[command name]_)` (useful for background or utility commands).
+    - `hidden` – never shown in menus or buttons, but can still be executed programmatically via `TERMINAL_GUI_COMMAND(command name)` (useful for background or utility commands).
 
 ```json
 "temp": {
@@ -3364,7 +3364,7 @@ TERMINAL_GUI_MSG(Wrong Answer)
 If the output contains:
 
 ```bash
-TERMINAL_GUI_COMMAND(_[command name]_)
+TERMINAL_GUI_COMMAND(command name)
 ```
 
 VS Code will **automatically execute** another command defined in `TerminalGui.config.commands`.
@@ -3380,7 +3380,7 @@ VS Code will **automatically execute** another command defined in `TerminalGui.c
         "llama": "" 
       },
       "settings": { 
-        "showWhenEmptyWorkspace": "both" 
+        "showWhenEmptyWorkspace": "hidden" 
       }
     },
     "temp": {
@@ -3399,7 +3399,7 @@ VS Code will **automatically execute** another command defined in `TerminalGui.c
       "  if [ \"$1\" = \"true\" ]; then",
       "    echo \"Ok\"",
       "  else",
-      "    echo 'TERMINAL_GUI_COMMAND(_[lorem 1]_)'",
+      "    echo 'TERMINAL_GUI_COMMAND(lorem 1)'",
       "  fi",
       "}"
     ]
