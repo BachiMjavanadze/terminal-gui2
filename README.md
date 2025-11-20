@@ -3739,7 +3739,7 @@ Hello John Smith
 
 `tabBarGroup` commands:
 
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/satatus-bar.webp)
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/tabBarGroup.avif)
 
    - **`reUseTerminal`**  
      Reuse existing terminal or create new terminal for each command (default: true).
