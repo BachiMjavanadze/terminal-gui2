@@ -2810,54 +2810,54 @@ in the status bar:
     "Run .NET Server": {
       "command": "_[bashScript]_ && tg_dotnet_project_run \"_[slnx]_\"",
       "group": "🪟 .NET",
-      "icon": "▶;Run .NET Server",
-      "icon2": "▢;Stop .NET Server",
+      "icon": "▶️;Run .NET Server",
+      "icon2": "⏹️;Stop .NET Server",
       "inputs": {
         "Absolute path to .slnx file; slnx; false; true; save": ""
       },
       "settings": {
         "showWhenEmptyWorkspace": "fullWorkspace",
         "terminalName": ".NET Server",
-        "quickButton": "statusBar"
+        "quickButton": "tabBarGroup"
       }
     },
     "Run .NET Project": {
       "command": "_[bashScript]_ && tg_dotnet_project_run \"_[slnx]_\"",
       "group": "🪟 .NET",
-      "icon": "🟦",
+      "icon": "🏛️",
       "inputs": {
         "Absolute path to .slnx file; slnx; false; true; save": ""
       },
       "settings": {
         "showWhenEmptyWorkspace": "fullWorkspace",
-        "quickButton": "statusBar",
         "revealConsole": true,
+        "quickButton": "tabBarGroup"
       }
     },
     "Build .NET Project": {
       "command": "_[bashScript]_ && tg_dotnet_solution_build \"_[slnx]_\" build",
       "group": "🪟 .NET",
-      "icon": "↪️",
+      "icon": "🪲",
       "inputs": {
         "Absolute path to .slnx file; slnx; false; true; save": ""
       },
       "settings": {
         "showWhenEmptyWorkspace": "fullWorkspace",
-        "quickButton": "statusBar",
         "revealConsole": true,
+        "quickButton": "tabBarGroup",
       }
     },
     "Rebuild .NET Project": {
       "command": "_[bashScript]_ && tg_dotnet_solution_build \"_[slnx]_\" rebuild",
       "group": "🪟 .NET",
-      "icon": "🔃",
+      "icon": "🐞",
       "inputs": {
         "Absolute path to .slnx file; slnx; false; true; save": ""
       },
       "settings": {
         "showWhenEmptyWorkspace": "fullWorkspace",
-        "quickButton": "statusBar",
         "revealConsole": true,
+        "quickButton": "tabBarGroup",
       }
     },
   },
