@@ -3727,12 +3727,17 @@ Hello John Smith
       - `"tabBar"` – show icon in the editor title/tab bar (`VS Code` allows only 8 icons visible; others will be hidden under the `More Actions...` button).
       - `"both"` – show icon in both places.
         - Note: `VS Code` doesn’t support dynamic title/tab-bar updates at runtime, so `Terminal GUI` rewrites `package.json` and will prompt you to reload the window **twice** to apply changes.
+     - `"tabBarGroup"` — show this command inside a group in the tab bar (grouped dropdown in editor title). Perfect for organizing related build/run/server actions under one compact entry. Grouping works only in the tab bar, status-bar grouping is not available.
 
 `tabBar` commands:
 
 ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/tab-bar.webp)
 
 `statusBar` commands:
+
+![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/satatus-bar.webp)
+
+`tabBarGroup` commands:
 
 ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/satatus-bar.webp)
 
@@ -3814,7 +3819,7 @@ The icon can be an emoji or an HTML entity, and you may also include an optional
   "group": "🅰️ Angular",
   "settings": {
     "terminalName": "Angular Server",
-    "statusBar": true,
+    "quickButton": "statusBar",
   }
 },
 ```

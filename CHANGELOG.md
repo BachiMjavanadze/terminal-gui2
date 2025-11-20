@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.9.105] – 2025-11-20
+
+### Added
+* New **`"tabBarGroup"`** mode for `settings.quickButton`: lets you group multiple commands under a single **dropdown button** in the editor title/tab bar.
+
 ## [0.9.100] - 2025-11-07
 ### Added
 - New built-in inputs `_[Select a folder in project]_` and `_[Select a file in project]_`, which behave the same as `_[Select a folder]_` and `_[Select a file]_` but open the explorer dialog **restricted to the current workspace root**.
