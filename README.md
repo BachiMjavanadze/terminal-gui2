@@ -2810,54 +2810,54 @@ in the status bar:
     "Run .NET Server": {
       "command": "_[bashScript]_ && tg_dotnet_project_run \"_[slnx]_\"",
       "group": "🪟 .NET",
-      "icon": "▶️;Run .NET Server",
-      "icon2": "⏹️;Stop .NET Server",
+      "icon": "▶;Run .NET Server",
+      "icon2": "▢;Stop .NET Server",
       "inputs": {
         "Absolute path to .slnx file; slnx; false; true; save": ""
       },
       "settings": {
         "showWhenEmptyWorkspace": "fullWorkspace",
         "terminalName": ".NET Server",
-        "quickButton": "tabBarGroup"
+        "quickButton": "statusBar"
       }
     },
     "Run .NET Project": {
       "command": "_[bashScript]_ && tg_dotnet_project_run \"_[slnx]_\"",
       "group": "🪟 .NET",
-      "icon": "🏛️",
+      "icon": "🟦",
       "inputs": {
         "Absolute path to .slnx file; slnx; false; true; save": ""
       },
       "settings": {
         "showWhenEmptyWorkspace": "fullWorkspace",
+        "quickButton": "statusBar",
         "revealConsole": true,
-        "quickButton": "tabBarGroup"
       }
     },
     "Build .NET Project": {
       "command": "_[bashScript]_ && tg_dotnet_solution_build \"_[slnx]_\" build",
       "group": "🪟 .NET",
-      "icon": "🪲",
+      "icon": "↪️",
       "inputs": {
         "Absolute path to .slnx file; slnx; false; true; save": ""
       },
       "settings": {
         "showWhenEmptyWorkspace": "fullWorkspace",
+        "quickButton": "statusBar",
         "revealConsole": true,
-        "quickButton": "tabBarGroup",
       }
     },
     "Rebuild .NET Project": {
       "command": "_[bashScript]_ && tg_dotnet_solution_build \"_[slnx]_\" rebuild",
       "group": "🪟 .NET",
-      "icon": "🐞",
+      "icon": "🔃",
       "inputs": {
         "Absolute path to .slnx file; slnx; false; true; save": ""
       },
       "settings": {
         "showWhenEmptyWorkspace": "fullWorkspace",
+        "quickButton": "statusBar",
         "revealConsole": true,
-        "quickButton": "tabBarGroup",
       }
     },
   },
@@ -3727,7 +3727,6 @@ Hello John Smith
       - `"tabBar"` – show icon in the editor title/tab bar (`VS Code` allows only 8 icons visible; others will be hidden under the `More Actions...` button).
       - `"both"` – show icon in both places.
         - Note: `VS Code` doesn’t support dynamic title/tab-bar updates at runtime, so `Terminal GUI` rewrites `package.json` and will prompt you to reload the window **twice** to apply changes.
-     - `"tabBarGroup"` — show this command inside a group in the tab bar (grouped dropdown in editor title). Perfect for organizing related build/run/server actions under one compact entry. Grouping works only in the tab bar, status-bar grouping is not available.
 
 `tabBar` commands:
 
@@ -3736,10 +3735,6 @@ Hello John Smith
 `statusBar` commands:
 
 ![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/satatus-bar.webp)
-
-`tabBarGroup` commands:
-
-![Image](https://raw.githubusercontent.com/BachiMjavanadze/terminal-gui2/refs/heads/main/src/media/tabBarGroup.avif)
 
    - **`reUseTerminal`**  
      Reuse existing terminal or create new terminal for each command (default: true).
