@@ -3899,6 +3899,10 @@ The icon can be an emoji or an HTML entity, and you may also include an optional
    - **`_[clickedWord]_`**  
       The word under the cursor at the time of the right‑click in the editor.
 
+   - **`_[activeFile]_`**  
+      The full absolute path of the currently active editor file.  
+      If no file is open or the file is untitled, this resolves to empty quotes `""`.
+
 When a command is run, `Terminal GUI` scans for these built-in variables within your command string. The extension replaces each placeholder with its corresponding value before executing the command. This enables you to build dynamic, context-aware commands such as:
 
    - Changing directories to the folder containing the clicked file:
@@ -4007,6 +4011,9 @@ itemName: StatusBarManager
 itemExtension: ts
 projectPath: f:\Development\terminal-gui
 ```
+
+**Notice:**  
+All built-in path variables in `Terminal GUI` always return their values wrapped in quotes — for example `"C:\path\file.ts"` instead of `C:\path\file.ts`.  
 
 ### Snippets
 
