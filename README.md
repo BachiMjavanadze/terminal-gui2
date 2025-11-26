@@ -4,6 +4,18 @@
 
    - Note: **`Terminal GUI`** supports `Git Bash` and `PowerShell` scripting languages, so you can write very complex commands.
 
+   - Note: **`Terminal GUI`** requires latest version (7+) of `PowerShell`. `Windows 11` ships with the older Windows `PowerShell 5.1` by default. It is recommended to install the modern version for extension compatibility. To install the new version, run this command in a `PowerShell` terminal:
+
+   ```shell
+   winget install Microsoft.PowerShell
+   ```
+
+   After installation, restart `VS Code`, open the built-in terminal, and verify the correct version by running:
+
+   ```shell
+   $PSVersionTable
+   ```
+
    - Note: all examples below are for the `Git Bash` terminal. To set the `Git Bash` as your default terminal use this configuration in `settings.json` of the `VS Code`:
 
 ```json
@@ -670,13 +682,15 @@ in the status bar:
           "  \"semi\": true,",
           "  \"trailingComma\": \"es5\",",
           "  \"printWidth\": 100",
-          "}"
+          "}",
+          "",
         ],
         "prettierIgnore": [
           "dist",
           "build",
           "coverage",
-          ".vscode/terminal-gui.temp/"
+          ".vscode/terminal-gui.temp/",
+          "",
         ]
       },
       "settings": {
@@ -711,7 +725,8 @@ in the status bar:
           "  </div>",
           ");",
           "",
-          "export default _{$cmpName}_;"
+          "export default _{$cmpName}_;",
+          "",
         ],
         "reactComponentSnippetTS": [
           "const _{$cmpName}_ = () => (",
@@ -743,7 +758,8 @@ in the status bar:
           "    setOn(v => !v);",
           "  }, []);",
           "  return { on, toggle, setOn };",
-          "}"
+          "}",
+          "",
         ],
         "reactHookSnippetTS": [
           "import { useState, useCallback } from 'react';",
@@ -778,7 +794,8 @@ in the status bar:
           "  const c = useContext(_{$ctxName}_Context);",
           "  if (!c) throw new Error('use_{$ctxName}_ must be used within _{$ctxName}_Provider');",
           "  return c;",
-          "}"
+          "}",
+          "",
         ],
         "reactContextProviderJS": [
           "import { useMemo, useState } from 'react';",
@@ -856,7 +873,8 @@ in the status bar:
           "    headers: { 'Content-Type': 'application/json', ...(init.headers || {}) },",
           "    body: JSON.stringify(body)",
           "  });",
-          "}"
+          "}",
+          "",
         ],
         "APIserviceSnippetTS": [
           "export async function getJson<T = unknown>(url: string, init?: RequestInit): Promise<T> {",
@@ -872,7 +890,8 @@ in the status bar:
           "    headers: { 'Content-Type': 'application/json', ...(init.headers || {}) },",
           "    body: JSON.stringify(body)",
           "  });",
-          "}"
+          "}",
+          "",
         ]
       },
       "settings": {
@@ -1108,6 +1127,7 @@ in the status bar:
       "  echo_green \"✅ React project ready → opening in VS Code\"",
       "  code -r .",
       "}",
+      "",
     ]
   },
   "VSCodeSnippets": {
@@ -1118,7 +1138,8 @@ in the status bar:
         "const ${1:value} = useMemo(() => {",
         "  ${2:// compute}",
         "  return ${3:result};",
-        "}, [${4:deps}]);"
+        "}, [${4:deps}]);",
+        "",
       ],
       "description": "useMemo (JS)"
     },
@@ -1129,7 +1150,8 @@ in the status bar:
         "const ${1:value} = useMemo<${2:Type}>(() => {",
         "  ${3:// compute}",
         "  return ${4:result};",
-        "}, [${5:deps}]);"
+        "}, [${5:deps}]);",
+        "",
       ],
       "description": "useMemo (TS)"
     },
@@ -1449,7 +1471,8 @@ in the status bar:
           "",
           "app.listen(PORT, () => {",
           "    console.log(`Server running at http://localhost:${PORT}`);",
-          "});"
+          "});",
+          "",
         ],
         "envFile": [
           "PORT=3000"
@@ -1532,7 +1555,8 @@ in the status bar:
         "serviceSnippet": [
           "export const __CAMEL__Service = {",
           "    async create__PASCAL__() {},",
-          "};"
+          "};",
+          "",
         ]
       },
       "settings": {
@@ -1553,7 +1577,8 @@ in the status bar:
           "",
           "__CAMEL__Router.get('/__BASE__', async (req, res) => {",
           "",
-          "});"
+          "});",
+          "",
         ]
       },
       "settings": {
@@ -1575,17 +1600,20 @@ in the status bar:
         "mwStandard": [
           "export const __CAMEL__Middleware = (req, res, next) => {",
           "    next();",
-          "};"
+          "};",
+          "",
         ],
         "mwError": [
           "export const __CAMEL__Middleware = (err, req, res, next) => {",
           "    res.status(500).json({ error: 'Internal Server Error' });",
-          "};"
+          "};",
+          "",
         ],
         "mwFactory": [
           "export const __CAMEL__Middleware = (options = {}) => (req, res, next) => {",
           "    next();",
-          "};"
+          "};",
+          "",
         ]
       },
       "settings": {
@@ -1887,12 +1915,14 @@ in the status bar:
           "  \"singleQuote\": true,",
           "  \"trailingComma\": \"all\",",
           "  \"endOfLine\": \"auto\"",
-          "}"
+          "}",
+          "",
         ],
         "prettierIgnore": [
           "dist",
           "node_modules",
-          ".vscode"
+          ".vscode",
+          "",
         ],
         "launchJson": [
           "{",
@@ -1906,7 +1936,8 @@ in the status bar:
           "      \"runtimeArgs\": [\"run\", \"start:debug\"]",
           "    }",
           "  ]",
-          "  }"
+          "  }",
+          "",
         ],
         "tsconfigStrict": [
           "{",
@@ -1933,7 +1964,8 @@ in the status bar:
           "    \"strictBindCallApply\": true,",
           "    \"noFallthroughCasesInSwitch\": true",
           "  }",
-          "}"
+          "}",
+          "",
         ]
       },
       "settings": {
@@ -3390,6 +3422,118 @@ in the status bar:
 ```
 </details>
 
+<details>
+<summary>🐳 DevOps</summary>
+
+```json
+// settings.json
+"TerminalGui.config": {
+  "commands": {
+    "Run Python Script": {
+      "command": "clear && python -u _[activeFile]_",
+      "icon": "🐍",
+      "settings": {
+        "reUseTerminal": true,
+        "quickButton": "statusBar"
+      }
+    },
+    // Docker
+    // "Build Docker image": {
+    //   "command": "docker build --progress=plain -t _[dockerImageName]_ .",
+    //   "icon": "🐳",
+    //   "group": "🐳 Docker",
+    //   "inputs": {
+    //     "Enter Image name; dockerImageName; false; false; save": ""
+    //   },
+    //   "settings": {
+    //     "reUseTerminal": true,
+    //     "revealConsole": true
+    //   }
+    // },
+    // "Docker Container": {
+    //   "command": "docker run -p 8080:8080 --rm _[dockerImageName]_",
+    //   "group": "🐳 Docker",
+    //   "icon": "▶;Run Docker Container",
+    //   "icon2": "▢;Stop Docker Container",
+    //   "inputs": {
+    //     "Enter Image name; dockerImageName; false; false; save": ""
+    //   },
+    //   "settings": {
+    //     "terminalName": "Docker Server",
+    //     "quickButton": "statusBar",
+    //     "showWhenEmptyWorkspace": "fullWorkspace"
+    //   }
+    // },
+    // Docker Compose
+    "Build/Run/Stop Container": {
+      // server can be stopped by `^C` but too much logs
+      "command": "docker compose up --build",
+      // container runs and terminal is not occupied
+      // "command": "docker compose up --build -d",
+      // server can be stopped by `^C` and there is no db logs but we neeed to hardcode `db` service name from `docker-compose.yaml`. if nay error, run `docker compose logs db`.
+      // "command": "docker compose up --build --no-attach db",
+      "group": "🐳 Docker",
+      "icon": "▶;Build/Run/Stop Docker Container",
+      "icon2": "▢;Stop Docker Container",
+      "inputs": {
+        "Enter Image name; dbServiceName; false; false; save": ""
+      },
+      "settings": {
+        "terminalName": "Docker Server",
+        "quickButton": "statusBar",
+        "showWhenEmptyWorkspace": "fullWorkspace"
+      }
+    },
+    "Remove Conainer": {
+      "command": "docker compose down",
+      // "command": "docker compose stop",
+      "group": "🐳 Docker",
+      "settings": {
+        "reUseTerminal": true,
+      }
+    },
+    // Kubernetes
+    "Deploy (K8s)": {
+      "command": "kubectl apply -f deployment.yaml && kubectl apply -f service.yaml",
+      "icon": "🐳",
+      "group": "🐳 Docker",
+      "inputs": {
+        "Enter Image name; dockerImageName; false; false; save": ""
+      },
+      "settings": {
+        "reUseTerminal": true,
+        "revealConsole": true
+      }
+    },
+    "Delete broken deployment (K8s)": {
+      "command": "kubectl delete deployment mywebapi-deployment --ignore-not-found && kubectl delete service mywebapi-service --ignore-not-found",
+      "icon": "🐳",
+      "group": "🐳 Docker",
+      "inputs": {
+        "Enter Image name; dockerImageName; false; false; save": ""
+      },
+      "settings": {
+        "reUseTerminal": true,
+        "revealConsole": true
+      }
+    },
+    "Stop containers (K8s)": {
+      "command": "kubectl delete deployment mywebapi-deployment --ignore-not-found && kubectl delete service mywebapi-service --ignore-not-found",
+      "icon": "🐳",
+      "group": "🐳 Docker",
+      "inputs": {
+        "Enter Image name; dockerImageName; false; false; save": ""
+      },
+      "settings": {
+        "reUseTerminal": true,
+        "revealConsole": true
+      }
+    },
+  }
+}
+```
+</details>
+
 ### Run Commands
 
    - There are two types of commands: regular commands and context menu commands.
@@ -3435,6 +3579,38 @@ The available input field types are:
 3. **Checkbox List Input** – user selects multiple values from a predefined list, joined with `connectItems`.
 4. **Two-state “Toggler” Input** – behaves like a switch; checked/unchecked expands to different snippets.
 5. **Built-in Special Inputs** – reserved placeholders like `_[Select a folder]_`, `_[Select a file]_`, or context variables (`_[projectPath]_`, `_[itemPath]_`, etc.).
+
+**Important:** `Free Text`, `Choice List`, `Checkbox List`, and `Two-state “Toggler” input` values are passed to the terminal **as raw text**. If a user enters:
+
+```
+Hello world
+```
+
+your command receives exactly:
+
+```
+Hello world
+```
+
+(not `"Hello world"`)
+
+Because these inputs can contain terminal expressions, **Terminal GUI never auto-quotes them**. If you want to treat the input strictly as a literal, you must quote it yourself:
+
+```
+"command": "echo \"_[placeholder]_\""
+```
+
+**On the other hand**, all built-in path variables (like `_[Select a file]_`, `_[folderPath]_`, `_[projectPath]_`, etc.) **always return their values wrapped in quotes** — for example:
+
+```
+"C:\path\file.ts"
+```
+
+instead of:
+
+```
+C:\path\file.ts
+```
 
 Image of choice list input:
 
@@ -3574,7 +3750,7 @@ For example:
     // Here the third parameter "false" means empty input is not allowed and the fourth parameter "false" disallows spaces.
     "enter some text; var2; false; false": "my value"
   }
-}
+},
 ```
 
 #### Checkbox list input
@@ -3819,6 +3995,11 @@ The icon can be an emoji or an HTML entity, and you may also include an optional
 },
 ```
 
+### Built-In Variables
+
+**Notice:**  
+All built-in variables, described below, (`_[Select a folder]_`, `_[Select a folder in project]_`, `_[Select a file]_`, `_[Select a file in project]_`, `_[itemPath]_`, `_[parentPath]_`, `_[folderPath]_`, `_[itemFullName]_`, `_[itemName]_`, `_[itemExtension]_`, `_[projectPath]_`, `_[selectedText]_`, `_[clickedWord]_`, `_[activeFile]_`) always return their values wrapped in quotes — for example `"C:\path\file.ts"` instead of `C:\path\file.ts`.
+
 ### `_[Select a folder]_` and `_[Select a folder in project]_` (Built-In Variables)
 
   - This built-in variable is an input field where the user can manually enter the path to a folder or press the `Enter` key to bring up the folder explorer and select the desired folder.
@@ -4001,7 +4182,7 @@ projectPath: f:\Development\terminal-gui
    - In the above example, if the clicked item is `F:\Development\terminal-gui\src\statusBar\StatusBarManager.ts`, then the output in terminal will be:
 
 ```bash
-$ echo itemPath: "f:\Development\terminal-gui\src\statusBar\StatusBarManager.ts" && echo parentPath: "f:\Development\terminal-gui\src\statusBar" && echo folderPath: "f:\Development\terminal-gui\src\statusBar" && echo itemFullName: "StatusBarManager.ts" && echo itemName: "StatusBarManager" && echo itemExtension: ts && echo projectPath: "f:\Development\terminal-gui"
+$ echo itemPath: "f:\Development\terminal-gui\src\statusBar\StatusBarManager.ts" && echo parentPath: "f:\Development\terminal-gui\src\statusBar" && echo folderPath: "f:\Development\terminal-gui\src\statusBar" && echo itemFullName: "StatusBarManager.ts" && echo itemName: "StatusBarManager" && echo itemExtension: "ts" && echo projectPath: "f:\Development\terminal-gui"
 
 itemPath: f:\Development\terminal-gui\src\statusBar\StatusBarManager.ts
 parentPath: f:\Development\terminal-gui\src\statusBar
@@ -4011,9 +4192,6 @@ itemName: StatusBarManager
 itemExtension: ts
 projectPath: f:\Development\terminal-gui
 ```
-
-**Notice:**  
-All built-in path variables in `Terminal GUI` always return their values wrapped in quotes — for example `"C:\path\file.ts"` instead of `C:\path\file.ts`.  
 
 ### Snippets
 
@@ -4026,7 +4204,7 @@ All built-in path variables in `Terminal GUI` always return their values wrapped
   "snippets": {
     "my snippet": [
       "hello",
-      "world"
+      "world",
     ]
   },
 },
@@ -4051,7 +4229,7 @@ For example:
   "snippets": {
     "my snippet 1": [
       "hello",
-      "world"
+      "world",
     ],
     "my snippet 2": [
       "lorem",
@@ -4196,7 +4374,8 @@ then `VS Code` will extract the message from the brackets and display it in a mo
       "    else",
       "        echo 'TERMINAL_GUI_MSG(Wrong Answer)'",
       "    fi",
-      "}"
+      "}",
+      "",
     ]
   }
 },
@@ -4262,7 +4441,8 @@ VS Code will **automatically execute** another command defined in `TerminalGui.c
       "  else",
       "    echo 'TERMINAL_GUI_COMMAND(lorem 1)'",
       "  fi",
-      "}"
+      "}",
+      "",
     ]
   }
 }
@@ -4369,13 +4549,15 @@ Example of `terminalgui.config.jsonc` might look like this:
     "bash": [
       "foo() {",
       "  echo \"${1^^}.component\"",
-      "}"
+      "}",
+      "",
     ],
     "shell": [
       "function foo {",
       "    param([string]$text)",
       "    $text.ToUpper() + \".item\"",
-      "}"
+      "}",
+      "",
     ]
   }
 }

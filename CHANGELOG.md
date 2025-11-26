@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.9.108] - 2025-11-26
+### Fixed
+- Built-in variable `_[itemExtension]_` now returns its value wrapped in quotes, consistent with all other built-in path/text variables.
+
+## [0.9.107] - 2025-11-23
+### Added
+- New built-in variable `_[activeFile]_` — returns the full absolute path of the currently active editor file.
+
 ## [0.9.100] - 2025-11-07
 ### Added
 - New built-in inputs `_[Select a folder in project]_` and `_[Select a file in project]_`, which behave the same as `_[Select a folder]_` and `_[Select a file]_` but open the explorer dialog **restricted to the current workspace root**.
