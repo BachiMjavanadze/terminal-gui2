@@ -3600,7 +3600,7 @@ Because these inputs can contain terminal expressions, **Terminal GUI never auto
 "command": "echo \"_[placeholder]_\""
 ```
 
-**On the other hand**, all built-in path variables (like `_[Select a file]_`, `_[folderPath]_`, `_[projectPath]_`, etc.) **always return their values wrapped in quotes** — for example:
+**On the other hand**, built-in variables (like `_[Select a file]_`, `_[folderPath]_`, `_[projectPath]_`, etc.) **always return their values wrapped in quotes** — for example:
 
 ```
 "C:\path\file.ts"
